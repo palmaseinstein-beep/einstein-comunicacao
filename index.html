@@ -33,9 +33,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
 .topbar-direita{display:flex;align-items:center;gap:10px;}
 .topbar-nome{font-size:13px;color:var(--cinza2);}
 .btn-sair{background:rgba(255,255,255,.12);color:var(--branco);border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-weight:600;}
-.btn-sair:hover{background:rgba(255,255,255,.22);}
 .notif-btn{position:relative;background:rgba(255,255,255,.12);border:none;border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--branco);font-size:16px;}
-.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--vermelho);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--vermelho);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;display:none;}
 .nav-tabs{background:var(--branco);border-bottom:2px solid var(--cinza2);display:flex;overflow-x:auto;padding:0 16px;}
 .nav-tab{padding:14px 18px;font-size:13px;font-weight:600;color:var(--cinza3);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
 .nav-tab.ativo{color:var(--azul);border-bottom-color:var(--dourado);}
@@ -80,8 +79,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
 .form-campo input:focus,.form-campo select:focus,.form-campo textarea:focus{border-color:var(--azul);background:var(--branco);}
 .form-campo textarea{resize:vertical;min-height:90px;}
 .form-campo input[readonly]{background:var(--cinza2);color:var(--cinza3);cursor:not-allowed;}
-.form-acoes{margin-top:20px;display:flex;gap:10px;}
+.form-acoes{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;}
 .btn-secundario{padding:11px 22px;background:var(--cinza2);color:var(--azul);border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-danger{padding:11px 22px;background:#fdecea;color:var(--vermelho);border:1.5px solid #f5c6c6;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-danger:hover{background:var(--vermelho);color:#fff;}
 .familia-box{background:var(--cinza1);border-radius:12px;padding:16px;border:1.5px solid var(--cinza2);grid-column:1/-1;}
 .familia-box h3{font-size:13px;font-weight:700;color:var(--azul);margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px;}
 .busca-wrapper{position:relative;}
@@ -118,18 +119,22 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
 .resp-outro-input:focus{border-color:var(--azul);}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.aberto{display:flex;}
-.modal{background:var(--branco);border-radius:16px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,.3);}
-.modal-topo{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
+.modal{background:var(--branco);border-radius:16px;padding:28px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,.3);}
+.modal-topo{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
 .modal-topo h2{font-size:18px;font-weight:800;color:var(--azul);max-width:80%;}
 .btn-fechar{background:none;border:none;font-size:22px;cursor:pointer;color:var(--cinza3);}
-.modal-secao{margin-bottom:16px;}
+.modal-acoes-topo{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.modal-secao{margin-bottom:14px;}
 .modal-secao label{font-size:11px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;}
 .modal-secao p{font-size:14px;line-height:1.6;white-space:pre-wrap;}
-.modal-linha{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;}
-.modal-atualizar{border-top:1.5px solid var(--cinza2);padding-top:18px;margin-top:8px;}
+.modal-linha{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+.modal-atualizar{border-top:1.5px solid var(--cinza2);padding-top:16px;margin-top:8px;}
 .modal-atualizar h3{font-size:14px;font-weight:700;color:var(--azul);margin-bottom:12px;}
 .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-@media(max-width:480px){.modal-grid{grid-column:1fr;}}
+@media(max-width:480px){.modal-grid{grid-template-columns:1fr;}}
+.modal-edicao{border-top:1.5px solid var(--cinza2);padding-top:16px;margin-top:8px;display:none;}
+.modal-edicao.visivel{display:block;}
+.modal-edicao h3{font-size:14px;font-weight:700;color:var(--laranja);margin-bottom:12px;}
 .log-lista{display:flex;flex-direction:column;gap:8px;}
 .log-item{background:var(--branco);border-radius:10px;padding:12px 16px;box-shadow:var(--sombra);display:flex;gap:14px;}
 .log-dot{width:8px;height:8px;border-radius:50%;background:var(--dourado);margin-top:5px;flex-shrink:0;}
@@ -149,6 +154,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
 .notif-titulo{font-size:14px;font-weight:700;color:var(--azul);margin-bottom:4px;}
 .notif-msg{font-size:13px;color:var(--cinza3);}
 .notif-data{font-size:11px;color:var(--cinza3);margin-top:4px;}
+.confirm-box{background:#fdecea;border:1.5px solid #f5c6c6;border-radius:12px;padding:16px;margin-top:16px;display:none;}
+.confirm-box.visivel{display:block;}
+.confirm-box p{font-size:14px;color:var(--vermelho);font-weight:600;margin-bottom:12px;}
+.confirm-acoes{display:flex;gap:8px;}
 .loading{text-align:center;padding:40px;color:var(--cinza3);font-size:14px;}
 .spinner{width:32px;height:32px;border:3px solid var(--cinza2);border-top-color:var(--azul);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -163,7 +172,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
 <body>
 <div id="toast" class="toast"></div>
 
-<!-- LOGIN -->
 <div id="tela-login">
   <div class="login-card">
     <div class="login-logo">
@@ -178,13 +186,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
   </div>
 </div>
 
-<!-- APP -->
 <div id="tela-app">
   <div class="topbar">
     <div class="topbar-logo"><div class="sigla">E</div><span>Einstein</span></div>
     <div class="topbar-direita">
-      <button class="notif-btn" onclick="irPara('notificacoes')" id="notif-btn" title="Notificações">
-        🔔<span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      <button class="notif-btn" onclick="irPara('notificacoes')" title="Notificações">
+        🔔<span class="notif-badge" id="notif-badge">0</span>
       </button>
       <span class="topbar-nome" id="nome-usuario"></span>
       <button class="btn-sair" onclick="sair()">Sair</button>
@@ -200,7 +207,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
   <div class="conteudo" id="conteudo"></div>
 </div>
 
-<!-- MODAL -->
 <div id="modal-overlay" class="modal-overlay" onclick="fecharModal(event)">
   <div class="modal" id="modal-conteudo"></div>
 </div>
@@ -212,96 +218,90 @@ const FAMILIAS = [{"turma": "1ºA2026", "aluno": "ACSA LIS SANTOS", "mae": "NAYA
 let usuario = null;
 let todosUsuarios = [];
 let familiaSelecionada = null;
-let responsavelTicket = { nome: "", email: "" };
+let solicitanteExterno = "";
+let responsavelTicket = { nome:"", email:"" };
+let respModal = { nome:"", email:"" };
 
-function toast(msg, tipo="") {
-  const t = document.getElementById("toast");
-  t.textContent = msg; t.className = "toast visivel " + tipo;
-  setTimeout(() => t.className = "toast", 3000);
+function toast(msg,tipo=""){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.className="toast visivel "+tipo;
+  setTimeout(()=>t.className="toast",3000);
 }
-
-async function api(dados) {
-  const r = await fetch(API, { method:"POST", redirect:"follow", body: JSON.stringify(dados) });
+async function api(dados){
+  const r=await fetch(API,{method:"POST",redirect:"follow",body:JSON.stringify(dados)});
   return r.json();
 }
 
-// ── LOGIN ──
-document.addEventListener("keydown", e => {
-  if (e.key === "Enter" && document.getElementById("tela-login").style.display !== "none") fazerLogin();
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&document.getElementById("tela-login").style.display!=="none")fazerLogin();
 });
 
-async function fazerLogin() {
-  const email = document.getElementById("login-email").value.trim();
-  const senha = document.getElementById("login-senha").value.trim();
-  const btn = document.getElementById("btn-entrar");
-  const erro = document.getElementById("erro-login");
-  if (!email || !senha) { erro.textContent = "Preencha e-mail e senha."; return; }
-  btn.disabled = true; btn.textContent = "Entrando..."; erro.textContent = "";
-  try {
-    const res = await api({ acao: "login", email, senha });
-    if (res.ok) {
-      usuario = res.usuario;
-      document.getElementById("tela-login").style.display = "none";
-      document.getElementById("tela-app").style.display = "block";
-      document.getElementById("nome-usuario").textContent = usuario.nome;
-      if (usuario.perfil === "ADMIN") document.querySelectorAll(".admin-tab").forEach(t => t.style.display = "");
-      // Carregar usuários e notificações
+async function fazerLogin(){
+  const email=document.getElementById("login-email").value.trim();
+  const senha=document.getElementById("login-senha").value.trim();
+  const btn=document.getElementById("btn-entrar");
+  const erro=document.getElementById("erro-login");
+  if(!email||!senha){erro.textContent="Preencha e-mail e senha.";return;}
+  btn.disabled=true;btn.textContent="Entrando...";erro.textContent="";
+  try{
+    const res=await api({acao:"login",email,senha});
+    if(res.ok){
+      usuario=res.usuario;
+      document.getElementById("tela-login").style.display="none";
+      document.getElementById("tela-app").style.display="block";
+      document.getElementById("nome-usuario").textContent=usuario.nome;
+      if(usuario.perfil==="ADMIN")document.querySelectorAll(".admin-tab").forEach(t=>t.style.display="");
       carregarUsuarios();
       verificarNotificacoes();
       irPara("painel");
-    } else { erro.textContent = res.erro || "Erro ao entrar."; }
-  } catch(e) { erro.textContent = "Erro de conexão."; }
-  btn.disabled = false; btn.textContent = "Entrar";
+    }else{erro.textContent=res.erro||"Erro ao entrar.";}
+  }catch(e){erro.textContent="Erro de conexão.";}
+  btn.disabled=false;btn.textContent="Entrar";
 }
 
-function sair() {
-  usuario = null; todosUsuarios = [];
-  document.getElementById("tela-login").style.display = "flex";
-  document.getElementById("tela-app").style.display = "none";
-  document.getElementById("login-senha").value = "";
+function sair(){
+  usuario=null;todosUsuarios=[];
+  document.getElementById("tela-login").style.display="flex";
+  document.getElementById("tela-app").style.display="none";
+  document.getElementById("login-senha").value="";
 }
 
-async function carregarUsuarios() {
-  try {
-    const res = await api({ acao: "listarUsuarios" });
-    todosUsuarios = res.usuarios || [];
-  } catch(e) {}
+async function carregarUsuarios(){
+  try{const res=await api({acao:"listarUsuarios"});todosUsuarios=res.usuarios||[];}catch(e){}
 }
 
-async function verificarNotificacoes() {
-  try {
-    const res = await api({ acao: "listarNotificacoes", email: usuario.email });
-    const naoLidas = (res.notificacoes || []).filter(n => n.lida === "NAO").length;
-    const badge = document.getElementById("notif-badge");
-    if (naoLidas > 0) { badge.textContent = naoLidas; badge.style.display = "flex"; }
-    else { badge.style.display = "none"; }
-  } catch(e) {}
+async function verificarNotificacoes(){
+  try{
+    const res=await api({acao:"listarNotificacoes",email:usuario.email});
+    const n=(res.notificacoes||[]).filter(x=>x.lida==="NAO").length;
+    const b=document.getElementById("notif-badge");
+    b.textContent=n;b.style.display=n>0?"flex":"none";
+  }catch(e){}
 }
 
-// ── NAVEGAÇÃO ──
-function irPara(aba) {
-  document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("ativo"));
-  const abas = ["painel","novo","tickets","logs","usuarios","notificacoes"];
-  document.querySelectorAll(".nav-tab")[abas.indexOf(aba)]?.classList.add("ativo");
-  if (aba === "painel")        renderPainel();
-  if (aba === "novo")          renderNovoTicket();
-  if (aba === "tickets")       renderTickets();
-  if (aba === "logs")          renderLogs();
-  if (aba === "usuarios")      renderUsuarios();
-  if (aba === "notificacoes")  renderNotificacoes();
+function irPara(aba){
+  document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("ativo"));
+  ["painel","novo","tickets","logs","usuarios","notificacoes"].forEach((a,i)=>{
+    if(a===aba)document.querySelectorAll(".nav-tab")[i]?.classList.add("ativo");
+  });
+  if(aba==="painel")       renderPainel();
+  if(aba==="novo")         renderNovoTicket();
+  if(aba==="tickets")      renderTickets();
+  if(aba==="logs")         renderLogs();
+  if(aba==="usuarios")     renderUsuarios();
+  if(aba==="notificacoes") renderNotificacoes();
 }
 
-// ── PAINEL ──
-async function renderPainel() {
-  const c = document.getElementById("conteudo");
-  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
-  try {
-    const res = await api({ acao: "listarTickets", status: "TODOS" });
-    const tks = res.tickets || [];
-    const ab = tks.filter(t => t.status === "Aberto").length;
-    const an = tks.filter(t => t.status === "Em andamento").length;
-    const rv = tks.filter(t => t.status === "Resolvido").length;
-    c.innerHTML = `
+async function renderPainel(){
+  const c=document.getElementById("conteudo");
+  c.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try{
+    const res=await api({acao:"listarTickets",status:"TODOS"});
+    const tks=res.tickets||[];
+    const ab=tks.filter(t=>t.status==="Aberto").length;
+    const an=tks.filter(t=>t.status==="Em andamento").length;
+    const rv=tks.filter(t=>t.status==="Resolvido").length;
+    c.innerHTML=`
       <div class="resumo-grid">
         <div class="resumo-card"><div class="num">${tks.length}</div><div class="label">Total</div></div>
         <div class="resumo-card aberto"><div class="num">${ab}</div><div class="label">Abertos</div></div>
@@ -309,15 +309,13 @@ async function renderPainel() {
         <div class="resumo-card resolvido"><div class="num">${rv}</div><div class="label">Resolvidos</div></div>
       </div>
       <div style="font-size:13px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Últimos registros</div>
-      <div class="ticket-lista">${tks.slice(0,5).map(cardTicket).join("") || '<div class="vazio"><div class="icone">📭</div><p>Nenhum ticket ainda.</p></div>'}</div>`;
-  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar.</p></div>'; }
+      <div class="ticket-lista">${tks.slice(0,5).map(cardTicket).join("")||'<div class="vazio"><div class="icone">📭</div><p>Nenhum ticket ainda.</p></div>'}</div>`;
+  }catch(e){c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar.</p></div>';}
 }
 
-// ── NOVO TICKET ──
-function renderNovoTicket() {
-  familiaSelecionada = null;
-  responsavelTicket = { nome: "", email: "" };
-  document.getElementById("conteudo").innerHTML = `
+function renderNovoTicket(){
+  familiaSelecionada=null;solicitanteExterno="";responsavelTicket={nome:"",email:""};
+  document.getElementById("conteudo").innerHTML=`
     <div class="form-card">
       <h2>Registrar nova ocorrência</h2>
       <div class="form-grid">
@@ -335,8 +333,6 @@ function renderNovoTicket() {
             <option>Telefone</option><option>Presencial</option><option>Sistema interno</option>
           </select>
         </div>
-
-        <!-- BLOCO EXTERNO -->
         <div id="bloco-externo" class="familia-box">
           <h3>🔍 Buscar aluno ou responsável</h3>
           <div class="busca-wrapper">
@@ -357,8 +353,6 @@ function renderNovoTicket() {
             </div>
           </div>
         </div>
-
-        <!-- BLOCO INTERNO -->
         <div id="bloco-interno" class="form-campo" style="display:none">
           <label>Setor solicitante</label>
           <select id="f-setor-origem">
@@ -366,7 +360,6 @@ function renderNovoTicket() {
             <option>Direção</option><option>Coordenação</option><option>Administrativo</option>
           </select>
         </div>
-
         <div class="form-campo">
           <label>Setor destinatário</label>
           <select id="f-setor">
@@ -374,26 +367,17 @@ function renderNovoTicket() {
             <option>Direção</option><option>Coordenação</option><option>Administrativo</option>
           </select>
         </div>
-
-        <!-- ABERTO POR (preenchido automático) -->
         <div class="form-campo">
           <label>Aberto por</label>
-          <input id="f-aberto-por" value="${usuario ? usuario.nome : ""}" readonly>
+          <input id="f-aberto-por" value="${usuario?usuario.nome:''}" readonly>
         </div>
-
-        <!-- RESPONSÁVEL: lista de usuários ou nome livre -->
         <div class="resp-select-box full">
           <h3>👤 Responsável pelo atendimento</h3>
           <div class="resp-lista" id="resp-lista-usuarios">
-            ${todosUsuarios.map(u => `
-              <button class="resp-user-btn" onclick="selecionarResponsavelUsuario(this,'${u.nome}','${u.email}')">
-                <div class="avatar">${u.nome.charAt(0)}</div>
-                <span>${u.nome}</span>
-              </button>`).join("") || '<span style="font-size:13px;color:var(--cinza3)">Carregando...</span>'}
+            ${todosUsuarios.map(u=>`<button class="resp-user-btn" onclick="selecionarRespUsuario(this,'${u.nome}','${u.email}')"><div class="avatar">${u.nome.charAt(0)}</div><span>${u.nome}</span></button>`).join("")||'<span style="font-size:13px;color:var(--cinza3)">Carregando usuários...</span>'}
           </div>
-          <input class="resp-outro-input" id="f-resp-outro" placeholder="Ou digite um nome que não está na lista..." oninput="digitarResponsavel(this.value)">
+          <input class="resp-outro-input" id="f-resp-outro" placeholder="Ou digite um nome que não está na lista..." oninput="digitarResp(this.value)">
         </div>
-
         <div class="form-campo full">
           <label>Assunto (resumo)</label>
           <input id="f-assunto" placeholder="Ex: Solicitação de declaração">
@@ -410,139 +394,119 @@ function renderNovoTicket() {
     </div>`;
 }
 
-function toggleTipo() {
-  const tipo = document.getElementById("f-tipo").value;
-  document.getElementById("bloco-externo").style.display = tipo === "Externo" ? "" : "none";
-  document.getElementById("bloco-interno").style.display = tipo === "Interno" ? "" : "none";
+function toggleTipo(){
+  const tipo=document.getElementById("f-tipo").value;
+  document.getElementById("bloco-externo").style.display=tipo==="Externo"?"":"none";
+  document.getElementById("bloco-interno").style.display=tipo==="Interno"?"":"none";
 }
 
-function selecionarResponsavelUsuario(btn, nome, email) {
-  document.querySelectorAll(".resp-user-btn").forEach(b => b.classList.remove("selecionado"));
+function selecionarRespUsuario(btn,nome,email){
+  document.querySelectorAll("#resp-lista-usuarios .resp-user-btn").forEach(b=>b.classList.remove("selecionado"));
   btn.classList.add("selecionado");
-  responsavelTicket = { nome, email };
-  document.getElementById("f-resp-outro").value = "";
+  responsavelTicket={nome,email};
+  document.getElementById("f-resp-outro").value="";
+}
+function digitarResp(v){
+  document.querySelectorAll("#resp-lista-usuarios .resp-user-btn").forEach(b=>b.classList.remove("selecionado"));
+  responsavelTicket={nome:v,email:""};
 }
 
-function digitarResponsavel(valor) {
-  document.querySelectorAll(".resp-user-btn").forEach(b => b.classList.remove("selecionado"));
-  responsavelTicket = { nome: valor, email: "" };
-}
-
-// ── BUSCA FAMÍLIA ──
-function buscarFamilia() {
-  const termo = document.getElementById("busca-familia").value.trim().toLowerCase();
-  const dd = document.getElementById("busca-dropdown");
-  if (termo.length < 2) { dd.classList.remove("aberto"); return; }
-
-  const res = FAMILIAS.filter(f =>
-    f.aluno.toLowerCase().includes(termo) ||
-    f.mae.toLowerCase().includes(termo) ||
-    f.pai.toLowerCase().includes(termo) ||
-    f.responsavel.toLowerCase().includes(termo)
-  ).slice(0, 10);
-
-  if (!res.length) {
-    dd.innerHTML = '<div class="busca-item"><span style="color:var(--cinza3)">Sem resultado. Use "Outro" abaixo.</span></div>' +
-      '<div class="busca-item" onclick="selecionarOutro()" style="color:var(--azul);font-weight:700">➕ Outro / não é aluno cadastrado</div>';
-  } else {
-    dd.innerHTML = res.map(f => {
-      const idx = FAMILIAS.indexOf(f);
-      return `<div class="busca-item" onclick="selecionarFamilia(${idx})">
-        <div class="ia">${f.aluno}</div>
-        <div class="it">${f.turma} · ${f.mae || f.pai || f.responsavel}</div>
-      </div>`;
-    }).join("") + '<div class="busca-item" onclick="selecionarOutro()" style="color:var(--azul);font-weight:700">➕ Outro / não é aluno cadastrado</div>';
+function buscarFamilia(){
+  const termo=document.getElementById("busca-familia").value.trim().toLowerCase();
+  const dd=document.getElementById("busca-dropdown");
+  if(termo.length<2){dd.classList.remove("aberto");return;}
+  const res=FAMILIAS.filter(f=>
+    f.aluno.toLowerCase().includes(termo)||f.mae.toLowerCase().includes(termo)||
+    f.pai.toLowerCase().includes(termo)||f.responsavel.toLowerCase().includes(termo)
+  ).slice(0,10);
+  const outro='<div class="busca-item" onclick="selecionarOutro()" style="color:var(--azul);font-weight:700">➕ Outro / não é aluno cadastrado</div>';
+  if(!res.length){
+    dd.innerHTML='<div class="busca-item"><span style="color:var(--cinza3)">Sem resultado.</span></div>'+outro;
+  }else{
+    dd.innerHTML=res.map(f=>{
+      const idx=FAMILIAS.indexOf(f);
+      return `<div class="busca-item" onclick="selecionarFamilia(${idx})"><div class="ia">${f.aluno}</div><div class="it">${f.turma} · ${f.mae||f.pai}</div></div>`;
+    }).join("")+outro;
   }
   dd.classList.add("aberto");
 }
 
-function selecionarFamilia(idx) {
-  familiaSelecionada = FAMILIAS[idx];
+function selecionarFamilia(idx){
+  familiaSelecionada=FAMILIAS[idx];solicitanteExterno="";
   document.getElementById("busca-dropdown").classList.remove("aberto");
-  document.getElementById("busca-familia").value = familiaSelecionada.aluno;
+  document.getElementById("busca-familia").value=familiaSelecionada.aluno;
   document.getElementById("outro-nome").classList.remove("visivel");
-
-  const info = document.getElementById("familia-info");
-  info.innerHTML = `
+  const info=document.getElementById("familia-info");
+  info.innerHTML=`
     <div class="fi-linha"><span class="fi-label">Aluno</span><span class="fi-valor">${familiaSelecionada.aluno}</span></div>
     <div class="fi-linha"><span class="fi-label">Turma</span><span class="fi-valor">${familiaSelecionada.turma}</span></div>
-    ${familiaSelecionada.mae ? `<div class="fi-linha"><span class="fi-label">Mãe</span><span class="fi-valor">${familiaSelecionada.mae}</span></div>` : ""}
-    ${familiaSelecionada.pai ? `<div class="fi-linha"><span class="fi-label">Pai</span><span class="fi-valor">${familiaSelecionada.pai}</span></div>` : ""}
-    ${familiaSelecionada.responsavel ? `<div class="fi-linha"><span class="fi-label">Resp.</span><span class="fi-valor">${familiaSelecionada.responsavel}</span></div>` : ""}`;
-
-  const opcoes = [{ label: "Aluno: " + familiaSelecionada.aluno, valor: familiaSelecionada.aluno }];
-  if (familiaSelecionada.mae) opcoes.push({ label: "Mãe: " + familiaSelecionada.mae, valor: familiaSelecionada.mae });
-  if (familiaSelecionada.pai) opcoes.push({ label: "Pai: " + familiaSelecionada.pai, valor: familiaSelecionada.pai });
-  if (familiaSelecionada.responsavel && familiaSelecionada.responsavel !== familiaSelecionada.mae && familiaSelecionada.responsavel !== familiaSelecionada.pai)
-    opcoes.push({ label: "Resp.: " + familiaSelecionada.responsavel, valor: familiaSelecionada.responsavel });
-
-  document.getElementById("resp-opcoes").innerHTML = opcoes.map(o =>
-    `<button class="resp-btn" onclick="selecionarSolicitanteExterno(this,'${o.valor.replace(/'/g, "\'")}')">${o.label}</button>`
+    ${familiaSelecionada.mae?`<div class="fi-linha"><span class="fi-label">Mãe</span><span class="fi-valor">${familiaSelecionada.mae}</span></div>`:""}
+    ${familiaSelecionada.pai?`<div class="fi-linha"><span class="fi-label">Pai</span><span class="fi-valor">${familiaSelecionada.pai}</span></div>`:""}
+    ${familiaSelecionada.responsavel?`<div class="fi-linha"><span class="fi-label">Resp.</span><span class="fi-valor">${familiaSelecionada.responsavel}</span></div>`:""}`;
+  const opcoes=[{label:"Aluno: "+familiaSelecionada.aluno,v:familiaSelecionada.aluno}];
+  if(familiaSelecionada.mae)opcoes.push({label:"Mãe: "+familiaSelecionada.mae,v:familiaSelecionada.mae});
+  if(familiaSelecionada.pai)opcoes.push({label:"Pai: "+familiaSelecionada.pai,v:familiaSelecionada.pai});
+  if(familiaSelecionada.responsavel&&familiaSelecionada.responsavel!==familiaSelecionada.mae&&familiaSelecionada.responsavel!==familiaSelecionada.pai)
+    opcoes.push({label:"Resp.: "+familiaSelecionada.responsavel,v:familiaSelecionada.responsavel});
+  document.getElementById("resp-opcoes").innerHTML=opcoes.map(o=>
+    `<button class="resp-btn" onclick="selecionarSolicitante(this,'${o.v.replace(/'/g,"\'")}')">${o.label}</button>`
   ).join("");
   document.getElementById("familia-selecionada").classList.add("visivel");
 }
 
-let solicitanteExterno = "";
-function selecionarSolicitanteExterno(btn, valor) {
-  document.querySelectorAll(".resp-btn").forEach(b => b.classList.remove("selecionado"));
-  btn.classList.add("selecionado");
-  solicitanteExterno = valor;
+function selecionarSolicitante(btn,v){
+  document.querySelectorAll(".resp-btn").forEach(b=>b.classList.remove("selecionado"));
+  btn.classList.add("selecionado");solicitanteExterno=v;
 }
-
-function selecionarOutro() {
-  familiaSelecionada = null; solicitanteExterno = "";
+function selecionarOutro(){
+  familiaSelecionada=null;solicitanteExterno="";
   document.getElementById("busca-dropdown").classList.remove("aberto");
   document.getElementById("familia-selecionada").classList.remove("visivel");
   document.getElementById("outro-nome").classList.add("visivel");
 }
 
-async function salvarTicket() {
-  const tipo = document.getElementById("f-tipo").value;
-  const assunto = document.getElementById("f-assunto").value.trim();
-  let solicitante = "";
-
-  if (tipo === "Externo") {
-    if (familiaSelecionada) {
-      if (!solicitanteExterno) { toast("Selecione quem está abrindo o ticket.", "vermelho"); return; }
-      solicitante = solicitanteExterno + " (Aluno: " + familiaSelecionada.aluno + " / " + familiaSelecionada.turma + ")";
-    } else {
-      solicitante = document.getElementById("f-solicitante-outro")?.value.trim() || "Externo não identificado";
+async function salvarTicket(){
+  const tipo=document.getElementById("f-tipo").value;
+  const assunto=document.getElementById("f-assunto").value.trim();
+  // "Aberto por" sempre vem do usuário logado
+  const abertoBy=usuario.nome;
+  let solicitante="";
+  if(tipo==="Externo"){
+    if(familiaSelecionada){
+      if(!solicitanteExterno){toast("Selecione quem está abrindo o ticket.","vermelho");return;}
+      solicitante=solicitanteExterno+" (Aluno: "+familiaSelecionada.aluno+" / "+familiaSelecionada.turma+")";
+    }else{
+      solicitante=document.getElementById("f-solicitante-outro")?.value.trim()||"Externo não identificado";
     }
-  } else {
-    solicitante = "Setor: " + (document.getElementById("f-setor-origem")?.value || "Interno");
+  }else{
+    solicitante="Setor: "+(document.getElementById("f-setor-origem")?.value||"Interno");
   }
-
-  if (!assunto) { toast("Preencha o assunto.", "vermelho"); return; }
-  if (!responsavelTicket.nome) { toast("Selecione ou digite o responsável.", "vermelho"); return; }
-
-  const btn = document.querySelector(".form-acoes .btn-primario");
-  btn.disabled = true; btn.textContent = "Salvando...";
-
-  try {
-    const res = await api({
-      acao: "criarTicket", tipo,
-      origem: document.getElementById("f-origem").value,
+  if(!assunto){toast("Preencha o assunto.","vermelho");return;}
+  if(!responsavelTicket.nome){toast("Selecione ou digite o responsável.","vermelho");return;}
+  const btn=document.querySelector(".form-acoes .btn-primario");
+  btn.disabled=true;btn.textContent="Salvando...";
+  try{
+    const res=await api({
+      acao:"criarTicket",tipo,
+      origem:document.getElementById("f-origem").value,
       solicitante,
-      setorDestino: document.getElementById("f-setor").value,
-      assunto,
-      descricao: document.getElementById("f-descricao").value,
-      responsavel: responsavelTicket.nome,
-      responsavelEmail: responsavelTicket.email,
-      abertoBy: usuario.nome,
-      usuarioNome: usuario.nome
+      setorDestino:document.getElementById("f-setor").value,
+      assunto,descricao:document.getElementById("f-descricao").value,
+      responsavel:responsavelTicket.nome,
+      responsavelEmail:responsavelTicket.email,
+      abertoBy,usuarioNome:abertoBy
     });
-    if (res.ok) {
-      toast("Ticket registrado" + (responsavelTicket.email ? " — " + responsavelTicket.nome + " foi notificado!" : "!"), "verde");
+    if(res.ok){
+      toast("Ticket registrado"+(responsavelTicket.email?" — "+responsavelTicket.nome+" notificado!":"!"),"verde");
       irPara("tickets");
-    } else { toast(res.erro || "Erro ao salvar.", "vermelho"); }
-  } catch(e) { toast("Erro de conexão.", "vermelho"); }
-  btn.disabled = false; btn.textContent = "Registrar ocorrência";
+    }else{toast(res.erro||"Erro ao salvar.","vermelho");}
+  }catch(e){toast("Erro de conexão.","vermelho");}
+  btn.disabled=false;btn.textContent="Registrar ocorrência";
 }
 
-// ── LISTA TICKETS ──
-async function renderTickets() {
-  const c = document.getElementById("conteudo");
-  c.innerHTML = `
+async function renderTickets(){
+  const c=document.getElementById("conteudo");
+  c.innerHTML=`
     <div class="filtros">
       <select id="fil-status"><option value="TODOS">Todos os status</option><option>Aberto</option><option>Em andamento</option><option>Resolvido</option></select>
       <select id="fil-tipo"><option value="TODOS">Todos os tipos</option><option>Externo</option><option>Interno</option></select>
@@ -554,84 +518,117 @@ async function renderTickets() {
   buscarTickets();
 }
 
-async function buscarTickets() {
-  const status = document.getElementById("fil-status")?.value || "TODOS";
-  const tipo   = document.getElementById("fil-tipo")?.value   || "TODOS";
-  const setor  = document.getElementById("fil-setor")?.value  || "TODOS";
-  const busca  = (document.getElementById("fil-busca")?.value || "").toLowerCase();
-  const lista  = document.getElementById("lista-tickets");
-  lista.innerHTML = '<div class="loading"><div class="spinner"></div>Buscando...</div>';
-  try {
-    const res = await api({ acao: "listarTickets", status, setor, tipo });
-    let tks = res.tickets || [];
-    if (busca) tks = tks.filter(t => t.solicitante?.toLowerCase().includes(busca) || t.assunto?.toLowerCase().includes(busca));
-    lista.innerHTML = tks.length ? tks.map(cardTicket).join("") : '<div class="vazio"><div class="icone">🔍</div><p>Nenhum ticket encontrado.</p></div>';
-  } catch(e) { lista.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro ao buscar.</p></div>'; }
+async function buscarTickets(){
+  const status=document.getElementById("fil-status")?.value||"TODOS";
+  const tipo=document.getElementById("fil-tipo")?.value||"TODOS";
+  const setor=document.getElementById("fil-setor")?.value||"TODOS";
+  const busca=(document.getElementById("fil-busca")?.value||"").toLowerCase();
+  const lista=document.getElementById("lista-tickets");
+  lista.innerHTML='<div class="loading"><div class="spinner"></div>Buscando...</div>';
+  try{
+    const res=await api({acao:"listarTickets",status,setor,tipo});
+    let tks=res.tickets||[];
+    if(busca)tks=tks.filter(t=>t.solicitante?.toLowerCase().includes(busca)||t.assunto?.toLowerCase().includes(busca));
+    lista.innerHTML=tks.length?tks.map(cardTicket).join(""):'<div class="vazio"><div class="icone">🔍</div><p>Nenhum ticket encontrado.</p></div>';
+  }catch(e){lista.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro ao buscar.</p></div>';}
 }
 
-function cardTicket(t) {
-  const st = t.status || "Aberto";
-  const stClass = st.split(" ")[0];
-  return `<div class="ticket-card ${stClass}" onclick="abrirModal('${t.id}')">
+function cardTicket(t){
+  const st=t.status||"Aberto";const stC=st.split(" ")[0];
+  return `<div class="ticket-card ${stC}" onclick="abrirModal('${t.id}')">
     <div class="ticket-top">
       <span class="ticket-id">${t.id}</span>
-      <span class="badge badge-${stClass}">${st}</span>
-      <span class="badge badge-${t.tipo}">${t.tipo || ""}</span>
+      <span class="badge badge-${stC}">${st}</span>
+      <span class="badge badge-${t.tipo}">${t.tipo||""}</span>
     </div>
     <div class="ticket-assunto">${t.assunto}</div>
     <div class="ticket-info">
-      <span>👤 ${t.solicitante}</span>
-      <span>📁 ${t.setorDestino}</span>
+      <span>👤 ${t.solicitante}</span><span>📁 ${t.setorDestino}</span>
       <span>📅 ${t.data}</span>
-      ${t.responsavel ? `<span>🔧 ${t.responsavel}</span>` : ""}
-      ${t.abertoBy ? `<span>✍️ ${t.abertoBy}</span>` : ""}
+      ${t.responsavel?`<span>🔧 ${t.responsavel}</span>`:""}
+      ${t.abertoBy?`<span>✍️ ${t.abertoBy}</span>`:""}
     </div>
   </div>`;
 }
 
-// ── MODAL DETALHE ──
-async function abrirModal(id) {
-  const overlay = document.getElementById("modal-overlay");
-  const modal   = document.getElementById("modal-conteudo");
-  modal.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+async function abrirModal(id){
+  const overlay=document.getElementById("modal-overlay");
+  const modal=document.getElementById("modal-conteudo");
+  modal.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
   overlay.classList.add("aberto");
-  try {
-    const res = await api({ acao: "listarTickets", status: "TODOS" });
-    const t = (res.tickets || []).find(x => x.id === id);
-    if (!t) { modal.innerHTML = "<p>Ticket não encontrado.</p>"; return; }
-    const st = t.status || "Aberto"; const stClass = st.split(" ")[0];
+  respModal={nome:"",email:""};
+  try{
+    const res=await api({acao:"listarTickets",status:"TODOS"});
+    const t=(res.tickets||[]).find(x=>x.id===id);
+    if(!t){modal.innerHTML="<p>Ticket não encontrado.</p>";return;}
+    const st=t.status||"Aberto";const stC=st.split(" ")[0];
+    const isAdmin=usuario.perfil==="ADMIN";
+    const respOpcoes=todosUsuarios.map(u=>
+      `<button class="resp-user-btn" onclick="selecionarRespModal(this,'${u.nome}','${u.email}')"><div class="avatar">${u.nome.charAt(0)}</div><span>${u.nome}</span></button>`
+    ).join("");
 
-    // Montar lista de responsáveis para o modal
-    const respOpcoes = todosUsuarios.map(u =>
-      `<button class="resp-user-btn" onclick="selecionarRespModal(this,'${u.nome}','${u.email}')">
-        <div class="avatar">${u.nome.charAt(0)}</div><span>${u.nome}</span>
-      </button>`).join("");
-
-    modal.innerHTML = `
+    modal.innerHTML=`
       <div class="modal-topo"><h2>${t.assunto}</h2><button class="btn-fechar" onclick="fecharModal()">×</button></div>
-      <div class="modal-linha">
-        <span class="badge badge-${stClass}">${st}</span>
+      <div class="modal-acoes-topo">
+        <span class="badge badge-${stC}">${st}</span>
         <span class="badge badge-${t.tipo}">${t.tipo}</span>
+        <button class="btn-secundario" style="padding:4px 14px;font-size:12px" onclick="toggleEdicao()">✏️ Editar</button>
+        ${isAdmin?`<button class="btn-danger" style="padding:4px 14px;font-size:12px" onclick="toggleConfirmExcluir()">🗑️ Excluir</button>`:""}
       </div>
+
+      <!-- CONFIRM EXCLUIR -->
+      <div class="confirm-box" id="confirm-excluir">
+        <p>⚠️ Tem certeza que deseja excluir este ticket? A ação será registrada nos logs.</p>
+        <div class="confirm-acoes">
+          <button class="btn-danger" onclick="excluirTicket('${t.id}')">Confirmar exclusão</button>
+          <button class="btn-secundario" onclick="toggleConfirmExcluir()">Cancelar</button>
+        </div>
+      </div>
+
       <div class="modal-linha">
         <div class="modal-secao"><label>Solicitante</label><p>${t.solicitante}</p></div>
-        <div class="modal-secao"><label>Aberto por</label><p>${t.abertoBy || "—"}</p></div>
+        <div class="modal-secao"><label>Aberto por</label><p>${t.abertoBy||"—"}</p></div>
         <div class="modal-secao"><label>Setor destino</label><p>${t.setorDestino}</p></div>
         <div class="modal-secao"><label>Origem</label><p>${t.origem}</p></div>
-        <div class="modal-secao"><label>Responsável</label><p>${t.responsavel || "—"}</p></div>
+        <div class="modal-secao"><label>Responsável</label><p>${t.responsavel||"—"}</p></div>
         <div class="modal-secao"><label>Data</label><p>${t.data}</p></div>
       </div>
-      <div class="modal-secao"><label>Descrição</label><p>${t.descricao || "—"}</p></div>
-      ${t.tratativa ? `<div class="modal-secao"><label>Histórico de tratativa</label><p>${t.tratativa}</p></div>` : ""}
+      <div class="modal-secao"><label>Descrição</label><p>${t.descricao||"—"}</p></div>
+      ${t.tratativa?`<div class="modal-secao"><label>Histórico</label><p>${t.tratativa}</p></div>`:""}
+
+      <!-- EDIÇÃO -->
+      <div class="modal-edicao" id="modal-edicao">
+        <h3>✏️ Editar dados do ticket</h3>
+        <div class="modal-grid">
+          <div class="form-campo"><label>Tipo</label>
+            <select id="ed-tipo"><option value="Externo" ${t.tipo==="Externo"?"selected":""}>Externo</option><option value="Interno" ${t.tipo==="Interno"?"selected":""}>Interno</option></select>
+          </div>
+          <div class="form-campo"><label>Origem</label>
+            <select id="ed-origem">
+              ${["WhatsApp","E-mail","Telefone","Presencial","Sistema interno"].map(o=>`<option ${t.origem===o?"selected":""}>${o}</option>`).join("")}
+            </select>
+          </div>
+          <div class="form-campo full"><label>Solicitante</label><input id="ed-solicitante" value="${t.solicitante}"></div>
+          <div class="form-campo"><label>Setor destinatário</label>
+            <select id="ed-setor">
+              ${["Secretaria","Pedagógico","Financeiro","Direção","Coordenação","Administrativo"].map(s=>`<option ${t.setorDestino===s?"selected":""}>${s}</option>`).join("")}
+            </select>
+          </div>
+          <div class="form-campo"><label>Responsável</label><input id="ed-responsavel" value="${t.responsavel||""}"></div>
+          <div class="form-campo full"><label>Assunto</label><input id="ed-assunto" value="${t.assunto}"></div>
+          <div class="form-campo full"><label>Descrição</label><textarea id="ed-descricao" style="min-height:80px">${t.descricao||""}</textarea></div>
+        </div>
+        <button class="btn-primario" style="width:auto;padding:10px 24px" onclick="salvarEdicao('${t.id}')">Salvar edição</button>
+        <button class="btn-secundario" style="margin-left:8px" onclick="toggleEdicao()">Cancelar</button>
+      </div>
+
+      <!-- ATUALIZAR -->
       <div class="modal-atualizar">
         <h3>Atualizar ticket</h3>
         <div class="modal-grid">
           <div class="form-campo">
             <label>Novo status</label>
-            <select id="upd-status">
-              <option value="">— Manter atual —</option>
-              <option>Aberto</option><option>Em andamento</option><option>Resolvido</option>
-            </select>
+            <select id="upd-status"><option value="">— Manter atual —</option><option>Aberto</option><option>Em andamento</option><option>Resolvido</option></select>
           </div>
           <div class="form-campo full">
             <label>Reatribuir responsável</label>
@@ -645,84 +642,113 @@ async function abrirModal(id) {
         </div>
         <button class="btn-primario" style="width:auto;padding:10px 28px" onclick="atualizarTicket('${t.id}')">Salvar atualização</button>
       </div>`;
-  } catch(e) { modal.innerHTML = "<p>Erro ao carregar.</p>"; }
+  }catch(e){modal.innerHTML="<p>Erro ao carregar.</p>";}
 }
 
-let respModal = { nome: "", email: "" };
-function selecionarRespModal(btn, nome, email) {
-  document.querySelectorAll("#resp-lista-modal .resp-user-btn").forEach(b => b.classList.remove("selecionado"));
-  btn.classList.add("selecionado");
-  respModal = { nome, email };
-  document.getElementById("upd-resp-outro").value = "";
+function toggleEdicao(){
+  const el=document.getElementById("modal-edicao");
+  el.classList.toggle("visivel");
 }
-function digitarRespModal(valor) {
-  document.querySelectorAll("#resp-lista-modal .resp-user-btn").forEach(b => b.classList.remove("selecionado"));
-  respModal = { nome: valor, email: "" };
+function toggleConfirmExcluir(){
+  const el=document.getElementById("confirm-excluir");
+  el.classList.toggle("visivel");
 }
 
-async function atualizarTicket(id) {
-  const status    = document.getElementById("upd-status").value;
-  const tratativa = document.getElementById("upd-tratativa").value.trim();
-  if (!status && !respModal.nome && !tratativa) { toast("Preencha ao menos um campo.", "vermelho"); return; }
-  const btn = document.querySelector(".modal-atualizar .btn-primario");
-  btn.disabled = true; btn.textContent = "Salvando...";
-  try {
-    const res = await api({
-      acao: "atualizarTicket", id, status,
-      responsavel: respModal.nome,
-      responsavelEmail: respModal.email,
-      notificar: !!respModal.email,
-      tratativa, usuarioNome: usuario.nome
+async function salvarEdicao(id){
+  const btn=document.querySelector("#modal-edicao .btn-primario");
+  btn.disabled=true;btn.textContent="Salvando...";
+  try{
+    const res=await api({
+      acao:"editarTicket",id,
+      tipo:document.getElementById("ed-tipo").value,
+      origem:document.getElementById("ed-origem").value,
+      solicitante:document.getElementById("ed-solicitante").value,
+      setorDestino:document.getElementById("ed-setor").value,
+      responsavel:document.getElementById("ed-responsavel").value,
+      assunto:document.getElementById("ed-assunto").value,
+      descricao:document.getElementById("ed-descricao").value,
+      usuarioNome:usuario.nome
     });
-    if (res.ok) {
-      toast("Ticket atualizado" + (respModal.email ? " — " + respModal.nome + " notificado!" : "!"), "verde");
-      fecharModal(); buscarTickets(); verificarNotificacoes();
-    } else { toast(res.erro || "Erro.", "vermelho"); }
-  } catch(e) { toast("Erro de conexão.", "vermelho"); }
-  btn.disabled = false; btn.textContent = "Salvar atualização";
+    if(res.ok){toast("Ticket editado!","verde");fecharModal();buscarTickets();}
+    else{toast(res.erro||"Erro.","vermelho");}
+  }catch(e){toast("Erro de conexão.","vermelho");}
+  btn.disabled=false;btn.textContent="Salvar edição";
 }
 
-function fecharModal(event) {
-  if (!event || event.target === document.getElementById("modal-overlay"))
+async function excluirTicket(id){
+  try{
+    const res=await api({acao:"excluirTicket",id,usuarioNome:usuario.nome});
+    if(res.ok){toast("Ticket excluído.","verde");fecharModal();buscarTickets();}
+    else{toast(res.erro||"Erro.","vermelho");}
+  }catch(e){toast("Erro de conexão.","vermelho");}
+}
+
+function selecionarRespModal(btn,nome,email){
+  document.querySelectorAll("#resp-lista-modal .resp-user-btn").forEach(b=>b.classList.remove("selecionado"));
+  btn.classList.add("selecionado");respModal={nome,email};
+  document.getElementById("upd-resp-outro").value="";
+}
+function digitarRespModal(v){
+  document.querySelectorAll("#resp-lista-modal .resp-user-btn").forEach(b=>b.classList.remove("selecionado"));
+  respModal={nome:v,email:""};
+}
+
+async function atualizarTicket(id){
+  const status=document.getElementById("upd-status").value;
+  const tratativa=document.getElementById("upd-tratativa").value.trim();
+  if(!status&&!respModal.nome&&!tratativa){toast("Preencha ao menos um campo.","vermelho");return;}
+  const btn=document.querySelector(".modal-atualizar .btn-primario");
+  btn.disabled=true;btn.textContent="Salvando...";
+  try{
+    const res=await api({acao:"atualizarTicket",id,status,
+      responsavel:respModal.nome,responsavelEmail:respModal.email,
+      notificar:!!respModal.email,tratativa,usuarioNome:usuario.nome});
+    if(res.ok){
+      toast("Atualizado"+(respModal.email?" — "+respModal.nome+" notificado!":"!"),"verde");
+      fecharModal();buscarTickets();verificarNotificacoes();
+    }else{toast(res.erro||"Erro.","vermelho");}
+  }catch(e){toast("Erro de conexão.","vermelho");}
+  btn.disabled=false;btn.textContent="Salvar atualização";
+}
+
+function fecharModal(event){
+  if(!event||event.target===document.getElementById("modal-overlay"))
     document.getElementById("modal-overlay").classList.remove("aberto");
 }
 
-// ── NOTIFICAÇÕES ──
-async function renderNotificacoes() {
-  const c = document.getElementById("conteudo");
-  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando notificações...</div>';
-  try {
-    const res = await api({ acao: "listarNotificacoes", email: usuario.email });
-    const notifs = res.notificacoes || [];
-    c.innerHTML = notifs.length ? `
+async function renderNotificacoes(){
+  const c=document.getElementById("conteudo");
+  c.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try{
+    const res=await api({acao:"listarNotificacoes",email:usuario.email});
+    const notifs=res.notificacoes||[];
+    c.innerHTML=notifs.length?`
       <div style="font-size:13px;color:var(--cinza3);margin-bottom:12px;">${notifs.length} notificação(ões)</div>
-      <div class="notif-lista">${notifs.map(n => `
-        <div class="notif-item ${n.lida === 'SIM' ? 'lida' : ''}" onclick="abrirNotif('${n.id}','${n.ticketId}')">
+      <div class="notif-lista">${notifs.map(n=>`
+        <div class="notif-item ${n.lida==="SIM"?"lida":""}" onclick="abrirNotif('${n.id}','${n.ticketId}')">
           <div class="notif-titulo">${n.titulo}</div>
           <div class="notif-msg">${n.mensagem}</div>
           <div class="notif-data">${n.data}</div>
-        </div>`).join("")}</div>` :
-      '<div class="vazio"><div class="icone">🔔</div><p>Nenhuma notificação.</p></div>';
-    document.getElementById("notif-badge").style.display = "none";
-  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>'; }
+        </div>`).join("")}</div>`:'<div class="vazio"><div class="icone">🔔</div><p>Nenhuma notificação.</p></div>';
+    document.getElementById("notif-badge").style.display="none";
+  }catch(e){c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>';}
 }
 
-async function abrirNotif(notifId, ticketId) {
-  await api({ acao: "marcarLida", id: notifId });
+async function abrirNotif(nid,tid){
+  await api({acao:"marcarLida",id:nid});
   verificarNotificacoes();
-  if (ticketId) abrirModal(ticketId);
+  if(tid)abrirModal(tid);
 }
 
-// ── LOGS ──
-async function renderLogs() {
-  const c = document.getElementById("conteudo");
-  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
-  try {
-    const res = await api({ acao: "listarLogs" });
-    const logs = res.logs || [];
-    c.innerHTML = logs.length ? `
+async function renderLogs(){
+  const c=document.getElementById("conteudo");
+  c.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try{
+    const res=await api({acao:"listarLogs"});
+    const logs=res.logs||[];
+    c.innerHTML=logs.length?`
       <div style="font-size:13px;color:var(--cinza3);margin-bottom:12px;">Últimos ${logs.length} registros</div>
-      <div class="log-lista">${logs.map(l => `
+      <div class="log-lista">${logs.map(l=>`
         <div class="log-item">
           <div class="log-dot"></div>
           <div class="log-info">
@@ -730,36 +756,33 @@ async function renderLogs() {
             <div class="log-detalhe">${l.detalhes}</div>
           </div>
           <div class="log-hora">${l.dataHora}</div>
-        </div>`).join("")}</div>` :
-      '<div class="vazio"><div class="icone">🔍</div><p>Nenhum log.</p></div>';
-  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>'; }
+        </div>`).join("")}</div>`:'<div class="vazio"><div class="icone">🔍</div><p>Nenhum log.</p></div>';
+  }catch(e){c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>';}
 }
 
-// ── USUÁRIOS ──
-async function renderUsuarios() {
-  const c = document.getElementById("conteudo");
-  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
-  try {
-    const res = await api({ acao: "listarUsuarios" });
-    const users = res.usuarios || [];
-    todosUsuarios = users;
-    c.innerHTML = `
+async function renderUsuarios(){
+  const c=document.getElementById("conteudo");
+  c.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try{
+    const res=await api({acao:"listarUsuarios"});
+    const users=res.usuarios||[];todosUsuarios=users;
+    c.innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <div style="font-size:13px;color:var(--cinza3)">${users.length} usuário(s)</div>
         <button class="btn-primario" style="width:auto;padding:9px 20px" onclick="renderNovoUsuario()">+ Novo usuário</button>
       </div>
-      <div class="usuario-lista">${users.map(u => `
+      <div class="usuario-lista">${users.map(u=>`
         <div class="usuario-item">
-          <div class="usuario-avatar">${u.nome?.charAt(0) || "?"}</div>
+          <div class="usuario-avatar">${u.nome?.charAt(0)||"?"}</div>
           <div class="usuario-dados"><div class="usuario-nome">${u.nome}</div><div class="usuario-email">${u.email}</div></div>
           <span class="badge badge-${u.perfil}">${u.perfil}</span>
-          <span class="badge" style="background:${u.ativo==='SIM'?'#e6f4ed':'#fdecea'};color:${u.ativo==='SIM'?'var(--verde)':'var(--vermelho)'}">${u.ativo==='SIM'?'Ativo':'Inativo'}</span>
+          <span class="badge" style="background:${u.ativo==="SIM"?"#e6f4ed":"#fdecea"};color:${u.ativo==="SIM"?"var(--verde)":"var(--vermelho)"}">${u.ativo==="SIM"?"Ativo":"Inativo"}</span>
         </div>`).join("")}</div>`;
-  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>'; }
+  }catch(e){c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>';}
 }
 
-function renderNovoUsuario() {
-  document.getElementById("conteudo").innerHTML = `
+function renderNovoUsuario(){
+  document.getElementById("conteudo").innerHTML=`
     <div class="form-card" style="max-width:480px">
       <h2>Novo usuário</h2>
       <div style="display:flex;flex-direction:column;gap:14px">
@@ -777,26 +800,26 @@ function renderNovoUsuario() {
     </div>`;
 }
 
-async function salvarUsuario() {
-  const nome = document.getElementById("nu-nome").value.trim();
-  const email = document.getElementById("nu-email").value.trim();
-  if (!nome || !email) { toast("Preencha nome e e-mail.", "vermelho"); return; }
-  const btn = document.querySelector(".form-acoes .btn-primario");
-  btn.disabled = true; btn.textContent = "Criando...";
-  try {
-    const res = await api({ acao: "criarUsuario", nome, email,
-      senha: document.getElementById("nu-senha").value || "einstein2026",
-      perfil: document.getElementById("nu-perfil").value,
-      usuarioNome: usuario.nome });
-    if (res.ok) { toast("Usuário criado!", "verde"); carregarUsuarios(); renderUsuarios(); }
-    else { toast(res.erro || "Erro.", "vermelho"); }
-  } catch(e) { toast("Erro de conexão.", "vermelho"); }
-  btn.disabled = false; btn.textContent = "Criar usuário";
+async function salvarUsuario(){
+  const nome=document.getElementById("nu-nome").value.trim();
+  const email=document.getElementById("nu-email").value.trim();
+  if(!nome||!email){toast("Preencha nome e e-mail.","vermelho");return;}
+  const btn=document.querySelector(".form-acoes .btn-primario");
+  btn.disabled=true;btn.textContent="Criando...";
+  try{
+    const res=await api({acao:"criarUsuario",nome,email,
+      senha:document.getElementById("nu-senha").value||"einstein2026",
+      perfil:document.getElementById("nu-perfil").value,
+      usuarioNome:usuario.nome});
+    if(res.ok){toast("Usuário criado!","verde");carregarUsuarios();renderUsuarios();}
+    else{toast(res.erro||"Erro.","vermelho");}
+  }catch(e){toast("Erro de conexão.","vermelho");}
+  btn.disabled=false;btn.textContent="Criar usuário";
 }
 
-document.addEventListener("click", function(e) {
-  const dd = document.getElementById("busca-dropdown");
-  if (dd && !dd.contains(e.target) && e.target.id !== "busca-familia") dd.classList.remove("aberto");
+document.addEventListener("click",function(e){
+  const dd=document.getElementById("busca-dropdown");
+  if(dd&&!dd.contains(e.target)&&e.target.id!=="busca-familia")dd.classList.remove("aberto");
 });
 </script>
 </body>
