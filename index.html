@@ -5,178 +5,162 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1a2744">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Einstein">
 <title>Sistema Einstein</title>
 <style>
-  :root {
-    --azul:#1a2744;--azul2:#243461;--dourado:#c9a84c;--dourado2:#e8c96a;
-    --branco:#ffffff;--cinza1:#f4f6fa;--cinza2:#e8ecf4;--cinza3:#9aa5bf;
-    --texto:#1a2744;--verde:#2e7d52;--vermelho:#b83232;--laranja:#c96820;
-    --sombra:0 2px 16px rgba(26,39,68,0.10);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:var(--texto);min-height:100vh;}
-
-  /* LOGIN */
-  #tela-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,var(--azul) 0%,var(--azul2) 100%);padding:24px;}
-  .login-card{background:var(--branco);border-radius:16px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,0.25);}
-  .login-logo{text-align:center;margin-bottom:32px;}
-  .login-logo .sigla{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;background:var(--azul);border-radius:16px;color:var(--dourado);font-size:28px;font-weight:800;margin-bottom:12px;}
-  .login-logo h1{font-size:18px;font-weight:700;color:var(--azul);}
-  .login-logo p{font-size:13px;color:var(--cinza3);margin-top:2px;}
-  .campo{margin-bottom:16px;}
-  .campo label{display:block;font-size:12px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
-  .campo input{width:100%;padding:12px 14px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:15px;color:var(--texto);transition:border-color .2s;outline:none;background:var(--cinza1);}
-  .campo input:focus{border-color:var(--azul);background:var(--branco);}
-  .btn-primario{width:100%;padding:13px;background:var(--azul);color:var(--branco);border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;margin-top:4px;}
-  .btn-primario:hover{background:var(--azul2);}
-  .btn-primario:disabled{opacity:.6;cursor:not-allowed;}
-  .erro-login{color:var(--vermelho);font-size:13px;text-align:center;margin-top:12px;}
-
-  /* APP */
-  #tela-app{display:none;min-height:100vh;}
-  .topbar{background:var(--azul);color:var(--branco);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--sombra);}
-  .topbar-logo{display:flex;align-items:center;gap:10px;}
-  .topbar-logo .sigla{width:34px;height:34px;background:var(--dourado);border-radius:8px;color:var(--azul);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;}
-  .topbar-logo span{font-size:15px;font-weight:700;}
-  .topbar-usuario{display:flex;align-items:center;gap:10px;}
-  .topbar-usuario .nome{font-size:13px;color:var(--cinza2);}
-  .btn-sair{background:rgba(255,255,255,0.12);color:var(--branco);border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-weight:600;}
-  .btn-sair:hover{background:rgba(255,255,255,0.22);}
-  .nav-tabs{background:var(--branco);border-bottom:2px solid var(--cinza2);display:flex;overflow-x:auto;padding:0 16px;}
-  .nav-tab{padding:14px 18px;font-size:13px;font-weight:600;color:var(--cinza3);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
-  .nav-tab.ativo{color:var(--azul);border-bottom-color:var(--dourado);}
-  .nav-tab:hover{color:var(--azul);}
-  .conteudo{padding:20px;max-width:900px;margin:0 auto;}
-
-  /* CARDS RESUMO */
-  .resumo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
-  .resumo-card{background:var(--branco);border-radius:12px;padding:16px;box-shadow:var(--sombra);text-align:center;}
-  .resumo-card .num{font-size:32px;font-weight:800;color:var(--azul);}
-  .resumo-card .label{font-size:12px;color:var(--cinza3);margin-top:4px;font-weight:600;}
-  .resumo-card.aberto .num{color:var(--laranja);}
-  .resumo-card.andamento .num{color:var(--azul);}
-  .resumo-card.resolvido .num{color:var(--verde);}
-
-  /* FILTROS */
-  .filtros{background:var(--branco);border-radius:12px;padding:16px;box-shadow:var(--sombra);margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
-  .filtros select,.filtros input{padding:8px 12px;border:1.5px solid var(--cinza2);border-radius:8px;font-size:13px;color:var(--texto);background:var(--cinza1);outline:none;}
-  .filtros select:focus,.filtros input:focus{border-color:var(--azul);}
-  .btn-filtrar{padding:8px 18px;background:var(--azul);color:var(--branco);border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
-
-  /* TICKETS */
-  .ticket-lista{display:flex;flex-direction:column;gap:10px;}
-  .ticket-card{background:var(--branco);border-radius:12px;padding:16px;box-shadow:var(--sombra);cursor:pointer;transition:box-shadow .2s;border-left:4px solid var(--cinza2);}
-  .ticket-card:hover{box-shadow:0 4px 24px rgba(26,39,68,0.15);}
-  .ticket-card.Aberto{border-left-color:var(--laranja);}
-  .ticket-card.Em\ andamento{border-left-color:var(--azul);}
-  .ticket-card.Resolvido{border-left-color:var(--verde);}
-  .ticket-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
-  .ticket-id{font-size:10px;color:var(--cinza3);font-family:monospace;}
-  .badge{padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
-  .badge-status-Aberto{background:#fff3e6;color:var(--laranja);}
-  .badge-status-Em\ andamento{background:#e6eaf5;color:var(--azul);}
-  .badge-status-Resolvido{background:#e6f4ed;color:var(--verde);}
-  .badge-tipo-Externo{background:#f0e6ff;color:#6b35b8;}
-  .badge-tipo-Interno{background:#e6f0ff;color:#1a5cbf;}
-  .ticket-assunto{font-size:15px;font-weight:700;color:var(--azul);margin-bottom:4px;}
-  .ticket-info{font-size:12px;color:var(--cinza3);}
-  .ticket-info span{margin-right:12px;}
-
-  /* FORM */
-  .form-card{background:var(--branco);border-radius:16px;padding:24px;box-shadow:var(--sombra);}
-  .form-card h2{font-size:18px;font-weight:800;color:var(--azul);margin-bottom:20px;}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  @media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
-  .form-campo{display:flex;flex-direction:column;gap:6px;}
-  .form-campo.full{grid-column:1 / -1;}
-  .form-campo label{font-size:12px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.4px;}
-  .form-campo input,.form-campo select,.form-campo textarea{padding:10px 13px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:14px;color:var(--texto);background:var(--cinza1);outline:none;font-family:inherit;transition:border-color .2s;}
-  .form-campo input:focus,.form-campo select:focus,.form-campo textarea:focus{border-color:var(--azul);background:var(--branco);}
-  .form-campo textarea{resize:vertical;min-height:90px;}
-  .form-acoes{margin-top:20px;display:flex;gap:10px;}
-  .btn-secundario{padding:11px 22px;background:var(--cinza2);color:var(--azul);border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;}
-
-  /* BUSCA FAMÍLIA */
-  .familia-box{background:var(--cinza1);border-radius:12px;padding:16px;margin-bottom:4px;border:1.5px solid var(--cinza2);}
-  .familia-box h3{font-size:13px;font-weight:700;color:var(--azul);margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px;}
-  .busca-wrapper{position:relative;}
-  .busca-input{width:100%;padding:10px 13px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:14px;outline:none;background:var(--branco);}
-  .busca-input:focus{border-color:var(--azul);}
-  .busca-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--branco);border:1.5px solid var(--cinza2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:50;max-height:220px;overflow-y:auto;display:none;}
-  .busca-dropdown.aberto{display:block;}
-  .busca-item{padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--cinza2);}
-  .busca-item:last-child{border-bottom:none;}
-  .busca-item:hover{background:var(--cinza1);}
-  .busca-item .item-aluno{font-weight:700;color:var(--azul);}
-  .busca-item .item-turma{font-size:11px;color:var(--cinza3);}
-  .familia-selecionada{margin-top:12px;display:none;}
-  .familia-selecionada.visivel{display:block;}
-  .familia-info{background:var(--branco);border-radius:10px;padding:14px;border:1.5px solid var(--cinza2);margin-bottom:10px;}
-  .familia-info .fi-linha{display:flex;gap:8px;align-items:center;margin-bottom:6px;font-size:13px;}
-  .familia-info .fi-linha:last-child{margin-bottom:0;}
-  .familia-info .fi-label{font-size:11px;font-weight:700;color:var(--cinza3);text-transform:uppercase;min-width:60px;}
-  .familia-info .fi-valor{color:var(--texto);font-weight:500;}
-  .resp-escolha{display:flex;flex-direction:column;gap:6px;}
-  .resp-escolha label{font-size:12px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px;}
-  .resp-opcoes{display:flex;flex-wrap:wrap;gap:8px;}
-  .resp-btn{padding:8px 14px;border:1.5px solid var(--cinza2);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:var(--cinza1);color:var(--texto);transition:all .15s;}
-  .resp-btn.selecionado{background:var(--azul);color:var(--branco);border-color:var(--azul);}
-  .resp-btn:hover:not(.selecionado){border-color:var(--azul);color:var(--azul);}
-  .outro-nome{margin-top:10px;display:none;}
-  .outro-nome.visivel{display:block;}
-
-  /* MODAL */
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;padding:16px;}
-  .modal-overlay.aberto{display:flex;}
-  .modal{background:var(--branco);border-radius:16px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,0.3);}
-  .modal-topo{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
-  .modal-topo h2{font-size:18px;font-weight:800;color:var(--azul);max-width:80%;}
-  .btn-fechar{background:none;border:none;font-size:22px;cursor:pointer;color:var(--cinza3);line-height:1;}
-  .modal-secao{margin-bottom:18px;}
-  .modal-secao label{font-size:11px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;}
-  .modal-secao p{font-size:14px;color:var(--texto);line-height:1.6;white-space:pre-wrap;}
-  .modal-linha{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
-  .modal-atualizar{border-top:1.5px solid var(--cinza2);padding-top:18px;margin-top:8px;}
-  .modal-atualizar h3{font-size:14px;font-weight:700;color:var(--azul);margin-bottom:12px;}
-  .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-  @media(max-width:480px){.modal-grid{grid-template-columns:1fr;}}
-
-  /* LOGS */
-  .log-lista{display:flex;flex-direction:column;gap:8px;}
-  .log-item{background:var(--branco);border-radius:10px;padding:12px 16px;box-shadow:var(--sombra);display:flex;gap:14px;align-items:flex-start;}
-  .log-dot{width:8px;height:8px;border-radius:50%;background:var(--dourado);margin-top:5px;flex-shrink:0;}
-  .log-info{flex:1;}
-  .log-acao{font-size:13px;font-weight:700;color:var(--azul);}
-  .log-detalhe{font-size:12px;color:var(--cinza3);margin-top:2px;}
-  .log-hora{font-size:11px;color:var(--cinza3);white-space:nowrap;}
-
-  /* USUÁRIOS */
-  .usuario-lista{display:flex;flex-direction:column;gap:8px;}
-  .usuario-item{background:var(--branco);border-radius:10px;padding:14px 18px;box-shadow:var(--sombra);display:flex;align-items:center;gap:14px;}
-  .usuario-avatar{width:40px;height:40px;border-radius:10px;background:var(--azul);color:var(--dourado);font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .usuario-dados{flex:1;}
-  .usuario-nome{font-size:14px;font-weight:700;color:var(--azul);}
-  .usuario-email{font-size:12px;color:var(--cinza3);}
-  .badge-perfil-ADMIN{background:#fff0d6;color:#8a5c00;}
-  .badge-perfil-OPERADOR{background:#e6eaf5;color:var(--azul);}
-
-  /* LOADING / TOAST / VAZIO */
-  .loading{text-align:center;padding:40px;color:var(--cinza3);font-size:14px;}
-  .spinner{width:32px;height:32px;border:3px solid var(--cinza2);border-top-color:var(--azul);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--azul);color:var(--branco);padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;box-shadow:0 4px 24px rgba(0,0,0,0.25);z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;}
-  .toast.verde{background:var(--verde);}
-  .toast.vermelho{background:var(--vermelho);}
-  .toast.visivel{opacity:1;}
-  .vazio{text-align:center;padding:48px 16px;color:var(--cinza3);}
-  .vazio .icone{font-size:40px;margin-bottom:12px;}
-  .vazio p{font-size:14px;}
+:root{--azul:#1a2744;--azul2:#243461;--dourado:#c9a84c;--branco:#fff;--cinza1:#f4f6fa;--cinza2:#e8ecf4;--cinza3:#9aa5bf;--texto:#1a2744;--verde:#2e7d52;--vermelho:#b83232;--laranja:#c96820;--sombra:0 2px 16px rgba(26,39,68,.10);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:var(--texto);min-height:100vh;}
+#tela-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,var(--azul),var(--azul2));padding:24px;}
+.login-card{background:var(--branco);border-radius:16px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,.25);}
+.login-logo{text-align:center;margin-bottom:32px;}
+.login-logo .sigla{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;background:var(--azul);border-radius:16px;color:var(--dourado);font-size:28px;font-weight:800;margin-bottom:12px;}
+.login-logo h1{font-size:18px;font-weight:700;color:var(--azul);}
+.login-logo p{font-size:13px;color:var(--cinza3);margin-top:2px;}
+.campo{margin-bottom:16px;}
+.campo label{display:block;font-size:12px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.campo input{width:100%;padding:12px 14px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:15px;outline:none;background:var(--cinza1);}
+.campo input:focus{border-color:var(--azul);background:var(--branco);}
+.btn-primario{width:100%;padding:13px;background:var(--azul);color:var(--branco);border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;}
+.btn-primario:hover{background:var(--azul2);}
+.btn-primario:disabled{opacity:.6;cursor:not-allowed;}
+.erro-login{color:var(--vermelho);font-size:13px;text-align:center;margin-top:12px;}
+#tela-app{display:none;min-height:100vh;}
+.topbar{background:var(--azul);color:var(--branco);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-logo{display:flex;align-items:center;gap:10px;}
+.topbar-logo .sigla{width:34px;height:34px;background:var(--dourado);border-radius:8px;color:var(--azul);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.topbar-logo span{font-size:15px;font-weight:700;}
+.topbar-direita{display:flex;align-items:center;gap:10px;}
+.topbar-nome{font-size:13px;color:var(--cinza2);}
+.btn-sair{background:rgba(255,255,255,.12);color:var(--branco);border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-weight:600;}
+.btn-sair:hover{background:rgba(255,255,255,.22);}
+.notif-btn{position:relative;background:rgba(255,255,255,.12);border:none;border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--branco);font-size:16px;}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--vermelho);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.nav-tabs{background:var(--branco);border-bottom:2px solid var(--cinza2);display:flex;overflow-x:auto;padding:0 16px;}
+.nav-tab{padding:14px 18px;font-size:13px;font-weight:600;color:var(--cinza3);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+.nav-tab.ativo{color:var(--azul);border-bottom-color:var(--dourado);}
+.conteudo{padding:20px;max-width:900px;margin:0 auto;}
+.resumo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.resumo-card{background:var(--branco);border-radius:12px;padding:16px;box-shadow:var(--sombra);text-align:center;}
+.resumo-card .num{font-size:32px;font-weight:800;color:var(--azul);}
+.resumo-card .label{font-size:12px;color:var(--cinza3);margin-top:4px;font-weight:600;}
+.resumo-card.aberto .num{color:var(--laranja);}
+.resumo-card.andamento .num{color:var(--azul);}
+.resumo-card.resolvido .num{color:var(--verde);}
+.filtros{background:var(--branco);border-radius:12px;padding:16px;box-shadow:var(--sombra);margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.filtros select,.filtros input{padding:8px 12px;border:1.5px solid var(--cinza2);border-radius:8px;font-size:13px;background:var(--cinza1);outline:none;}
+.btn-filtrar{padding:8px 18px;background:var(--azul);color:var(--branco);border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
+.ticket-lista{display:flex;flex-direction:column;gap:10px;}
+.ticket-card{background:var(--branco);border-radius:12px;padding:16px;box-shadow:var(--sombra);cursor:pointer;border-left:4px solid var(--cinza2);transition:box-shadow .2s;}
+.ticket-card:hover{box-shadow:0 4px 24px rgba(26,39,68,.15);}
+.ticket-card.Aberto{border-left-color:var(--laranja);}
+.ticket-card.Em{border-left-color:var(--azul);}
+.ticket-card.Resolvido{border-left-color:var(--verde);}
+.ticket-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.ticket-id{font-size:10px;color:var(--cinza3);font-family:monospace;}
+.badge{padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.badge-Aberto{background:#fff3e6;color:var(--laranja);}
+.badge-Em{background:#e6eaf5;color:var(--azul);}
+.badge-Resolvido{background:#e6f4ed;color:var(--verde);}
+.badge-Externo{background:#f0e6ff;color:#6b35b8;}
+.badge-Interno{background:#e6f0ff;color:#1a5cbf;}
+.badge-ADMIN{background:#fff0d6;color:#8a5c00;}
+.badge-OPERADOR{background:#e6eaf5;color:var(--azul);}
+.ticket-assunto{font-size:15px;font-weight:700;color:var(--azul);margin-bottom:4px;}
+.ticket-info{font-size:12px;color:var(--cinza3);}
+.ticket-info span{margin-right:12px;}
+.form-card{background:var(--branco);border-radius:16px;padding:24px;box-shadow:var(--sombra);}
+.form-card h2{font-size:18px;font-weight:800;color:var(--azul);margin-bottom:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+.form-campo{display:flex;flex-direction:column;gap:6px;}
+.form-campo.full{grid-column:1/-1;}
+.form-campo label{font-size:12px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.4px;}
+.form-campo input,.form-campo select,.form-campo textarea{padding:10px 13px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:14px;background:var(--cinza1);outline:none;font-family:inherit;transition:border-color .2s;}
+.form-campo input:focus,.form-campo select:focus,.form-campo textarea:focus{border-color:var(--azul);background:var(--branco);}
+.form-campo textarea{resize:vertical;min-height:90px;}
+.form-campo input[readonly]{background:var(--cinza2);color:var(--cinza3);cursor:not-allowed;}
+.form-acoes{margin-top:20px;display:flex;gap:10px;}
+.btn-secundario{padding:11px 22px;background:var(--cinza2);color:var(--azul);border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;}
+.familia-box{background:var(--cinza1);border-radius:12px;padding:16px;border:1.5px solid var(--cinza2);grid-column:1/-1;}
+.familia-box h3{font-size:13px;font-weight:700;color:var(--azul);margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px;}
+.busca-wrapper{position:relative;}
+.busca-input{width:100%;padding:10px 13px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:14px;outline:none;background:var(--branco);}
+.busca-input:focus{border-color:var(--azul);}
+.busca-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--branco);border:1.5px solid var(--cinza2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:50;max-height:220px;overflow-y:auto;display:none;}
+.busca-dropdown.aberto{display:block;}
+.busca-item{padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--cinza2);}
+.busca-item:last-child{border-bottom:none;}
+.busca-item:hover{background:var(--cinza1);}
+.busca-item .ia{font-weight:700;color:var(--azul);}
+.busca-item .it{font-size:11px;color:var(--cinza3);}
+.familia-selecionada{margin-top:12px;display:none;}
+.familia-selecionada.visivel{display:block;}
+.familia-info{background:var(--branco);border-radius:10px;padding:14px;border:1.5px solid var(--cinza2);margin-bottom:10px;}
+.fi-linha{display:flex;gap:8px;align-items:center;margin-bottom:6px;font-size:13px;}
+.fi-linha:last-child{margin-bottom:0;}
+.fi-label{font-size:11px;font-weight:700;color:var(--cinza3);text-transform:uppercase;min-width:60px;}
+.fi-valor{color:var(--texto);font-weight:500;}
+.resp-escolha label{font-size:12px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:8px;}
+.resp-opcoes{display:flex;flex-wrap:wrap;gap:8px;}
+.resp-btn{padding:8px 14px;border:1.5px solid var(--cinza2);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:var(--cinza1);color:var(--texto);transition:all .15s;}
+.resp-btn.selecionado{background:var(--azul);color:var(--branco);border-color:var(--azul);}
+.outro-nome{margin-top:10px;display:none;}
+.outro-nome.visivel{display:block;}
+.resp-select-box{background:var(--cinza1);border-radius:12px;padding:16px;border:1.5px solid var(--cinza2);grid-column:1/-1;}
+.resp-select-box h3{font-size:13px;font-weight:700;color:var(--azul);margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px;}
+.resp-lista{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+.resp-user-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;background:var(--branco);color:var(--texto);transition:all .15s;}
+.resp-user-btn .avatar{width:28px;height:28px;border-radius:7px;background:var(--azul);color:var(--dourado);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.resp-user-btn.selecionado{background:var(--azul);color:var(--branco);border-color:var(--azul);}
+.resp-user-btn.selecionado .avatar{background:var(--dourado);color:var(--azul);}
+.resp-outro-input{width:100%;padding:10px 13px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:14px;background:var(--branco);outline:none;margin-top:8px;}
+.resp-outro-input:focus{border-color:var(--azul);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.aberto{display:flex;}
+.modal{background:var(--branco);border-radius:16px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,.3);}
+.modal-topo{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
+.modal-topo h2{font-size:18px;font-weight:800;color:var(--azul);max-width:80%;}
+.btn-fechar{background:none;border:none;font-size:22px;cursor:pointer;color:var(--cinza3);}
+.modal-secao{margin-bottom:16px;}
+.modal-secao label{font-size:11px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;}
+.modal-secao p{font-size:14px;line-height:1.6;white-space:pre-wrap;}
+.modal-linha{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;}
+.modal-atualizar{border-top:1.5px solid var(--cinza2);padding-top:18px;margin-top:8px;}
+.modal-atualizar h3{font-size:14px;font-weight:700;color:var(--azul);margin-bottom:12px;}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:480px){.modal-grid{grid-column:1fr;}}
+.log-lista{display:flex;flex-direction:column;gap:8px;}
+.log-item{background:var(--branco);border-radius:10px;padding:12px 16px;box-shadow:var(--sombra);display:flex;gap:14px;}
+.log-dot{width:8px;height:8px;border-radius:50%;background:var(--dourado);margin-top:5px;flex-shrink:0;}
+.log-info{flex:1;}
+.log-acao{font-size:13px;font-weight:700;color:var(--azul);}
+.log-detalhe{font-size:12px;color:var(--cinza3);margin-top:2px;}
+.log-hora{font-size:11px;color:var(--cinza3);white-space:nowrap;}
+.usuario-lista{display:flex;flex-direction:column;gap:8px;}
+.usuario-item{background:var(--branco);border-radius:10px;padding:14px 18px;box-shadow:var(--sombra);display:flex;align-items:center;gap:14px;}
+.usuario-avatar{width:40px;height:40px;border-radius:10px;background:var(--azul);color:var(--dourado);font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.usuario-dados{flex:1;}
+.usuario-nome{font-size:14px;font-weight:700;color:var(--azul);}
+.usuario-email{font-size:12px;color:var(--cinza3);}
+.notif-lista{display:flex;flex-direction:column;gap:8px;}
+.notif-item{background:var(--branco);border-radius:10px;padding:14px 16px;box-shadow:var(--sombra);border-left:4px solid var(--dourado);cursor:pointer;}
+.notif-item.lida{border-left-color:var(--cinza2);opacity:.7;}
+.notif-titulo{font-size:14px;font-weight:700;color:var(--azul);margin-bottom:4px;}
+.notif-msg{font-size:13px;color:var(--cinza3);}
+.notif-data{font-size:11px;color:var(--cinza3);margin-top:4px;}
+.loading{text-align:center;padding:40px;color:var(--cinza3);font-size:14px;}
+.spinner{width:32px;height:32px;border:3px solid var(--cinza2);border-top-color:var(--azul);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--azul);color:var(--branco);padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;box-shadow:0 4px 24px rgba(0,0,0,.25);z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast.verde{background:var(--verde);}
+.toast.vermelho{background:var(--vermelho);}
+.toast.visivel{opacity:1;}
+.vazio{text-align:center;padding:48px 16px;color:var(--cinza3);}
+.vazio .icone{font-size:40px;margin-bottom:12px;}
 </style>
 </head>
 <body>
-
 <div id="toast" class="toast"></div>
 
 <!-- LOGIN -->
@@ -187,14 +171,8 @@
       <h1>Colégio Einstein</h1>
       <p>Sistema de Comunicação Interna</p>
     </div>
-    <div class="campo">
-      <label>E-mail</label>
-      <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
-    </div>
-    <div class="campo">
-      <label>Senha</label>
-      <input type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password">
-    </div>
+    <div class="campo"><label>E-mail</label><input type="email" id="login-email" placeholder="seu@email.com"></div>
+    <div class="campo"><label>Senha</label><input type="password" id="login-senha" placeholder="••••••••"></div>
     <button class="btn-primario" id="btn-entrar" onclick="fazerLogin()">Entrar</button>
     <div id="erro-login" class="erro-login"></div>
   </div>
@@ -203,16 +181,16 @@
 <!-- APP -->
 <div id="tela-app">
   <div class="topbar">
-    <div class="topbar-logo">
-      <div class="sigla">E</div>
-      <span>Einstein</span>
-    </div>
-    <div class="topbar-usuario">
-      <span class="nome" id="nome-usuario"></span>
+    <div class="topbar-logo"><div class="sigla">E</div><span>Einstein</span></div>
+    <div class="topbar-direita">
+      <button class="notif-btn" onclick="irPara('notificacoes')" id="notif-btn" title="Notificações">
+        🔔<span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      </button>
+      <span class="topbar-nome" id="nome-usuario"></span>
       <button class="btn-sair" onclick="sair()">Sair</button>
     </div>
   </div>
-  <div class="nav-tabs" id="nav-tabs">
+  <div class="nav-tabs">
     <button class="nav-tab ativo" onclick="irPara('painel')">📊 Painel</button>
     <button class="nav-tab" onclick="irPara('novo')">➕ Novo Ticket</button>
     <button class="nav-tab" onclick="irPara('tickets')">📋 Tickets</button>
@@ -232,90 +210,114 @@ const API = "https://script.google.com/macros/s/AKfycbwAQt5vSm3oZItiEqXsSn3OZDA-
 const FAMILIAS = [{"turma": "1ºA2026", "aluno": "ACSA LIS SANTOS", "mae": "NAYANE DE SOUSA SILVA SANTOS", "pai": "DHANYLHO LAUREANO DOS SANTOS", "responsavel": "NAYANE DE SOUSA SILVA SANTOS"}, {"turma": "1ºA2026", "aluno": "AGATHA GUILHERME HOFFMANN", "mae": "JAQUELINE ALVES HOFFMANN", "pai": "", "responsavel": "JAQUELINE ALVES HOFFMANN"}, {"turma": "1ºA2026", "aluno": "ALISSA MACHADO DE FREITAS ROCHA", "mae": "TALITA MARIA MACHADO DE FREITAS", "pai": "ANDERSON ROCHA LOBO", "responsavel": "TALITA MARIA MACHADO DE FREITAS"}, {"turma": "1ºA2026", "aluno": "AURORA CAROLINA DA SILVA CLEMENTE", "mae": "ANA PAULA APARECIDA DA SILVA", "pai": "DAMIÃO INÁCIO CLEMENTE", "responsavel": "DAMIÃO INÁCIO CLEMENTE"}, {"turma": "1ºA2026", "aluno": "BERNARDO OLIVER QUINTANA GONÇALVES", "mae": "ELIZANGELA GOMES QUINTANA GONÇALVES", "pai": "RICARDO GOMES QUINTANA GONÇALVES", "responsavel": "ELIZANGELA GOMES QUINTANA GONÇALVES"}, {"turma": "1ºA2026", "aluno": "EMANUELA OLIVEIRA RODRIGUES GOMES", "mae": "KATIA OLIVEIRA E SILVA RODRIGUES", "pai": "DANILO RODRIGUES GOMES", "responsavel": "KATIA OLIVEIRA E SILVA RODRIGUES"}, {"turma": "1ºA2026", "aluno": "FRANCISCO VALMÔR BEZERRA DE ALCÂNTARA NETO", "mae": "PATRÍCIA DA SILVA ALCÂNTARA", "pai": "", "responsavel": "PATRÍCIA DA SILVA ALCÂNTARA"}, {"turma": "1ºA2026", "aluno": "GABRIEL AUGUSTO VILAS BOAS AGUIAR", "mae": "KARINY VILAS BOAS SANTOS AGUIAR", "pai": "JADSON DE AGUIAR TEIXEIRA", "responsavel": "KARINY VILAS BOAS SANTOS AGUIAR"}, {"turma": "1ºA2026", "aluno": "GUILHERME MIRANDA DE AGUIAR", "mae": "LEIDIANE MIRANDA DE AGUIAR", "pai": "RÔMULO DE AGUIAR CORDEIRO", "responsavel": "RÔMULO DE AGUIAR CORDEIRO"}, {"turma": "1ºA2026", "aluno": "GUSTAVO COSTA FERREIRA", "mae": "DAYANE EVELYN BARROS COSTA FERREIRA", "pai": "ERICK OLIVEIRA FERREIRA", "responsavel": "DAYANE EVELYN BARROS COSTA FERREIRA"}, {"turma": "1ºA2026", "aluno": "HEITOR DE SOUZA MOURA", "mae": "MAYARA ROSA DIAS DE SOUSA", "pai": "VICTOR TRISTAO DE MOURA", "responsavel": "MAYARA ROSA DIAS DE SOUSA"}, {"turma": "1ºA2026", "aluno": "HELOISA AIRES CASTRO COSTA", "mae": "MAYRA AIRES DE CASTRO COSTA", "pai": "MAURICIO CASTRO COSTA", "responsavel": "MAYRA AIRES DE CASTRO COSTA"}, {"turma": "1ºA2026", "aluno": "HENRIQUE CICHORSKI GONÇALVES", "mae": "RENATA CRISTINA MAI CICHORSKI GONÇALVES", "pai": "GILNEI ANDRADE GONÇALVES JUNIOR", "responsavel": "RENATA CRISTINA MAI CICHORSKI GONÇALVES"}, {"turma": "1ºA2026", "aluno": "ISIS MANUELLA RODRIGUES GHISLENI", "mae": "KARINE GHISLENI", "pai": "JORGE ANDRE ROPDRIGUES PINTO", "responsavel": "KARINE GHISLENI"}, {"turma": "1ºA2026", "aluno": "JOÃO OLIVEIRA SILVA", "mae": "VITÓRIA OLIVEIRA DOS SANTOS", "pai": "MARCOS AURÉLIO DA SILVA", "responsavel": "MARISA PEREIRA DOS SANTOS"}, {"turma": "1ºA2026", "aluno": "LIZ SOUSA FONSECA", "mae": "SHIRLEY DE SOUSA CUNHA", "pai": "BRUNO MARTINS FONSECA", "responsavel": "BRUNO MARTINS FONSECA"}, {"turma": "1ºA2026", "aluno": "LUISA MOURÃO ONGARATTO", "mae": "DAYLLANE MOURÃO DE OLIVEIRA", "pai": "MAX GERMANO ONGARATTO", "responsavel": "DAYLLANE MOURÃO DE OLIVEIRA"}, {"turma": "1ºA2026", "aluno": "MARIA CECÍLIA DE OLIVEIRA SARDINHA BENEDITO", "mae": "JENIFER MICHELE DE OLIVEIRA BATISTA", "pai": "DORIVANDER DOMINGOS S BENEDITO", "responsavel": "DORIVANDER DOMINGOS S BENEDITO"}, {"turma": "1ºA2026", "aluno": "MARINA DE SOUSA MESQUETA", "mae": "THAYSA GABRIELLE DE SOUZA", "pai": "JURANDI MESQUITA JUNIOR", "responsavel": "THAYSA GABRIELLE DE SOUZA"}, {"turma": "1ºA2026", "aluno": "MELINDA GOMES FERREIRA", "mae": "MARIA CLARA GOMES DA SILVA", "pai": "JOCELVI RIBEIRO FEREIRA", "responsavel": "JOCELVI RIBEIRO FEREIRA"}, {"turma": "1ºA2026", "aluno": "MELISSA HOLMGREN SOARES", "mae": "PATRÍCIA SOARES DOS REIS", "pai": "PER HENRIK HOLMGREN", "responsavel": "PATRÍCIA SOARES DOS REIS"}, {"turma": "1ºA2026", "aluno": "MIRELLA PRADO BEZERRA", "mae": "DÉBORA MONTEIRO PRADO", "pai": "RODRIGO BEZERRA SILVA", "responsavel": "DÉBORA MONTEIRO PRADO"}, {"turma": "1ºA2026", "aluno": "RENATO SOUSA TOLEDO", "mae": "MARIA JOSÉ ALVES DE SOUSA", "pai": "CARLOS RENATO MATEUS TOLEDO", "responsavel": "CARLOS RENATO MATEUS TOLEDO"}, {"turma": "1ºA2026", "aluno": "SARAH AGUIAR RIBEIRO", "mae": "JADMA HIRGILA DE AGUIAR TEIXEIRA", "pai": "FERNANDO PEREIRA RIBEIRO", "responsavel": "JADMA HIRGILA DE AGUIAR TEIXEIRA"}, {"turma": "1ºA2026", "aluno": "SOPHIA TOMAZ RESENDE PÓVOA", "mae": "JACKELINE TOMAZ ASSUNÇAO", "pai": "SAULO RESENDE POVOA", "responsavel": "JACKELINE TOMAZ ASSUNÇAO"}, {"turma": "1ºA2026", "aluno": "TEO RODRIGUES DE SOUSA", "mae": "MYAMY PATRICK RODRIGUES OLIVEIRA DE SOUSA", "pai": "BELMIRAN JOSÉ DE SOUSA FILHO", "responsavel": "BELMIRAN JOSÉ DE SOUSA FILHO"}, {"turma": "1ºA2026", "aluno": "VICENTE LEAL RODRIGUES MINGHINI", "mae": "MARIA ISABEL LEAL RODRIGUES", "pai": "VINICIO MINGHINI", "responsavel": "EDVAN MARIA LEAL RODRIGUES"}, {"turma": "1ºB2026", "aluno": "ABIMAEL MOSCON FONSECA DIAS", "mae": "BRUNESSA MOSCON", "pai": "ALAILSON FONSECA DIAS MOSCON", "responsavel": "BRUNESSA MOSCON"}, {"turma": "1ºB2026", "aluno": "DANILLO BISPO DE CASTRO GASPIO", "mae": "ROSIMÁRIA BISPO DE CASTRO GÀSPIO", "pai": "CARLOS FERNANDO GÁSPIO DE CASTRO SANTOS", "responsavel": "CARLOS FERNANDO GÁSPIO DE CASTRO SANTOS"}, {"turma": "1ºB2026", "aluno": "DAVI MANOEL MATOS DE ABREU", "mae": "MAYARA TAMILA SILVA DE MATOS", "pai": "BRUNO OLIVEIRA DE ABREU", "responsavel": "BRUNO DE OLIVEIRA DE ABREU"}, {"turma": "1ºB2026", "aluno": "DAVI ZURIEL SOUZA DE BESSA", "mae": "MARIA DAS GRACAS COELHO DE SOUZA", "pai": "RONALDO VIANA DE BESSA", "responsavel": "MARIA DAS GRACAS COELHO DE SOUZA"}, {"turma": "1ºB2026", "aluno": "GABRIEL DANTAS DE MATTOS", "mae": "RAFAELLA DANTAS PINTO", "pai": "TAHUAN DE MATTOS OLIVEIRA", "responsavel": "TAHUAN DE MATTOS OLIVEIRA"}, {"turma": "1ºB2026", "aluno": "HELENA CARLOS CARDOSO", "mae": "PAULINHA CARLOS SOARES CARDOSO", "pai": "ADENILSON CARDOSO SILVA", "responsavel": "ILNAR CARLOS SOARES"}, {"turma": "1ºB2026", "aluno": "HELENA RODRIGUES FERREIRA", "mae": "RAILMA RODRIGUES DA SILVA", "pai": "DANIEL FERREIRA DIAS", "responsavel": "DANIEL FERREIRA DIAS"}, {"turma": "1ºB2026", "aluno": "ISABELA ALENCAR DA COSTA", "mae": "LIRETE VALENTIN DE ALENCAR", "pai": "ALDENIR PEREIRA DA COSTA", "responsavel": "ALDENIR PEREIRA DA COSTA"}, {"turma": "1ºB2026", "aluno": "JOÃO MIGUEL VICENTE NEJAIM", "mae": "MICALINE NEJAIM DE LIMA SILVA", "pai": "ODAILDO VICENTE DA SILVA", "responsavel": "MICALINE NEJAIM DE LIMA SILVA"}, {"turma": "1ºB2026", "aluno": "JOÃO OLIVEIRA SILVA", "mae": "VITÓRIA OLIVEIRA DOS SANTOS", "pai": "MARCOS AURÉLIO DA SILVA", "responsavel": "MARISA PEREIRA DOS SANTOS"}, {"turma": "1ºB2026", "aluno": "JULIA CARREIRO AMARAL COSTA", "mae": "CAMILA CARREIRO DE CARVALHO", "pai": "WYSSES STEFANI AMARAL COSTA", "responsavel": "WYSSES STEFANI AMARAL COSTA"}, {"turma": "1ºB2026", "aluno": "LIVIA CARVALHO FONSECA", "mae": "PALOMA OLIVEIRA CARVALHO", "pai": "DEYVYSON MARLON SANTOS FONSECA", "responsavel": "PALOMA OLIVEIRA CARVALHO"}, {"turma": "1ºB2026", "aluno": "LUCCA CUNHA TAVARES", "mae": "ANNA AMELIA DAMASCENO CUNHA", "pai": "LIZANDRO CICILIANO TAVARES", "responsavel": "ANNA AMELIA DAMASCENO CUNHA"}, {"turma": "1ºB2026", "aluno": "LUÍS EDUARDO ABREU MESQUITA", "mae": "GABRIELLE DAMASCENO ABREU MESQUITA", "pai": "EUCLIDES LUÍS MESQUITA", "responsavel": "EUCLIDES LUÍS MESQUITA"}, {"turma": "1ºB2026", "aluno": "MANUELA CARVALHO AGUIAR NERI", "mae": "JACQUELINY SOUSA AGUIAR", "pai": "THIAGO CARVALHO NERI", "responsavel": "SIMONE CARVALHO OLIVEIRA"}, {"turma": "1ºB2026", "aluno": "MANUELLA FERREIRA GOMES", "mae": "RENATA FERREIRA DA SILVA", "pai": "MICHAEL BORGES GOMES", "responsavel": "MICHAEL BORGES GOMES"}, {"turma": "1ºB2026", "aluno": "MARIA CECILIA SOARES DE MOURA FREITAS", "mae": "SIRLENE SOARES DE MOURA", "pai": "ANTONIO PAULO DE FREITAS", "responsavel": "SIRLENE SOARES DE MOURA"}, {"turma": "1ºB2026", "aluno": "MARIA EDUARDA MARQUES MOREIRA", "mae": "BENEDITA MOREIRA DA SILVA", "pai": "EDUARDO MARQUES ANTONIO", "responsavel": "BENEDITA MOREIRA DA SILVA"}, {"turma": "1ºB2026", "aluno": "MARIANA MARINHO LOPES", "mae": "DANIELA BULHÕES MARINHO", "pai": "ALLEFF LIAN MESAQUE LOPES COSTA", "responsavel": "ALLEFF LIAN MESAQUE LOPES COSTA"}, {"turma": "1ºB2026", "aluno": "MARINA GOMES DE OLIVEIRA", "mae": "MIRLA CRISTINA BRITO DE OLIVEIRA GOMES", "pai": "BRUNO GOMES DA CRUZ", "responsavel": "MIRLA CRISTINA BRITO DE OLIVEIRA GOMES"}, {"turma": "1ºB2026", "aluno": "MAYANE SOUZA", "mae": "THAYSA SOUZA RODRIGUES", "pai": "PAI", "responsavel": "TATIANE MATIAS BERNARDO"}, {"turma": "1ºB2026", "aluno": "PEDRO RAMALHO ROCHA BARBOSA", "mae": "ANA PAULA DOS SANTOS ROCHA", "pai": "FENELON BARBOSA SALES NETO", "responsavel": "FENELON BARBOSA SALES NETO"}, {"turma": "1ºB2026", "aluno": "STELLA FREITAS VALADARES", "mae": "ADRIANA FREITAS DAMASCENA", "pai": "ENZO DE SOUSA VALADARES", "responsavel": "ADRIANA FREITAS DAMASCENA"}, {"turma": "1ºB2026", "aluno": "VALENTINA RODRIGUES ARAUJO DO NASCIMENTO", "mae": "MELRIANE RODRIGUES ARAUJO", "pai": "", "responsavel": "MELRIANE RODRIGUES ARAUJO DO NASCIMENTO"}, {"turma": "2ºA2026", "aluno": "ALICE ANDRADE ARRAIS", "mae": "AYNE ALMEIDA ANDRADE", "pai": "WARLES FERREIRA ARRAIS", "responsavel": "WARLES FERREIRA ARRAIS"}, {"turma": "2ºA2026", "aluno": "ALICE MONTEIRO RIGON", "mae": "SAMARINE MONTEIRO PEREIRA", "pai": "CHARLES DALL AGNOL", "responsavel": "CHARLES DALL AGNOL"}, {"turma": "2ºA2026", "aluno": "ANA CLARA LOPES DIAS", "mae": "JULIANA DA SILVA LOPES", "pai": "MANOEL MESSIAS DOS SANTOS DIAS", "responsavel": "IRAMAR CARDOSO DA SILVA"}, {"turma": "2ºA2026", "aluno": "ANGELA MARIA DUARTE FONSECA", "mae": "ALLANNA INGRID DUARTE LOPES FONSECA", "pai": "JARLAN DIOGENES FONSECA", "responsavel": "ALLANNA INGRID DUARTE LOPES FONSECA"}, {"turma": "2ºA2026", "aluno": "AYLLA SOPHIA NUNES MOREIRA", "mae": "ALICIA NUNES DA SILVA", "pai": "DAILAM MOREIRA DA SILVA", "responsavel": "ALICIA NUNES DA SILVA"}, {"turma": "2ºA2026", "aluno": "BEATRIZ CIRQUEIRA SANTOS MOREIRA", "mae": "LILIAN DE CASSIA CIRQUEIRA SANTOS MOREIRA", "pai": "EVERALDO MOREIRA DE SOUSA", "responsavel": "LILIAN DE CASSIA CIRQUEIRA SANTOS MOREIRA"}, {"turma": "2ºA2026", "aluno": "BÊNJAMIM GOMES DOS SANTOS", "mae": "VERONNICA RODRIGUES DOS SANNTOS", "pai": "ALEX SANDRO GOMES DOS SANTOS", "responsavel": "ALEX SANDRO GOMES DOS SANTOS"}, {"turma": "2ºA2026", "aluno": "BENJAMIM SOUSA CARVALHO", "mae": "NEILINA SOUSA DOS NASCIMENTO CARVALHO", "pai": "EDWARDES ANTONIO DE CARVALHO FILHO", "responsavel": "NEILINA SOUSA DOS NASCIMENTO CARVALHO"}, {"turma": "2ºA2026", "aluno": "BRENDO CARDOSO CINTRA BARBOSA", "mae": "CLARICE CARDOSO NASCIMNETO DOS SANTOS CINTRA", "pai": "BRUNO CINTRA BARBOSA", "responsavel": "CLARICE CARDOSO NASCIMNETO DOS SANTOS CINTRA"}, {"turma": "2ºA2026", "aluno": "CAIO LIMA OLIVEIRA", "mae": "ERICA DA SILVA OLIVEIRA LIMA", "pai": "SAMUEL LIMA SANTOS OLIVEIRA", "responsavel": "ERICA DA SILVA OLIVEIRA LIMA"}, {"turma": "2ºA2026", "aluno": "CÉSAR GOMES MORAIS", "mae": "TISSIANE GOMES COSTA MORAIS", "pai": "OSCAR PEREIRA DE MORAIS JUNIOR", "responsavel": "OSCAR PEREIRA DE MORAIS JUNIOR"}, {"turma": "2ºA2026", "aluno": "CRISTIANO JUNIOR ARAUJO VIEIRA", "mae": "VALERIA BORGES ARAUJO", "pai": "CRISTIANO PEREIRA VIEIRA", "responsavel": "VALERIA BORGES ARAUJO"}, {"turma": "2ºA2026", "aluno": "ELISA NYARA MOURA DA CRUZ", "mae": "TAÍS IONARA MOURA SANTOS", "pai": "NYORORSON SANTOS CRUZ", "responsavel": "NYORORSON SANTOS CRUZ"}, {"turma": "2ºA2026", "aluno": "EMANUELLY FERREIRA DA SILVA", "mae": "ANA LUCIA DA SILVA", "pai": "DONIZETE FERREIRA DA SILVA", "responsavel": "ANA LUCIA DA SILVA"}, {"turma": "2ºA2026", "aluno": "ENZO GAMA CASTRO", "mae": "CLEUSILENE ALVES CASTRO", "pai": "DANILO GAMA COSTA", "responsavel": "CLEUSILENE ALVES CASTRO"}, {"turma": "2ºA2026", "aluno": "ESTHER PANTOJA XIMENES", "mae": "ADRIANE DO SOCORRO COSTA PANTOJA XIMENES", "pai": "ANTÔNIO CARLOS XIMENES JÚNIOR", "responsavel": "ANTÔNIO CARLOS XIMENES JÚNIOR"}, {"turma": "2ºA2026", "aluno": "ESTHER RODRIGUES MORENO LANNS", "mae": "HERIKA LANNS RODRIGUES SANTONS MORENO", "pai": "ANTONIO JEFERSON DE DEUS MORENO", "responsavel": "HERIKA LANNS RODRIGUES SANTONS MORENO"}, {"turma": "2ºA2026", "aluno": "FABIO NETO SIQUEIRA MORAIS", "mae": "LUNELLE MORAIS DO COUTO", "pai": "GABRIEL SIQUEIRA MONTEIRO", "responsavel": "LUNELLE MORAIS DO COUTO"}, {"turma": "2ºA2026", "aluno": "GABRIEL MUNIZ TUNDELLO MATOS", "mae": "VANILA TUNDELLO MATOS COSTA", "pai": "THULIO MUNIZ COSTA", "responsavel": "DEUSINA DE SOUSA MATOS"}, {"turma": "2ºA2026", "aluno": "GAEL BARROS GONÇALVES", "mae": "TAYDJA CRISTINA BARROS GONÇALVES FERREIRA", "pai": "WDYERMERSON GONÇALVES PINTO", "responsavel": "TAYDJA CRISTINA BARROS GONÇALVES FERREIRA"}, {"turma": "2ºA2026", "aluno": "HELOISA RIBEIRO GUEDES", "mae": "ANA CAROLINE RIBEIRO CRUZ", "pai": "LEANDRO RIBEIRO GUEDES", "responsavel": "ANA CAROLINE RIBEIRO CRUZ"}, {"turma": "2ºA2026", "aluno": "JOABE MASTELLA DA SILVA", "mae": "DENISE CRISTINA MASTELLA", "pai": "GIOVANO CAVALHEIRO DA SILVA", "responsavel": "GIOVANO CAVALHEIRO DA SILVA"}, {"turma": "2ºA2026", "aluno": "JOÃO BERNARDO MENDANHA", "mae": "NAYARA EUGENIA GOMES", "pai": "ADEMIR NISHMURA JUNIOR", "responsavel": "JOÃO BATISTA GOMES"}, {"turma": "2ºA2026", "aluno": "LARA PIRES AMORIM", "mae": "VALÉRIA BRAGA AMORIM SOUSA PIRES", "pai": "LUCAS VINICIUS PIRES", "responsavel": "VALÉRIA BRAGA AMORIM SOUSA PIRES"}, {"turma": "2ºA2026", "aluno": "MARIA CLARA VIEIRA SCHWENGBER", "mae": "DJESICA VANDRESSA HENRICHSEN VIEIRA", "pai": "NILO JOSE SCHWENGBER NETO", "responsavel": "DJESICA VANDRESSA HENRICHSEN VIEIRA"}, {"turma": "2ºA2026", "aluno": "MATHEUS ALVES BATISTA", "mae": "LETICIA CIRILO ALVES", "pai": "JEAN CARLOS BATISTA", "responsavel": "LETICIA CIRILO ALVES"}, {"turma": "2ºA2026", "aluno": "MATHEUS BORGHETTI LUDWIG", "mae": "GIANINE SOARES BORGHETTI", "pai": "FERNANDO JOSE LUDWIG", "responsavel": "FERNANDO JOSE LUDWIG"}, {"turma": "2ºA2026", "aluno": "OTAVIO COUTINHO DE ALMEIDA", "mae": "SILMARIA BRITO COUTINHO", "pai": "RONNE WELBER PENHA DE ALMEIDA", "responsavel": "SILMARIA BRITO COUTINHO"}, {"turma": "2ºA2026", "aluno": "PEDRO COÊLHO DIAS FERREIRA", "mae": "WILLIANE COELHO DIAS FERREIRA", "pai": "CARLOS FERREIRA", "responsavel": "WILLIANE COELHO DIAS FERREIRA"}, {"turma": "2ºA2026", "aluno": "PHILLIPP NEUHAUS", "mae": "SILVIA NEUHAUS", "pai": "JENS NEUHAUS", "responsavel": "SILVIA NEUHAUS"}, {"turma": "2ºA2026", "aluno": "RUY LUSTOSA BEZERRA", "mae": "GEOVANA BEZERRA DE OLIVEIRA", "pai": "ATHOS LUSTOSA MATOS", "responsavel": "ATHOS LUSTOSA MATOS"}, {"turma": "2ºA2026", "aluno": "SARA GOMES SOUZA DE MORAES", "mae": "LUANA GOMES DE SOUZA", "pai": "DORIVALDO MENDES DE MORAES", "responsavel": "VANEUSA FERREIRA DA HORA"}, {"turma": "2ºA2026", "aluno": "SOFIA SANTOS MACIEL", "mae": "THAYNARA KAROLINE SANTOS BATISTA MACIEL", "pai": "THAELSON MACIEL RIBEIRO", "responsavel": "CRISLENE DIVINA DOS SANTOS LUZ"}, {"turma": "2ºA2026", "aluno": "SOPHIA DA SILVA BARBOSA", "mae": "MARYELLE CRISTINA PEREIRA SILVA", "pai": "ELINALDO SANTANA BARBOSA", "responsavel": "MARYELLE CRISTINA PEREIRA SILVA"}, {"turma": "2ºA2026", "aluno": "VALENTINA DE SOUSA BORGES LIMA", "mae": "LETÍCIA MARIA DE SOUSA BORGES LIMA", "pai": "WARLISON BORGES LIMA", "responsavel": "LETÍCIA MARIA DE SOUSA BORGES LIMA"}, {"turma": "2ºB2026", "aluno": "ALICIA DE SENA GUERREIRO", "mae": "JESSICA KALINY DE SENA ASSUNÇAO", "pai": "FRANCISCO ASSIS BORGES GUERREIRO", "responsavel": "FRANCISCO ASSIS BORGES GUERREIRO"}, {"turma": "2ºB2026", "aluno": "ANA HELENA FERNANDES DE SOUSA", "mae": "ANA CLEUDE FERNANDES PEREIRA", "pai": "ADENILTON SOUSA OLIVEIRA", "responsavel": "ADENILTON SOUSA OLIVEIRA"}, {"turma": "2ºB2026", "aluno": "ANTONELA SANTOS RODRIGUES ALBUQUERQUE", "mae": "WIRAJANY DE PAULA SANTOS DOURADO ALBUQUERQUE", "pai": "JOSÉ CLEMISON RODRIGUES ALBUQUERQUE", "responsavel": "JOSÉ CLEMISON RODRIGUES ALBUQUERQUE"}, {"turma": "2ºB2026", "aluno": "ARTHUR SOARES GRACIA", "mae": "JESSICA SOARES CARDOSO", "pai": "DIEGO GRACIA DE MIRANDA", "responsavel": "JESSICA SOARES CARDOSO"}, {"turma": "2ºB2026", "aluno": "AYLA TERESA DE ASSUNÇÃO DIAS", "mae": "KATIUSCIA PORTO DE ASSUNÇÃO", "pai": "LISOMAR GONÇALVES DIAS", "responsavel": "KATIUSCIA PORTO DE ASSUNÇÃO"}, {"turma": "2ºB2026", "aluno": "BERNARDO RIBEIRO LIMA", "mae": "ANNY CAROLLINY SILVA", "pai": "THIAGO IZAC ARAUJO LIMA", "responsavel": "GILMAR CRUZ SILVA"}, {"turma": "2ºB2026", "aluno": "DAVI NOLETO ARAUJO", "mae": "DEBORA NOLETO MACEDO ARAUJO", "pai": "JOSUÉ BATISTA DE ARAÚJO JÚNIOR", "responsavel": "JOSUÉ BATISTA DE ARAÚJO JÚNIOR"}, {"turma": "2ºB2026", "aluno": "DAVI ROSSI DE CASTRO", "mae": "JOANA CRISTINA ROSSI CARDOSO", "pai": "GUILHERME GONÇALVES DE CASTRO", "responsavel": "JOANA CRISTINA ROSSI CARDOSO"}, {"turma": "2ºB2026", "aluno": "ELISA FERREIRA COSTA", "mae": "SOLANGE DA SILVA FERREIRA COSTA", "pai": "MÁRCIO COSTA PINTO", "responsavel": "MÁRCIO COSTA PINTO"}, {"turma": "2ºB2026", "aluno": "ENZO GABRIEL LOPES DIAS", "mae": "RAINARA LOPES MACIEL", "pai": "ESLEY DE OLIVEIRA DIAS", "responsavel": "RAINARA LOPES MACIEL"}, {"turma": "2ºB2026", "aluno": "GABRIELLA ROCHA DE ALMEIDA", "mae": "QUEZIA NASCIMENTO DA ROCHA ALMEIDA", "pai": "LUCIANO DE ALMEIDA RIBEIRO", "responsavel": "QUEZIA NASCIMENTO DA ROCHA ALMEIDA"}, {"turma": "2ºB2026", "aluno": "GABRIEL LUIZ DE CARVALHO SANTOS", "mae": "IONARA DE LIMA CARVALHO SANTOS", "pai": "RICARDO AUGUSTO DE MIRANDA SANTOS", "responsavel": "RICARDO AUGUSTO DE MIRANDA SANTOS"}, {"turma": "2ºB2026", "aluno": "GIOVANNA ROCHA DE ALMEIDA", "mae": "QUEZIA NASCIMENTO DA ROCHA ALMEIDA", "pai": "LUCIANO DE ALMEIDA RIBEIRO", "responsavel": "QUEZIA NASCIMENTO DA ROCHA ALMEIDA"}, {"turma": "2ºB2026", "aluno": "GIOVANNI HENRIQUE BATISTA DE AGUIAR FRANCO", "mae": "THIALITA BATISTA DE ARAUJO VELASCO AGUIAR", "pai": "ANDRE LUIS NAZARENO DE AGUIAR", "responsavel": "THIALITA BATISTA DE ARAUJO VELASCO AGUIAR"}, {"turma": "2ºB2026", "aluno": "HEITOR SILVA MASCARENHAS", "mae": "CLEIDIANE SILVA DOS SANTOS", "pai": "ELY MASCARENHAS BARROS", "responsavel": "ELY MASCARENHAS BARROS"}, {"turma": "2ºB2026", "aluno": "ISADORA SIQUEIRA MONTEL", "mae": "WASTY SIQUEIRA PINTO DA SILVA", "pai": "GLEIBE DA SILVA MONTEL", "responsavel": "WASTY SIQUEIRA PINTO DA SILVA"}, {"turma": "2ºB2026", "aluno": "JOÃO GUILHERME SARDINHA DE AZEVEDO", "mae": "ALCIONE ALVES SARDINHA DE AZEVEDO", "pai": "CÉLIO DE AZEVEDO", "responsavel": "CÉLIO DE AZEVEDO"}, {"turma": "2ºB2026", "aluno": "JOÃO MIGUEL DOS SANTOS ALVES", "mae": "CLAUDILÉIA ALVES DOS SANTOS", "pai": "JOÃO BATISTA DE SOUZA ALVES", "responsavel": "CLAUDILÉIA ALVES DOS SANTOS"}, {"turma": "2ºB2026", "aluno": "KARINE DA SILVA REINO", "mae": "EDINALVA DA SILVA REINO", "pai": "ERIBELTO ANDRADE REINO", "responsavel": "ERIBELTO ANDRADE REINO"}, {"turma": "2ºB2026", "aluno": "LAURA HADASSA SOARES NOLETO", "mae": "GEYSSE KELLY GOMES DOS SANTOS", "pai": "WENDER WALLACY SOARES DE OLIVEIRA", "responsavel": "GEYSSE KELLY GOMES DOS SANTOS"}, {"turma": "2ºB2026", "aluno": "MANUELA MACIEL CARVALHO", "mae": "MARCELA MACIEL DA SILVEIRA", "pai": "LUCAS CARVALHO MACHADO", "responsavel": "MARCELA MACIEL DA SILVEIRA"}, {"turma": "2ºB2026", "aluno": "MANUELLA DE CARVALHO AMORIM", "mae": "YAME CARLISE DE CARVALHO", "pai": "NÃO INFORMADO", "responsavel": "YAME CARLISE DE CARVALHO"}, {"turma": "2ºB2026", "aluno": "MARIA CECILIA NAVES MARTINS", "mae": "SHALLANG KELLYTHA VIEIRA NAVES", "pai": "JOAO DOS REIS MARTINS", "responsavel": "SHALLANG KELLYTHA VIEIRA NAVES"}, {"turma": "2ºB2026", "aluno": "MARIA FERNANDA VENÂNCIO STEFFEN", "mae": "ISABELLA LOURENCO VENANCIO", "pai": "FERNANDO STEFFEN", "responsavel": "ISABELLA LOURENCO VENANCIO"}, {"turma": "2ºB2026", "aluno": "MARIA GABRIELA RAMOS ANDRADE", "mae": "FABIANE DOS REIS RAMOS", "pai": "ADILSON ANDRADE LOPES", "responsavel": "ADILSON ANDRADE LOPES"}, {"turma": "2ºB2026", "aluno": "MARIA JÚLIA CAVALCANTE CÂMARA", "mae": "JÉSSYKA CAVALCANTE CÂMARA", "pai": "MICHAEL ARAUJO CAMARA", "responsavel": "MICHAEL ARAUJO CAMARA"}, {"turma": "2ºB2026", "aluno": "MARIA LUISA GUIMARÂES GIACOMINI", "mae": "ANDREIA GUIMARAES BATISTA", "pai": "MARCOS ODOUGLAS GIACOMINI HOECKELE", "responsavel": "ANDREIA GUIMARAES BATISTA"}, {"turma": "2ºB2026", "aluno": "MIGUEL CORDEIRO FERREIRA BARBOSA", "mae": "EVEN MIRIAN FERREIRA MARTINS", "pai": "RAPHAEL CORDEIRO DA SILVA BARBOSA", "responsavel": "RAPHAEL CORDEIRO DA SILVA BARBOSA"}, {"turma": "2ºB2026", "aluno": "MIGUEL PEIXOTO DE MOURA", "mae": "DALILA PEIXOTO DOS SANTOS", "pai": "MAYKO DE MOURA SANTOS", "responsavel": "DALILA PEIXOTO DOS SANTOS"}, {"turma": "2ºB2026", "aluno": "PAULA ROBERTA ROCHA RAMALHO BARBOSA", "mae": "ANA PAULA DOS SANTOS ROCHA", "pai": "FENELON BARBOSA SALES NETO", "responsavel": "FENELON BARBOSA SALES NETO"}, {"turma": "2ºB2026", "aluno": "PEDRO ABREU LOPES", "mae": "POLIANA CORDEIRO DE ABREU", "pai": "JUAREZ LOPES", "responsavel": "JUAREZ LOPES"}, {"turma": "2ºB2026", "aluno": "PEDRO NEIVA LIMA", "mae": "CAROLINE BONFIM NEIVA", "pai": "LUCAS PEREIRA LIMA", "responsavel": "CAROLINE BONFIM NEIVA"}, {"turma": "2ºB2026", "aluno": "PIETRO TAVARES NASCIMENTO", "mae": "VERÔNICA TAVARES DE SOUZA", "pai": "ALEXANDRE NASCIMENTO ARAUJO TAVARES", "responsavel": "VERONICA TAVARES DE SOUSA"}, {"turma": "2ºB2026", "aluno": "SAMUEL GEDSON RAMOS CARDOSO", "mae": "VALDINA RAMOS CARDOSO", "pai": "GEDSON SILVA CARDOSO", "responsavel": "VALDINA RAMOS CARDOSO"}, {"turma": "2ºB2026", "aluno": "VALENTINA OLIVEIRA MARTINS", "mae": "MÁRCIA OLIVEIRA DA SILVA MARTINS", "pai": "GALTIER OLIVEIRA MARTINS", "responsavel": "GALTIER OLIVEIRA MARTINS"}, {"turma": "3ºA2026", "aluno": "AMABILE VALENTINA SANTOS FERREIRA DA CUNHA", "mae": "JULIANA TERESA DOS SANTOS FERREIRA", "pai": "ELDON CLAYTON FERREIRA DA CUNHA", "responsavel": "ELDON CLAYTON FERREIRA DA CUNHA"}, {"turma": "3ºA2026", "aluno": "ANA CECÍLIA RIBEIRO BEZERRA", "mae": "LINDALVA BEZERRA BARROS GOMES", "pai": "CICERO RIBEIRO GOMES", "responsavel": "CICERO RIBEIRO GOMES"}, {"turma": "3ºA2026", "aluno": "ANGELINA CAVALCANTE MONTEIRO", "mae": "ADRIANA CAVALCANTE NASCIMENTO MONTEIRO", "pai": "ALLAN GARCIA FARIAS MONTEIRO", "responsavel": "ALLAN GARCIA FARIAS MONTEIRO"}, {"turma": "3ºA2026", "aluno": "ARTHUR FERREIRA MACEDO", "mae": "SUZANA SARYNE CARDOSO FERREIRA", "pai": "PEDRO HENRIQUE ALVES MACEDO", "responsavel": "PEDRO HENRIQUE ALVES MACEDO"}, {"turma": "3ºA2026", "aluno": "BERNARDO BATISTA RODRIGUES", "mae": "SANDRA BATISTA DA SILVA RODRIGUES", "pai": "DANIEL RODRIGUES GOMES", "responsavel": "DANIEL RODRIGUES GOMES"}, {"turma": "3ºA2026", "aluno": "BERNARDO MARQUES JARDIM", "mae": "ALBA MARQUES DE SOUSA JARDIM", "pai": "FLAVIO JARDIM MARQUES", "responsavel": "FLAVIO JARDIM MARQUES"}, {"turma": "3ºA2026", "aluno": "BIANCA AIRES ARAUJO JAPIASSÚ", "mae": "MILENA AIRES BARROS", "pai": "FELIPE ALVES ARAUJO JAPIASSU", "responsavel": "MILENA AIRES BARROS"}, {"turma": "3ºA2026", "aluno": "BRUNA AQUINO FORTES MOTA", "mae": "ILÍADA AQUINO DE SOUZA FORTES MOTA", "pai": "BRUNO BRITO MOTA", "responsavel": "BRUNO BRITO MOTA"}, {"turma": "3ºA2026", "aluno": "CARLOS LEVY DE ALBUQUERQUE RODRIGUES", "mae": "MARY KETLEN DE ALBUQUERQUE ALMEIDA", "pai": "CARLOS ALBERTO RODRIGUES JUNIOR", "responsavel": "MARY KETLEN DE ALBUQUERQUE ALMEIDA"}, {"turma": "3ºA2026", "aluno": "CECILIA LIMA NEVES", "mae": "VANESSA VALERIA LIMA NEVES", "pai": "CLAUDIO DE SOUZA DAS NEVES", "responsavel": "CLAUDIO DE SOUZA DAS NEVES"}, {"turma": "3ºA2026", "aluno": "DAVI BARBOSA MOURA", "mae": "TUANY BARBOSA MARTINS", "pai": "ROBSON SILVA MOURA", "responsavel": "ROBSON SILVA MOURA"}, {"turma": "3ºA2026", "aluno": "DAVI MATTOZINHO ALVES DE BRITO", "mae": "NATALIA MATTOZINHO DA CRUZ DE BRITO", "pai": "YGOR MATHEUS ALVES DE BRITO", "responsavel": "YGOR MATHEUS ALVES DE BRITO"}, {"turma": "3ºA2026", "aluno": "ENZO MIGUEL DUARTE FONSECA", "mae": "ALLANNA INGRID DUARTE LOPES FONSECA", "pai": "JARLAN DIOGENES FONSECA", "responsavel": "ALLANNA INGRID DUARTE LOPES FONSECA"}, {"turma": "3ºA2026", "aluno": "GUILHERME ARANTES SILVA", "mae": "HELENA DE ARAUJO SILVA", "pai": "MURILLO GONÇALVES ARANTES", "responsavel": "HELENA DE ARAUJO SILVA"}, {"turma": "3ºA2026", "aluno": "HENRIQUE FERREIRA MACEDO", "mae": "SUZANA SARYNE CARDOSO FERREIRA", "pai": "PEDRO HENRIQUE ALVES MACEDO", "responsavel": "PEDRO HENRIQUE ALVES MACEDO"}, {"turma": "3ºA2026", "aluno": "ISABELA FERNANDES SILVÉRIO", "mae": "MILENA FERNANDES FERREIRA", "pai": "LEONARDO SILVÉRIO DOS SANTOS", "responsavel": "LEONARDO SILVÉRIO DOS SANTOS"}, {"turma": "3ºA2026", "aluno": "ISABELE ARAUJO SILVA", "mae": "MONISE MACIEL DE ARAUJO", "pai": "WENES", "responsavel": "MONISE MACIEL DE ARAUJO"}, {"turma": "3ºA2026", "aluno": "JOÃO GABRIEL FERNANDES SOUZA", "mae": "TERESA ROZILEIDE DE SOUZA", "pai": "NIELCEM FERNANDES", "responsavel": "NIELCEM FERNANDES"}, {"turma": "3ºA2026", "aluno": "JULIA CHAVES NOGUEIRA TABANES", "mae": "NAYARA SAMYA COSTA CHAVES NOGUEIRA TABANES", "pai": "MAICON CHAVES NOGUEIRA TABANES", "responsavel": "NAYARA SAMYA COSTA CHAVES NOGUEIRA TABANES"}, {"turma": "3ºA2026", "aluno": "JULIA PAIVA DE SOUZA ZUIN", "mae": "JACKELLINY PAIVA DE SOUZA", "pai": "FABIANO ZUIN", "responsavel": "FABIANO ZUIN"}, {"turma": "3ºA2026", "aluno": "LIA MARIANE FERREIRA MULLER", "mae": "KATIANE FERREIRA DOS SANTOS", "pai": "OSMAR FRANCISCO MULLER", "responsavel": "KATIANE FERREIRA DOS SANTOS"}, {"turma": "3ºA2026", "aluno": "LORENZO LUCAS DE MENEZES LIMA", "mae": "SELMA MESQUITA DE MENEZES LIMA", "pai": "ANDRESON LUCAS DE LIMA", "responsavel": "SELMA MESQUITA DE MENEZES LIMA"}, {"turma": "3ºA2026", "aluno": "LUIZ RAFAEL DE SOUZA TEIXEIRA", "mae": "RENATA KELLY COSTA SOUZA", "pai": "ALEX LOPES TEIXEIRA", "responsavel": "RENATA KELLY COSTA SOUZA"}, {"turma": "3ºA2026", "aluno": "MARIANA DE SOUZA BORGES", "mae": "LEANE DE SOUZA BARROS", "pai": "VAGNO FRANCISCO BORGES", "responsavel": "LEANE DE SOUZA BARROS"}, {"turma": "3ºA2026", "aluno": "MARJORY MOURA DA CRUZ SANTANA", "mae": "MARGARETE MOURA DA CRUZ", "pai": "JUNIOR CESAR SANTANA DE SOUZA", "responsavel": "MARGARETE MOURA DA CRUZ"}, {"turma": "3ºA2026", "aluno": "PEDRO HENRIK BANDEIRA BARROS COSTA", "mae": "MANUELA BARROS DA CONCEIÇÃO", "pai": "FRANK WILLIAN SOUZA COSTA", "responsavel": "MANUELA BARROS DA CONCEIÇÃO"}, {"turma": "3ºA2026", "aluno": "PEDRO LUCAS PEREIRA TAUBE", "mae": "SARA PRISCILLA GABRIEL PEREIRA", "pai": "CARLOS ALBERTO TAUBE JUNIOR", "responsavel": "SARA PRISCILLA GABRIEL PEREIRA"}, {"turma": "3ºA2026", "aluno": "SALATHIEL CASTRO DOS SANTOS", "mae": "BEATRIZ CASTRO LACERDA", "pai": "JOÃO ALBERTO BARBOSA DIAS", "responsavel": "JOÃO ALBERTO BARBOSA DIAS"}, {"turma": "3ºA2026", "aluno": "SARAH SOUSA MARINHO", "mae": "PRÍSCILA CRUZ DE SOUSA MARINHO", "pai": "SUELTON MARINHO DA SILVA", "responsavel": "PRÍSCILA CRUZ DE SOUSA MARINHO"}, {"turma": "3ºA2026", "aluno": "VALENTINA DE ALMEIDA RODRIGUES", "mae": "LUDMILLA DE ALMEIDA FARIA", "pai": "JOÃO MIGUEL RODRIGUES", "responsavel": "LUDMILLA DE ALMEIDA FARIA"}, {"turma": "3ºA2026", "aluno": "VALENTINA SILVA BRAGA", "mae": "EILANE REIS SILVA", "pai": "DANILO SANTOS BRAGA", "responsavel": "EILANE REIS SILVA"}, {"turma": "3ºB2026", "aluno": "ALICE DA SILVA BARBOSA", "mae": "JANAINA DA SILVA", "pai": "ANDRE LUIZ DE OLIVEIRA BARBOSA", "responsavel": "JANAINA DA SILVA"}, {"turma": "3ºB2026", "aluno": "ALLINA ALMEIDA GOMES", "mae": "ANA CARLA ALMEIDA ARAÚJO", "pai": "GILVAM RIBEIRO GOMES", "responsavel": "ANA CARLA ALMEIDA ARAÚJO"}, {"turma": "3ºB2026", "aluno": "ANA CLARA RIBEIRO VELOSO", "mae": "KEROLAYNNY CRISTINY RIBEIRO DE CARVALHO", "pai": "GABRIEL CARVALHO VELOSO", "responsavel": "KEROLAYNNY CRISTINY RIBEIRO DE CARVALHO"}, {"turma": "3ºB2026", "aluno": "ANA JULIA AZEVEDO DE OLIVEIRA", "mae": "ANA CLAUDIA SILVA DE OLIVEIRA", "pai": "ABILIO CARDOSO AZEVEDO NETO", "responsavel": "ABILIO CARDOSO AZEVEDO NETO"}, {"turma": "3ºB2026", "aluno": "ANA LÍVIA POMMER PIRES", "mae": "LARISSA POMMER PIRES", "pai": "GUSTAVO DO NASCIMENTO PIRES", "responsavel": "GUSTAVO DO NASCIMENTO PIRES"}, {"turma": "3ºB2026", "aluno": "ANA LUÍZA DE PAULA SILVA LIMA", "mae": "HETY PEREIRA DA SILVA", "pai": "ADRIANO DE PAULA SILVA LIMA", "responsavel": "HETY PEREIRA DA SILVA"}, {"turma": "3ºB2026", "aluno": "ANA LUIZA SOUSA PAJEÚ", "mae": "LUCILENE MARIA DE SOUSA", "pai": "FABIO FERREIRA PAJEU", "responsavel": "FABIO FERREIRA PAJEU"}, {"turma": "3ºB2026", "aluno": "ANA VITÓRIA LUSTOSA SOARES", "mae": "MARISTELA FERREIRA LUSTOSA CARDOSO", "pai": "CARLOS DIVINO CARDOSO SOARES", "responsavel": "MARISTELA FERREIRA LUSTOSA CARDOSO"}, {"turma": "3ºB2026", "aluno": "BENJAMIN MUNIZ RAFAEL", "mae": "MARIANA MUNIZ DE AMORIM", "pai": "REUDER MOREIRA RAFAEL", "responsavel": "MARIANA MUNIZ DE AMORIM"}, {"turma": "3ºB2026", "aluno": "BERNARDO RIBEIRO BORGES", "mae": "VIVIANNY VIRGINIA BORGES CARVALHO", "pai": "KAIO ROBERTO RIBEIRO DE CARVALHO BORGES", "responsavel": "KAIO ROBERTO RIBEIRO DE CARVALHO BORGES"}, {"turma": "3ºB2026", "aluno": "BRYAN LUCAS MILHOMEM ALVES", "mae": "MIKHAUANE SOUZA SILVA MILHOMEM", "pai": "WILLIAN ALVES PEREIRA", "responsavel": "MIKHAUANE SOUZA SILVA MILHOMEM"}, {"turma": "3ºB2026", "aluno": "CATARINA WORM FERRARI", "mae": "CASSIA WORM FERRARI", "pai": "CASSIANO FERRARI", "responsavel": "CASSIANO FERRARI"}, {"turma": "3ºB2026", "aluno": "CLARA FERNANDES DE MENDONÇA", "mae": "DANIELE BRENDA FERNANDES", "pai": "MURILO MENDONÇA DA SILVA", "responsavel": "DANIELE BRENDA FERNANDES"}, {"turma": "3ºB2026", "aluno": "EMANUEL ABREU MESQUITA", "mae": "GABRIELLE DAMASCENO ABREU MESQUITA", "pai": "EUCLIDES LUÍS MESQUITA", "responsavel": "EUCLIDES LUÍS MESQUITA"}, {"turma": "3ºB2026", "aluno": "GABRIEL FRANÇA MATEUS", "mae": "THAYZE RODRIGUES DE FRANCA MATEUS", "pai": "JOSE MATEUS JUNIOR", "responsavel": "THAYZE RODRIGUES DE FRANCA MATEUS"}, {"turma": "3ºB2026", "aluno": "HEITOR MARTINS DA SILVEIRA", "mae": "ARIADNA CARLOS MARTINS SILVEIRA", "pai": "JEAN PEREIRA DA SILVEIRA", "responsavel": "JEAN PEREIRA DA SILVEIRA"}, {"turma": "3ºB2026", "aluno": "ISIS MARIA GUIMARÃES AMORIM", "mae": "EULA AQUILA GUIMARÃES NASCIMENTO AMORIM", "pai": "MÁRIO ROBERTO NUNES AMORIM", "responsavel": "EULA AQUILA GUIMARÃES NASCIMENTO AMORIM"}, {"turma": "3ºB2026", "aluno": "JULIA CHAVES NOGUEIRA TABANES", "mae": "NAYARA SAMYA COSTA CHAVES NOGUEIRA TABANES", "pai": "MAICON CHAVES NOGUEIRA TABANES", "responsavel": "NAYARA SAMYA COSTA CHAVES NOGUEIRA TABANES"}, {"turma": "3ºB2026", "aluno": "LARA MANOELY ARAUJO DE CARVALHO", "mae": "SAMARA ARAUJO ROCHA", "pai": "FILINTO CRUZ DE CARVALHO NETO", "responsavel": "FILINTO CRUZ DE CARVALHO NETO"}, {"turma": "3ºB2026", "aluno": "LUIZA DOS SANTOS VALE", "mae": "VALERIA DE OLIVEIRA SANTOS", "pai": "DIEGO CARDOSO VALE", "responsavel": "DIEGO CARDOSO VALE"}, {"turma": "3ºB2026", "aluno": "MALAQUIAS GOMES DE OLIVEIRA", "mae": "MIRLA CRISTINA BRITO DE OLIVEIRA GOMES", "pai": "BRUNO GOMES DA CRUZ", "responsavel": "MIRLA CRISTINA BRITO DE OLIVEIRA GOMES"}, {"turma": "3ºB2026", "aluno": "MARIAH EMANUELLY QUEIROS VIEIRA", "mae": "DANIELLE PENA QUEIROS VIEIRA", "pai": "DIOGO VIEIRA DA SILVA QUEIROS", "responsavel": "DIOGO VIEIRA DA SILVA QUEIROS"}, {"turma": "3ºB2026", "aluno": "MELINA MACEDO JUWER", "mae": "VITORIA MACEDO FRANCO JUWER", "pai": "HEBERTT JUWER NASCIMENTO", "responsavel": "HEBERTT JUWER NASCIMENTO"}, {"turma": "3ºB2026", "aluno": "NATASHA DIAS NEVES", "mae": "MAGNA DIAS BARBOSA", "pai": "ESTEVAM CIRQUEIRA DAS NEVES FILHO", "responsavel": "MAGNA DIAS BARBOSA"}, {"turma": "3ºB2026", "aluno": "RAFAEL ARTHUR MILHOMEM ALVES", "mae": "MIKHAUANE SOUZA SILVA MILHOMEM", "pai": "WILLIAN ALVES PEREIRA", "responsavel": "MIKHAUANE SOUZA SILVA MILHOMEM"}, {"turma": "3ºB2026", "aluno": "REBECA LUIZA ROCHA ABREU", "mae": "DENISE ROCHA MARINHO", "pai": "RHARISON LUCAS MOREIRA ABREU", "responsavel": "DENISE DA ROCHA MARINHO"}, {"turma": "3ºB2026", "aluno": "SOPHIA ANDRADE MAGALHAES CARDOSO", "mae": "ELENICE ANDRADE DE SOUSA", "pai": "MARCIO MAGALHAES", "responsavel": "ELENICE ANDRADE DE SOUSA"}, {"turma": "3ºB2026", "aluno": "SOPHIA SOUZA PACHECO", "mae": "ANA CAROLINA MORAES PACHECO DE SOUZA", "pai": "CARLOS EDUARDO SOUSA", "responsavel": "CARLOS EDUARDO SOUSA"}, {"turma": "3ºB2026", "aluno": "VALENTINA DE ALMEIDA RODRIGUES", "mae": "LUDMILLA DE ALMEIDA FARIA", "pai": "JOÃO MIGUEL RODRIGUES", "responsavel": "LUDMILLA DE ALMEIDA FARIA"}, {"turma": "3ºB2026", "aluno": "VALENTINA FERREIRA DE SOUSA", "mae": "KEILA FERREIRA DA SILVA", "pai": "JORDÂNIO DE SOUSA SILVA", "responsavel": "KEILA FERREIRA DA SILVA"}, {"turma": "4ºA2026", "aluno": "ALICE FERREIRA NOLETO", "mae": "ADRIANE MARIA BORBOSA FERREIRA NOLETO", "pai": "ROMULO NOLETO PASSOS", "responsavel": "ADRIANE MARIA BORBOSA FERREIRA NOLETO"}, {"turma": "4ºA2026", "aluno": "ALICE LEIPNITZ ZAGO", "mae": "ALINE LEIPNITZ", "pai": "ALAN TADEU MACEDO ZAGO", "responsavel": "ALINE LEIPNITZ"}, {"turma": "4ºA2026", "aluno": "AMANDA FLAVIA MACENA XAVIER", "mae": "FABIANA XAVIER DA SILVA MACENA", "pai": "JORGE FLAVIO MACENA BRITO", "responsavel": "JORGE FLAVIO MACENA BRITO"}, {"turma": "4ºA2026", "aluno": "AMANDA SOTERO RIBEIRO", "mae": "SORAYA SOTERO SILVA RIBEIRO", "pai": "THIAGO REZENDE RIBEIRO", "responsavel": "SORAYA SOTERO SILVA RIBEIRO"}, {"turma": "4ºA2026", "aluno": "ANA LUISA SILVA BARBOSA", "mae": "LUZIA PEREIRA DA SILVA", "pai": "EMERSON GUIMARÃES BARBOSA", "responsavel": "EMERSON GUIMARÃES BARBOSA"}, {"turma": "4ºA2026", "aluno": "ARTUR FERREIRA DO VALE", "mae": "TALITA FERREIRA DOS SANTOS VALE", "pai": "WEVERSON VINICIUS DO VALE CAVALCANTE", "responsavel": "TALITA FERREIRA DOS SANTOS VALE"}, {"turma": "4ºA2026", "aluno": "BENJAMIM OLIVEIRA RODRIGUES GOMES", "mae": "KATIA OLIVEIRA E SILVA RODRIGUES", "pai": "DANILO RODRIGUES GOMES", "responsavel": "KATIA OLIVEIRA E SILVA RODRIGUES"}, {"turma": "4ºA2026", "aluno": "CRIS LUZ SANTOS", "mae": "NAYANE DE SOUSA SILVA SANTOS", "pai": "DHANYLHO LAUREANO DOS SANTOS", "responsavel": "NAYANE DE SOUSA SILVA SANTOS"}, {"turma": "4ºA2026", "aluno": "DAVI LUIS MONTE CHAVES", "mae": "BERENICE DOS SANTOS MONTE CHAVES", "pai": "MARCONDES PEREIRA CHAVES", "responsavel": "BERENICE DOS SANTOS MONTE CHAVES"}, {"turma": "4ºA2026", "aluno": "EDUARDO OLIVEIRA DE ALMEIDA SILVA", "mae": "IRENICE DE OLIVEIRA GOMES", "pai": "SILVIO CESAR DA SILVA", "responsavel": "SILVIO CESAR DA SILVA"}, {"turma": "4ºA2026", "aluno": "ELOISA MAURIZ DE FRANÇA BARROS", "mae": "LILIANE MATIAS BARROS DE FRANÇA", "pai": "LEANDRO MAURIZ DE FRNAÇA", "responsavel": "LEANDRO MAURIZ DE FRNAÇA"}, {"turma": "4ºA2026", "aluno": "EMANUEL MARQUES PRADO", "mae": "ANDREIA RAMOS MARQUES PRADO", "pai": "MARCOS ANTÔNIO DO PRADO", "responsavel": "MARCOS ANTÔNIO DO PRADO"}, {"turma": "4ºA2026", "aluno": "ENZO CASSIANO ALVES XIMENDES", "mae": "JANAINA ALVES DE SOUZA", "pai": "WANDERSON DE SOUSA XIMENDES", "responsavel": "JANAINA ALVES DE SOUZA"}, {"turma": "4ºA2026", "aluno": "ERIC DIEGO NEUHAUS", "mae": "SILVIA NEUHAUS", "pai": "JENS NEUHAUS", "responsavel": "SILVIA NEUHAUS"}, {"turma": "4ºA2026", "aluno": "GABRIELA ALVES BATISTA", "mae": "LETICIA CIRILO ALVES", "pai": "JEAN CARLOS BATISTA", "responsavel": "LETICIA CIRILO ALVES"}, {"turma": "4ºA2026", "aluno": "HELENA ORTEGA", "mae": "ALINY DA COSTA FARIA ORTEGA ATTIE", "pai": "UDSON APARECIDO LOBO ORTEGA ATTIE", "responsavel": "ALINY DA COSTA FARIA ORTEGA ATTIE"}, {"turma": "4ºA2026", "aluno": "ISABELLA ROSA DE OLIVEIRA", "mae": "JORDEANE ROSA DE OLIVEIRA", "pai": "PAULO ROBERTO OLIVEIRA DE SOUZA", "responsavel": "PAULO ROBERTO OLIVEIRA DE SOUZA"}, {"turma": "4ºA2026", "aluno": "JOÃO GABRIEL SILVA OLIMPIO DE ABREU", "mae": "MAGVANE SEVERINO DA SILVA", "pai": "EVI LAZIO OLIMPIO DE ABREU", "responsavel": "MAGVANE SEVERINO DA SILVA"}, {"turma": "4ºA2026", "aluno": "JOÃO INOCENCIO SILVA DE MACÊDO", "mae": "KÁSSIA PEREIRA SILVA MELO MACEDO", "pai": "GEEFERSON MELO DE MACEDO", "responsavel": "GEEFERSON MELO DE MACEDO"}, {"turma": "4ºA2026", "aluno": "JOÃO LUCAS AQUINO MOTA", "mae": "ILÍADA AQUINO DE SOUZA FORTES MOTA", "pai": "BRUNO BRITO MOTA", "responsavel": "BRUNO BRITO MOTA"}, {"turma": "4ºA2026", "aluno": "JOÃO MIGUEL AGUIAR VIEIRA", "mae": "LILIANA AGUIAR NEGREIROS", "pai": "RONIVON GOMES VIEIRA", "responsavel": "RONIVON GOMES VIEIRA"}, {"turma": "4ºA2026", "aluno": "JOÃO MIGUEL ARAÚJO GOMES DE OLIVEIRA", "mae": "DAYANNE GOMES DOS SANTOS", "pai": "FRANCISCO STALIM ARAÚJO GOMES DE OLIVEIRA", "responsavel": "DAYANNE GOMES DOS SANTOS"}, {"turma": "4ºA2026", "aluno": "JOÃO PEDRO LEÃO NERIS", "mae": "REJANE NERIS DE SOUSA LEÃO", "pai": "ONALDO LEÃO FERREIRA JUNIOR", "responsavel": "REJANE NERIS DE SOUSA LEÃO"}, {"turma": "4ºA2026", "aluno": "JOÃO VICTOR PICANÇO BARBOZA AGUIAR", "mae": "DANIELE JAMILE MIRA PICANÇO DIAS", "pai": "ELIO BARBOZA AGUIAR JUNIOR", "responsavel": "ELIO BARBOZA AGUIAR JUNIOR"}, {"turma": "4ºA2026", "aluno": "JOSÉ GUILHERME LOPES REIS", "mae": "AOLÍBAMA MÔNICA ELITA LOPES COSTA", "pai": "JOSE NASCIMENTO DOS REIS", "responsavel": "AOLÍBAMA MÔNICA ELITA LOPES COSTA"}, {"turma": "4ºA2026", "aluno": "LAÍS FRANÇA DE SOUZA", "mae": "MARIELE GONÇALVES DE FRANÇA", "pai": "MAXUELL DOS SANTOS DE SOUZA", "responsavel": "MAXUELL DOS SANTOS DE SOUZA"}, {"turma": "4ºA2026", "aluno": "LORENZO DE SOUZA ABREU", "mae": "ADRIANA DE SOUZA ALMEIDA", "pai": "JOABES PINA DE ABREU", "responsavel": "JOABES PINA DE ABREU"}, {"turma": "4ºA2026", "aluno": "LOUISE GABRIELLE VILAS BOAS AGUIAR", "mae": "KARINY VILAS BOAS SANTOS AGUIAR", "pai": "JADSON DE AGUIAR TEIXEIRA", "responsavel": "KARINY VILAS BOAS SANTOS AGUIAR"}, {"turma": "4ºA2026", "aluno": "MANUELLA ALENCAR SOARES SILVA", "mae": "RONIELLA ALENCAR SILVA", "pai": "JOSE SALVADOR SILVA NETO", "responsavel": "RONIELLA ALENCAR SILVA"}, {"turma": "4ºA2026", "aluno": "MELISSA DIAS DE SOUZA ALMEIDA", "mae": "MAYRA TYCIANE DIAS DE SOUZA", "pai": "TIAGO TEIXEIRA ALMEIDA", "responsavel": "TIAGO TEIXEIRA ALMEIDA"}, {"turma": "4ºA2026", "aluno": "PEDRO ARTHUR MEDEIROS DE OLIVEIRA", "mae": "ADENAILDE ROSA DE MEDEIROS", "pai": "RAFAEL GOMES DE OLIVEIRA", "responsavel": "RAFAEL GOMES DE OLIVEIRA"}, {"turma": "4ºA2026", "aluno": "PEDRO CARREIRO AMARAL COSTA", "mae": "CAMILA CARREIRO DE CARVALHO", "pai": "WYSSES STEFANI AMARAL COSTA", "responsavel": "WYSSES STEFANI AMARAL COSTA"}, {"turma": "4ºA2026", "aluno": "PEDRO VITOR GONÇALVES ALENCAR", "mae": "MARCELLA GONÇALVES ARANTES", "pai": "GIL EANES FERNANDES ALENCAR", "responsavel": "MARCELLA GONÇALVES ARANTES"}, {"turma": "4ºA2026", "aluno": "PIETRA FRANÇA MARTINS", "mae": "FABIANE FRANÇA REIS", "pai": "CARLOS LEANDRO MARTINS DA SILVA", "responsavel": "FABIANE FRANÇA REIS"}, {"turma": "4ºA2026", "aluno": "SAMUEL PEREIRA CAMBUY", "mae": "ISABELLA ESTEVÃO PEREIRA CAMBUY", "pai": "RUBENS DE OLIVEIRA CAMBUY", "responsavel": "ISABELLA ESTEVÃO PEREIRA CAMBUY"}, {"turma": "4ºA2026", "aluno": "SILVIO GABRIEL SANTOS BRASIL", "mae": "JACQUELINE SANTOS COELHO BRASIL", "pai": "SILVIO DA SILVA BRASIL", "responsavel": "JACQUELINE SANTOS COELHO BRASIL"}, {"turma": "4ºA2026", "aluno": "THÉO MORAES NUNES", "mae": "LAYANE DE SOUSA NUNES", "pai": "YURE SILVA MORAES", "responsavel": "LAYANE DE SOUSA NUNES"}, {"turma": "4ºA2026", "aluno": "VALENTINA ORTEGA", "mae": "ALINY DA COSTA FARIA ORTEGA ATTIE", "pai": "UDSON APARECIDO LOBO ORTEGA ATTIE", "responsavel": "ALINY DA COSTA FARIA ORTEGA ATTIE"}, {"turma": "4ºB2026", "aluno": "ANA LAURA MENEZES CALIL", "mae": "BRENDA ARAUJO MENEZES", "pai": "THOMAS THIAGO CALIL", "responsavel": "BRENDA ARAUJO MENEZES"}, {"turma": "4ºB2026", "aluno": "ANA LUÍZA LOPES MACHADO", "mae": "GLENDA KELLY LOPES", "pai": "", "responsavel": "GLENDA KELLY LOPES"}, {"turma": "4ºB2026", "aluno": "ANNA LAURA COELHO LEITE MESQUITA", "mae": "KÉZIA COELHO DOS SANTOS SILVA", "pai": "MURILO LEITE MESQUITA", "responsavel": "MURILO LEITE MESQUITA"}, {"turma": "4ºB2026", "aluno": "BERNARDO GOMES FRASÃO FEITOZA", "mae": "NELCILENE COSTA FEITOZA", "pai": "WERLEY FRAZÃO FEITOZA", "responsavel": "NELCILENE COSTA FEITOZA"}, {"turma": "4ºB2026", "aluno": "ELOAH THALINNY PRONOCENO HUESCAR", "mae": "ROZANGELA FRANCISCA PRONOCENO", "pai": "ALEXANDRE SILVA SOUZA", "responsavel": "ALEXANDRE SILVA SOUZA"}, {"turma": "4ºB2026", "aluno": "ENZO CUNHA TAVARES", "mae": "ANNA AMELIA DAMASCENO CUNHA", "pai": "LIZANDRO CICILIANO TAVARES", "responsavel": "ANNA AMELIA DAMASCENO CUNHA"}, {"turma": "4ºB2026", "aluno": "HEITOR CHAVES NOGUEIRA TABANES", "mae": "NAYARA SAMYA COSTA CHAVES NOGUEIRA TABANES", "pai": "MAICON CHAVES NOGUEIRA TABANES", "responsavel": "NAYARA SAMYA COSTA CHAVES NOGUEIRA TABANES"}, {"turma": "4ºB2026", "aluno": "HELENA DE SOUSA BAZONI", "mae": "KARINE BERNARDO DE SOUSA BAZONI", "pai": "MARCUS VINICIUS MENDES BAZONI", "responsavel": "KARINE BERNARDO DE SOUSA BAZONI"}, {"turma": "4ºB2026", "aluno": "HELOÍSA FERREIRA NOLETO", "mae": "GEOVANNA CARVALHO NOLETO", "pai": "MARCUS VINICIUS FERREIRA LIMA", "responsavel": "EDNALVA ARAUJO LIMA"}, {"turma": "4ºB2026", "aluno": "ÍSIS COSTA AMARAL NEGRE", "mae": "JAQUELLYNNE AIRES COSTA", "pai": "MAXWEL CHEGUEVARA BRITO AMARAL NEGRE", "responsavel": "MAXWEL CHEGUEVARA BRITO AMARAL NEGRE"}, {"turma": "4ºB2026", "aluno": "ISIS PINHEIRO AGUIAR", "mae": "FABYANE LIMA PINHEIRO", "pai": "BENTO AGUIAR CUNHA", "responsavel": "BENTO AGUIAR CUNHA"}, {"turma": "4ºB2026", "aluno": "JAIME NETO SARDINHA DE AZEVEDO", "mae": "ALCIONE ALVES SARDINHA DE AZEVEDO", "pai": "CÉLIO DE AZEVEDO", "responsavel": "CÉLIO DE AZEVEDO"}, {"turma": "4ºB2026", "aluno": "JOÃO LUIZ FREITAS DE ARAUJO", "mae": "JÚLIA DANIELLE FREITAS ALVES", "pai": "JUNIOR NETO DE ARAUJO", "responsavel": "JÚLIA DANIELLE FREITAS ALVES"}, {"turma": "4ºB2026", "aluno": "JOÃO MIGUEL PAULINO DE SOUZA", "mae": "LEIDLANNE PAULINO DA CUNHA", "pai": "FRANCINEI SANTOS DE SOUZA", "responsavel": "LEIDLANNE PAULINO DA CUNHA"}, {"turma": "4ºB2026", "aluno": "LARA ANANDA SILVÉRIO SILVESTRE TEIXEIRA", "mae": "MARILIA ANANDA SILVÉRIO E SILVA TEIXEIRA", "pai": "FERNANDO RIBEIRO TEIXEIRA", "responsavel": "FERNANDO RIBEIRO TEIXEIRA"}, {"turma": "4ºB2026", "aluno": "MAELY ALVES SAMPAIO", "mae": "MILENA SAMPAIO ALVES NASCIMENTO", "pai": "MARCOS AURELIO ALVES COELHO", "responsavel": "MARCOS AURELIO ALVES COELHO"}, {"turma": "4ºB2026", "aluno": "MARIA CLARA PEIXOTO MEDEIROS", "mae": "LIVIA MEDEIROS TEIXEIRA", "pai": "ALDO PEIXOTO DA SILVA", "responsavel": "LIVIA MEDEIROS TEIXEIRA"}, {"turma": "4ºB2026", "aluno": "MARIANA BARRETO BARBOSA LIMA", "mae": "PAULA RAQUEL BARRETO RODRIGUES", "pai": "AMITAI SILVA LIMA JUNIOR", "responsavel": "PAULA RAQUEL BARRETO RODRIGUES"}, {"turma": "4ºB2026", "aluno": "MARIA VICTÓRIA XAVIER DE BARROS", "mae": "OFÉLIA MARIA XAVIER", "pai": "ADEMAR DE BARROS FILHO", "responsavel": "OFELIA MARIA XAVIER DE BARROS"}, {"turma": "4ºB2026", "aluno": "MURILLO BISPO DE CASTRO GASPIO", "mae": "ROSIMÁRIA BISPO DE CASTRO GÀSPIO", "pai": "CARLOS FERNANDO GÁSPIO DE CASTRO SANTOS", "responsavel": "CARLOS FERNANDO GÁSPIO DE CASTRO SANTOS"}, {"turma": "4ºB2026", "aluno": "OTÁVIO LACERDA TURIBIO", "mae": "MARA TORIBIO DE LACERDA", "pai": "CLEITON DE ASSIS MALQUIADES TURIBIO", "responsavel": "MARA TORIBIO DE LACERDA"}, {"turma": "4ºB2026", "aluno": "PEDRO IVO DIAS RODRIGUES", "mae": "ANDREIA DIAS BANDEIRA", "pai": "JUCIMAR IVO NERES RODRIGUES FERREIRA", "responsavel": "JEFERSON NERES RODRIGUES FERREIRA"}, {"turma": "4ºB2026", "aluno": "PEDRO LUCAS ALVES PORTILHO", "mae": "ROSANGELA FERREIRA ALVES PORTILHO", "pai": "EZEQUIEL PORTILHO", "responsavel": "EZEQUIEL PORTILHO"}, {"turma": "4ºB2026", "aluno": "VALENTINA SANTOS RODRIGUES ALBUQUERQUE", "mae": "WIRAJANY DE PAULA SANTOS DOURADO ALBUQUERQUE", "pai": "JOSÉ CLEMISON RODRIGUES ALBUQUERQUE", "responsavel": "JOSÉ CLEMISON RODRIGUES ALBUQUERQUE"}, {"turma": "4ºB2026", "aluno": "YASMIN CORRÊA MAIA", "mae": "ALCILENE DOMICIANA CORREA FERREIRA", "pai": "FABIO MAIA RODRIGUES", "responsavel": "FABIO MAIA RODRIGUES"}, {"turma": "5ºA2026", "aluno": "ALICE BRAGA MATOS", "mae": "MARIA RAQUEL BRAGA", "pai": "LEONARDO FERNANDES MATOS", "responsavel": "THAÍS RODRIGUES BRAGA MOROMIZATO"}, {"turma": "5ºA2026", "aluno": "ALICE FREITAS BRITO MOI", "mae": "AMANDA LOANE BRITO MOI", "pai": "MAURO CEZAR FREITAS MOI", "responsavel": "MAURO CEZAR FREITAS MOI"}, {"turma": "5ºA2026", "aluno": "ALICE PARLANDRINO VIANA DE OLIVEIRA", "mae": "ISVEKLANA PARLANDRINO VIANA", "pai": "LEONARDO JOSE DE OLIVEIRA", "responsavel": "ARILENE PARLANDRINO SANTOS"}, {"turma": "5ºA2026", "aluno": "ANA BEATRIZ GOUVEA MESQUITA FERRAZ", "mae": "LIDIA GOMES GOUVÊA", "pai": "VLADIMIR FERREIRA DE MESQUITA FERRAZ", "responsavel": "LIDIA GOMES GOUVÊA"}, {"turma": "5ºA2026", "aluno": "ANNA LAURA COSTA ALVES", "mae": "LUCILENE GOMES DA COSTA ALVES", "pai": "ERISVALDO DE OLIVEIRA ALVES", "responsavel": "ERISVALDO DE OLIVEIRA ALVES"}, {"turma": "5ºA2026", "aluno": "ANNA LAURA MARQUES SOARES DE CARVALHO", "mae": "ELZA MARIA SILVA CARVALHO SOARES", "pai": "MARCIO MARQUES SOARES", "responsavel": "MARIA DA PAZ VIEIRA MARQUES"}, {"turma": "5ºA2026", "aluno": "ARTUR RODRIGUES DE SOUSA", "mae": "MYAMY PATRICK RODRIGUES OLIVEIRA DE SOUSA", "pai": "BELMIRAN JOSÉ DE SOUSA FILHO", "responsavel": "BELMIRAN JOSÉ DE SOUSA FILHO"}, {"turma": "5ºA2026", "aluno": "BENÍCIO MACHADO MATOS", "mae": "ANDRESSA JACIARIA MACHADO DOS SANTOS", "pai": "JONILSON MATOS RODRIGUES", "responsavel": "ANDRESSA JACIARIA MACHADO DOS SANTOS"}, {"turma": "5ºA2026", "aluno": "BERNARDO CAVALCANTE GUIMARÃES", "mae": "ADRIANE PEREIRA CAVALCANTE", "pai": "KLAYTON DA SILVA GUIMARÃES", "responsavel": "ADRIANE PEREIRA CAVALCANTE"}, {"turma": "5ºA2026", "aluno": "CARLOS ANTONIO DE ALBUQUERQUE RODRIGUES", "mae": "MARY KETLEN DE ALBUQUERQUE ALMEIDA", "pai": "CARLOS ALBERTO RODRIGUES JUNIOR", "responsavel": "MARY KETLEN DE ALBUQUERQUE ALMEIDA"}, {"turma": "5ºA2026", "aluno": "CLARICE LIMA BURGUE", "mae": "JÉSSICA RAYANE LIMA PAIVA BURGUE", "pai": "PAULO DE SOUSA BURGUE", "responsavel": "PAULO DE SOUSA BURGUE"}, {"turma": "5ºA2026", "aluno": "DAVI VIEIRA DOS SANTOS CARVALHO", "mae": "MARIA ANTÔNIA DOS SANTOS SILVA", "pai": "DEYSON CARVALHO DE MELO", "responsavel": "DEYSON CARVALHO DE MELO"}, {"turma": "5ºA2026", "aluno": "ELIABE MASTELLA DA SILVA", "mae": "DENISE CRISTINA MASTELLA", "pai": "GIOVANO CAVALHEIRO DA SILVA", "responsavel": "GIOVANO CAVALHEIRO DA SILVA"}, {"turma": "5ºA2026", "aluno": "ELISA SAORES SILVA BORGES", "mae": "HAMISTENIE ROSSANA PINTO DE SOUSA SOARES", "pai": "ANDRE LUIZ SILVA BORGES", "responsavel": "HAMISTENIE ROSSANA PINTO DE SOUSA SOARES"}, {"turma": "5ºA2026", "aluno": "EMILLY MORAIS DA SILVA", "mae": "GIZELE SOUSA MORAIS SILVA", "pai": "ELSON PEREIRA DA SILVA", "responsavel": "ELSON PEREIRA DA SILVA"}, {"turma": "5ºA2026", "aluno": "FILIP BRITO RIBEIRO", "mae": "APOLIANA TENERO BRITO", "pai": "VALDEIR JOSE RIBEIRO", "responsavel": "APOLIANA TENERO BRITO"}, {"turma": "5ºA2026", "aluno": "FLAVIO JUNIOR FAGUNDES ANDRADE", "mae": "CRISTIANE LOPES DE OLIVEIRA", "pai": "FLAVIO CESAR DE ANDRADE", "responsavel": "CRISTIANE LOPES DE OLIVEIRA"}, {"turma": "5ºA2026", "aluno": "GABRIELA MARQUES JARDIM", "mae": "ALBA MARQUES DE SOUSA JARDIM", "pai": "FLAVIO JARDIM MARQUES", "responsavel": "FLAVIO JARDIM MARQUES"}, {"turma": "5ºA2026", "aluno": "HEITOR FELIX ALVES CASTRO", "mae": "HEMILY DAYARA SILVA CASTRO", "pai": "ECLESIASTES ALVES DOS SANTOS", "responsavel": "ECLESIASTES ALVES DOS SANTOS"}, {"turma": "5ºA2026", "aluno": "HEITOR OLIVEIRA GONÇALVES LIMA", "mae": "CEILANE DE SALES OLIVEIRA", "pai": "ALYSON LUIZ GONÇALVES LIMA", "responsavel": "ALYSON LUIZ GONÇALVES LIMA"}, {"turma": "5ºA2026", "aluno": "HEITOR VIANA BITTENCOURT", "mae": "THAIS VIANA DE SOUZA BITTENCOURT", "pai": "MAURICIO JOÃO BITTENCOURT", "responsavel": "THAIS VIANA DE SOUZA BITTENCOURT"}, {"turma": "5ºA2026", "aluno": "HELENA PEREIRA FIGUEIREDO", "mae": "ANELLYZE SOUZA PEREIRA", "pai": "PAI", "responsavel": "ANELLYZE SOUZA PEREIRA"}, {"turma": "5ºA2026", "aluno": "ISAAC SOUSA MARINHO", "mae": "PRÍSCILA CRUZ DE SOUSA MARINHO", "pai": "SUELTON MARINHO DA SILVA", "responsavel": "PRÍSCILA CRUZ DE SOUSA MARINHO"}, {"turma": "5ºA2026", "aluno": "ISIS BERNARDES LEMES MONTEIRO", "mae": "BIANCA STEPHANY LEMES MONTEIRO", "pai": "LUCAS BERNARDES DE ALMEIDA FERREIRA", "responsavel": "BIANCA STEPHANY LEMES MONTEIRO"}, {"turma": "5ºA2026", "aluno": "ISRAEL JORGE CASTRO SILVA", "mae": "LINDOMARA DA SILVA GUIMARÃES", "pai": "JORGE LUIS CASTRO COSTA", "responsavel": "JORGE LUIS CASTRO COSTA"}, {"turma": "5ºA2026", "aluno": "JOÃO FRANCISCO BEZERRA NASCIMENTO", "mae": "FABIANA ARAUJO CAVALCANTE NASCIMENTO", "pai": "MURILIO BEZERRA CAVALCANTE", "responsavel": "MURILIO BEZERRA CAVALCANTE"}, {"turma": "5ºA2026", "aluno": "JOÃO PEDRO MOURA ROCHA", "mae": "SUELLEM MOURA SILVA ROCHA", "pai": "OTANIEL DA SILVA ROCHA", "responsavel": "SUELLEM MOURA SILVA ROCHA"}, {"turma": "5ºA2026", "aluno": "JOÃO REGO BRANDÃO NETO", "mae": "NÃO INFORMADO", "pai": "DANILLO CASTRO BRANDÃO", "responsavel": "DANILLO CASTRO BRANDÃO"}, {"turma": "5ºA2026", "aluno": "JORDANA CUNHA SOUSA", "mae": "WELMA CUNHA SILVA", "pai": "VACIO SANTANA DE SOUSA", "responsavel": "VACIO SANTANA DE SOUSA"}, {"turma": "5ºA2026", "aluno": "JOSÉ AUGUSTO SOUSA BRAGA", "mae": "LUANNA OLIVEIRA BRAGA", "pai": "FELIPE AUGUSTO SOUSA E SILVA", "responsavel": "LUANNA OLIVEIRA BRAGA"}, {"turma": "5ºA2026", "aluno": "MARIA ISIS SILVA VALIENTE", "mae": "MIKAELLA CAROLINA SILVA", "pai": "ANDRÉ LUIZ VALIENTE", "responsavel": "MARGARETH DE CASSIA RAFAEL PEREIRA DA SILVA"}, {"turma": "5ºA2026", "aluno": "MARIA LUÍSA COSTA RIBEIRO", "mae": "RENATA ALVES COSTA", "pai": "JEOVANE PEDRO RIBEIRO", "responsavel": "JEOVANE PEDRO RIBEIRO"}, {"turma": "5ºA2026", "aluno": "MARIA LUIZA DE SOUSA MESQUITA", "mae": "THAYSA GABRIELLE DE SOUZA", "pai": "JURANDI MESQUITA JUNIOR", "responsavel": "THAYSA GABRIELLE DE SOUZA"}, {"turma": "5ºA2026", "aluno": "PEDRO LISBOA DANTAS CASTRO", "mae": "PATRICIA LISBOA DANTAS CASTRO", "pai": "LEONARDO LISBOA SILVA", "responsavel": "PATRICIA LISBOA DANTAS CASTRO"}, {"turma": "5ºA2026", "aluno": "SOPHIA ALVES REIS GAMA", "mae": "POLLYANA REIS ALVES GAMA", "pai": "OSVALDO ALVES GAMA DAS CHAGAS", "responsavel": "OSVALDO ALVES GAMA DAS CHAGAS"}, {"turma": "5ºA2026", "aluno": "VITOR GABRIEL BARREIRA REIS", "mae": "TEREZINHA RIBEIRO REIS", "pai": "FRANCISCO DE ASSIS BARREIRA NUNES", "responsavel": "FRANCISCO DE ASSIS BARREIRA NUNES"}, {"turma": "5ºB2026", "aluno": "ALICE DOS SANTOS ALVES", "mae": "CLAUDILÉIA ALVES DOS SANTOS", "pai": "JOÃO BATISTA DE SOUZA ALVES", "responsavel": "CLAUDILÉIA ALVES DOS SANTOS"}, {"turma": "5ºB2026", "aluno": "ANA GABRYELLA VIEIRA DA SILVA PARRIÃO", "mae": "CLAUDIA SOUZA PARRIÃO VIEIRA", "pai": "FERNANDO VIEIRA DA SILVA", "responsavel": "CLAUDIA SOUZA PARRIÃO VIEIRA"}, {"turma": "5ºB2026", "aluno": "ANA JÚLIA DIAS GUIMARÃES LIMA", "mae": "ISABELA GUIMARAES LIMA", "pai": "JULIO CESAR PEREIRA DIAS", "responsavel": "ISABELA GUIMARAES LIMA"}, {"turma": "5ºB2026", "aluno": "AUGUSTO MATTOS MACEDO SANTIAGO JUWER", "mae": "VITORIA MACEDO FRANCO JUWER", "pai": "HEBERTT JUWER NASCIMENTO", "responsavel": "HEBERTT JUWER NASCIMENTO"}, {"turma": "5ºB2026", "aluno": "BEATRIZ DE JESUS AMARO SANTOS", "mae": "AVELINA MARIA DE JESUS NETA", "pai": "MANOEL BOMFIM AMARO DOS SANTOS", "responsavel": "MANOEL BOMFIM AMARO DOS SANTOS"}, {"turma": "5ºB2026", "aluno": "CECILIA WORM FERRARI", "mae": "CASSIA WORM FERRARI", "pai": "CASSIANO FERRARI", "responsavel": "CASSIANO FERRARI"}, {"turma": "5ºB2026", "aluno": "DANIEL DE ASSUNÇÃO DIAS", "mae": "KATIUSCIA PORTO DE ASSUNÇÃO", "pai": "LISOMAR GONÇALVES DIAS", "responsavel": "KATIUSCIA PORTO DE ASSUNÇÃO"}, {"turma": "5ºB2026", "aluno": "DAVI SOUZA CINTRA", "mae": "WERIKA SOUZA REIS CINTRA", "pai": "EURIPEDES CINTRA SILVA JUNIOR", "responsavel": "EURIPEDES CINTRA SILVA JUNIOR"}, {"turma": "5ºB2026", "aluno": "DAVI VIEIRA DOS SANTOS CARVALHO", "mae": "MARIA ANTÔNIA DOS SANTOS SILVA", "pai": "DEYSON CARVALHO DE MELO", "responsavel": "DEYSON CARVALHO DE MELO"}, {"turma": "5ºB2026", "aluno": "EMANUELLY ROCHA DE ALMEIDA", "mae": "QUEZIA NASCIMENTO DA ROCHA ALMEIDA", "pai": "LUCIANO DE ALMEIDA RIBEIRO", "responsavel": "QUEZIA NASCIMENTO DA ROCHA ALMEIDA"}, {"turma": "5ºB2026", "aluno": "GUSTAVO ALMEIDA FERREIRA", "mae": "THALITA LEAL MORAIS DE ALMEIDA", "pai": "PAULO DANIEL FERREIRA SILVA", "responsavel": "THALITA LEAL MORAIS DE ALMEIDA"}, {"turma": "5ºB2026", "aluno": "HEITOR QUINTINO CALDERARO CHAVES", "mae": "KATHLEEN QUINTINO CALDERARO DE ANDRADE", "pai": "ROBSON ANDRERRO SANTOS CHAVES", "responsavel": "ROSICLEIA SANTOS COSTA"}, {"turma": "5ºB2026", "aluno": "HELENA DOS SANTOS ALVES", "mae": "CLAUDILÉIA ALVES DOS SANTOS", "pai": "JOÃO BATISTA DE SOUZA ALVES", "responsavel": "CLAUDILÉIA ALVES DOS SANTOS"}, {"turma": "5ºB2026", "aluno": "HENRIQUE MAGALHÃES FERREIRA", "mae": "IARA SILVA MAGALHAES", "pai": "RICHARDSON DA SILVA FERREIRA", "responsavel": "RICHARDSON DA SILVA FERREIRA"}, {"turma": "5ºB2026", "aluno": "JOÃO GABRIEL LUSTOSA SOARES", "mae": "MARISTELA FERREIRA LUSTOSA", "pai": "CARLOS DIVINO CARDOSO SOARES", "responsavel": "MARISTELA FERREIRA LUSTOSA CARDOSO"}, {"turma": "5ºB2026", "aluno": "JOÃO MARCOS BERNARDO VERAS DE JESUS", "mae": "LILIAN BERNARDO VERAS", "pai": "WENNIS DE JESUS", "responsavel": "IONE BERNARDO GRANJEIRO"}, {"turma": "5ºB2026", "aluno": "JOAO VITOR DE CARVALHO SANTOS", "mae": "IONARA DE LIMA CARVALHO SANTOS", "pai": "RICARDO AUGUSTO DE MIRANDA", "responsavel": "RICARDO AUGUSTO DE MIRANDA SANTOS"}, {"turma": "5ºB2026", "aluno": "JOSÉ AUGUSTO SOUSA BRAGA", "mae": "LUANNA OLIVEIRA BRAGA", "pai": "FELIPE AUGUSTO SOUSA E SILVA", "responsavel": "LUANNA OLIVEIRA BRAGA"}, {"turma": "5ºB2026", "aluno": "LAURA MARTINS LEOCÁDIO", "mae": "IZABELLA CRISTINA LEOCADIO", "pai": "DEYWER LUCAS", "responsavel": "IZABELLA CRISTINA LEOCADIO"}, {"turma": "5ºB2026", "aluno": "LIZ BATISTA BORGES", "mae": "KAROLINY DA SILVA BATISTA BORGES", "pai": "LUCAS BORGES ROCHA", "responsavel": "KAROLINY DA SILVA BATISTA BORGES"}, {"turma": "5ºB2026", "aluno": "LOHANNE PAULINO DE SOUSA ALVES", "mae": "DAISY JACQUELINE SOUSA SILVA", "pai": "FRANCISCO DAS CHAGAS ALVES DA SILVA", "responsavel": "DAISY JACQUELINE SOUSA SILVA"}, {"turma": "5ºB2026", "aluno": "LORENZO PACHECO RIBEIRO", "mae": "EMILENNE DANIELLE PACHECO DE SOUSA", "pai": "FAUSTO HENRIQUE ODA RIBEIRO BARBOSA E SILVA", "responsavel": "EMILENNE DANIELLE PACHECO DE SOUSA"}, {"turma": "5ºB2026", "aluno": "LUÍS FILIPE DIAS PINHEIRO", "mae": "LILIA MARA XAVIER DIAS PINHEIRO", "pai": "JOSÉ CARLOS TAVARES PINHEIRO", "responsavel": "JOSÉ CARLOS TAVARES PINHEIRO"}, {"turma": "5ºB2026", "aluno": "MARIA FERNANDA FERREIRA LIMA", "mae": "MARIA ETELVANE FERREIRA", "pai": "RICARDO LUIS RODRIGUES LIMA", "responsavel": "MARIA ETELVANE FERREIRA"}, {"turma": "5ºB2026", "aluno": "PEDRO LISBOA DANTAS CASTRO", "mae": "PATRICIA LISBOA DANTAS CASTRO", "pai": "LEONARDO LISBOA SILVA", "responsavel": "PATRICIA LISBOA DANTAS CASTRO"}, {"turma": "5ºB2026", "aluno": "RAFAEL HENRIQUE MARTINS COSTA", "mae": "ROMÊNIA KELLY ALVES COSTA", "pai": "CARLINDOMAR MARTINS DE SOUSA", "responsavel": "ROMÊNIA KELLY ALVES COSTA"}, {"turma": "5ºB2026", "aluno": "VALENTYNA SOUZA GOMES", "mae": "MICHELLE DA SILVA SOUZA", "pai": "WAGNER GOMES PEREIRA", "responsavel": "WAGNER GOMES PEREIRA"}, {"turma": "5ºB2026", "aluno": "VICTOR ALVES MESQUITA", "mae": "ANNA KAROLINY ALVES SILVA", "pai": "HIAGO RIBEIRO MESQUITA", "responsavel": "ANNA KAROLINY ALVES SILVA"}, {"turma": "6ºA2026", "aluno": "ALICE SOUZA DE ALBUQUERQUE", "mae": "ANDRÉA SILVA SOUZA DE ALBUQUERQUE", "pai": "HEGUEL BELMIRO SOUTO DE ALBUQUERQUE", "responsavel": "HEGUEL BELMIRO SOUTO DE ALBUQUERQUE"}, {"turma": "6ºA2026", "aluno": "ALTEMAR GONÇALVES PEREIRA JUNIOR", "mae": "ADEILDA DA CONCEIÇÃO PEREIRA", "pai": "ALTEMAR GONÇALVES DOS SANTOS", "responsavel": "ALTEMAR GONÇALVES DOS SANTOS"}, {"turma": "6ºA2026", "aluno": "ALYCE REBEKA SOUSA SILVA", "mae": "ELENICE SOUSA SILVA", "pai": "WAGNER DA SILVA", "responsavel": "WAGNER DA SILVA"}, {"turma": "6ºA2026", "aluno": "ANA JÚLIA SOUSA BRASIL", "mae": "ELIANE SOUSA BARBOSA BRASIL", "pai": "SILVONEY DA SILVA BRASIL", "responsavel": "ELIANE SOUSA BARBOSA BRASIL"}, {"turma": "6ºA2026", "aluno": "ANA LIZZIE AGUIAR RIBEIRO", "mae": "JADMA HIRGILA DE AGUIAR TEIXEIRA", "pai": "FERNANDO PEREIRA RIBEIRO", "responsavel": "JADMA HIRGILA DE AGUIAR TEIXEIRA"}, {"turma": "6ºA2026", "aluno": "ANDRESSA SANTOS OLIVEIRA", "mae": "WILLANE DOS SANTOS SILVA OLIVEIRA", "pai": "AGENOR ALVES DE OLIVEIRA NETO", "responsavel": "AGENOR ALVES DE OLIVEIRA NETO"}, {"turma": "6ºA2026", "aluno": "ANNELISE RAMOS CARDOSO", "mae": "VALDINA RAMOS CARDOSO", "pai": "GEDSON SILVA CARDOSO", "responsavel": "VALDINA RAMOS CARDOSO"}, {"turma": "6ºA2026", "aluno": "ARTHUR MENEZES FERNANDES", "mae": "MARIA LEUDIANE DA SILVA MENEZES", "pai": "HAGAMENON ARAUJO FERNANDES", "responsavel": "HAGAMENON ARAUJO FERNANDES"}, {"turma": "6ºA2026", "aluno": "ARTHUR PIRES DE ALMEIDA", "mae": "DANYELA APARECIDA PIRES SILVA", "pai": "NÉLIO GUSTAVO PINHEIRO DE ALMEIDA", "responsavel": "DANYELA APARECIDA PIRES SILVA"}, {"turma": "6ºA2026", "aluno": "ERIC LUCIANO DE MATOS COSTA", "mae": "LETICIA SOUSA DE MATOS", "pai": "EDUARDO NEVES COSTA", "responsavel": "LETICIA SOUSA DE MATOS"}, {"turma": "6ºA2026", "aluno": "ESTER DE SOUZA RODRIGUES", "mae": "APARECIDA MARTA DE SOUZA SILVA", "pai": "JOSÉ RODRIGUES DOS SANTOS DA SILVA", "responsavel": "APARECIDA MARTA DE SOUZA SILVA"}, {"turma": "6ºA2026", "aluno": "GABRIELLY ALVES BATISTA", "mae": "ELDILEIA ALVES GOMES", "pai": "MARCIO REIS BATISTA", "responsavel": "ELDILEIA ALVES GOMES"}, {"turma": "6ºA2026", "aluno": "GIOVANNA SOUSA CAFÉ", "mae": "MAÍRA DE SOUSA SANTOS CAFÉ", "pai": "DELIO CAFÉ BARRETO", "responsavel": "JIDALVA CAFÉ BARRÊTO"}, {"turma": "6ºA2026", "aluno": "GUSTAVO FRANÇA DE SOUZA", "mae": "MARIELE GONÇALVES DE FRANÇA", "pai": "MAXUELL DOS SANTOS DE SOUZA", "responsavel": "MAXUELL DOS SANTOS DE SOUZA"}, {"turma": "6ºA2026", "aluno": "HÉLIO VICTOR AUGUSTO QUEIROZ", "mae": "GERCIANA PEREIRA DE QUEIROZ LIMA", "pai": "HELIO AUGUSTO DE LIMA", "responsavel": "HELIO AUGUSTO DE LIMA"}, {"turma": "6ºA2026", "aluno": "JOÃO PEDRO FERREIRA DE OLIVEIRA", "mae": "NEUMA SIMÃO FERREORA DE OLIVEIRA", "pai": "RODRIGO HENRIQUE DE OLIVEIRA", "responsavel": "RODRIGO HENRIQUE DE OLIVEIRA"}, {"turma": "6ºA2026", "aluno": "JOÃO PEDRO FIORI KREUSCHER", "mae": "DANIELA FIORI DA SILVA KREUSCHER", "pai": "CRISTIANO RENATO FREGOLÃO KREUSCHER", "responsavel": "DANIELA FIORI DA SILVA KREUSCHER"}, {"turma": "6ºA2026", "aluno": "JOSÉ BESSA DE SOUSA NETO", "mae": "SABRINE ARAUJO QUEIROZ", "pai": "NÃO INFORMADO", "responsavel": "SABRINE ARAUJO QUEIROZ"}, {"turma": "6ºA2026", "aluno": "KAUÃ CARDOSO MARQUES", "mae": "VALÉRIA CARDOSO BRITO", "pai": "HELINTON MARQUES DA SILVA", "responsavel": "HELINTON MARQUES DA SILVA"}, {"turma": "6ºA2026", "aluno": "KAUÃ FERREIRA DO VALE", "mae": "TALITA FERREIRA DOS SANTOS VALE", "pai": "WEVERSON VINICIUS DO VALE CAVALCANTE", "responsavel": "TALITA FERREIRA DOS SANTOS VALE"}, {"turma": "6ºA2026", "aluno": "LAURA ARAUJO LIMA", "mae": "DENISE ARAUJO ANDRADE", "pai": "LAURAN LIMA DOS SANTOS", "responsavel": "NILZA FERREIRA DOS SANTOS"}, {"turma": "6ºA2026", "aluno": "LEANDRO DANIEL RAMOS CARVALHO", "mae": "MARGARETH ROSE RAMOS CARVALHO", "pai": "LEANDRO FERREIRA CARVALHO", "responsavel": "LEANDRO FERREIRA CARVALHO"}, {"turma": "6ºA2026", "aluno": "LEANDRO EMANUEL RAMOS CARVALHO", "mae": "MARGARETH ROSE RAMOS CARVALHO", "pai": "LEANDRO FERREIRA CARVALHO", "responsavel": "LEANDRO FERREIRA CARVALHO"}, {"turma": "6ºA2026", "aluno": "LEONARDO MIGUEL DA SILVA SIQUEIRA", "mae": "VALQUÍRIA MARIA DA SILVA SIQUEIRA", "pai": "ATHOS HUDSON MOURA DE SIQUEIRA", "responsavel": "VALQUÍRIA MARIA DA SILVA SIQUEIRA"}, {"turma": "6ºA2026", "aluno": "LORENZO AUGUSTO VILAS BOAS AGUIAR", "mae": "KARINY VILAS BOAS SANTOS AGUIAR", "pai": "JADSON DE AGUIAR TEIXEIRA", "responsavel": "KARINY VILAS BOAS SANTOS AGUIAR"}, {"turma": "6ºA2026", "aluno": "LUCAS CICHORSKI GONÇALVES", "mae": "RENATA CRISTINA MAI CICHORSKI GONÇALVES", "pai": "GILNEI ANDRADE GONÇALVES JUNIOR", "responsavel": "RENATA CRISTINA MAI CICHORSKI GONÇALVES"}, {"turma": "6ºA2026", "aluno": "LUIZ MIGUEL DOS SANTOS AGUIAR", "mae": "SONAIRA GABRIELA DOS SANTOS", "pai": "LUILTON BARREIRA AGUIAR", "responsavel": "SONAIRA GABRIELA DOS SANTOS"}, {"turma": "6ºA2026", "aluno": "MAIZA BEATRIZ BAIOCCHI DOS SANTOS", "mae": "ANA BEATRIZ CARVALHO BAIOCCHI DOS SANTOS", "pai": "DOUGLAS SOUZA DOS SANTOS", "responsavel": "ANA BEATRIZ CARVALHO BAIOCCHI DOS SANTOS"}, {"turma": "6ºA2026", "aluno": "MARIA JULIA MARACAIPE TAKAHASHI", "mae": "SILMARA DA SILVA MARACAIPE", "pai": "JORGE TAKAHASHI", "responsavel": "SILMARA DA SILVA MARACAIPE"}, {"turma": "6ºA2026", "aluno": "MARIA LUIZA BARROS ARAUJO", "mae": "LEILA DA COSTA BARROS ARAUJO", "pai": "FRANCK DE ARAUJO SILVA", "responsavel": "LEILA DA COSTA BARROS ARAUJO"}, {"turma": "6ºA2026", "aluno": "MARIANA LEMOS FURTADO", "mae": "RENATA LIMA SANTOS DE LEMOS", "pai": "ELVIS FREUD FURTADO DE OLIVEIRA", "responsavel": "RENATA LIMA SANTOS DE LEMOS"}, {"turma": "6ºA2026", "aluno": "MIGUEL BESERRA MILHOMEM", "mae": "DEJANE ALVES MILHOMEM", "pai": "SEBASTIÃO BESERRA DA SILVA", "responsavel": "SEBASTIÃO BESERRA DA SILVA"}, {"turma": "6ºA2026", "aluno": "PEDRO PAULO RODRIGUES NISHMURA", "mae": "NÃO INFORMADO", "pai": "ADEMIR NISHMURA JUNIOR", "responsavel": "ADEMIR NISHMURA JUNIOR"}, {"turma": "6ºA2026", "aluno": "RAFAEL RENOVATO CAIXETA", "mae": "KAMILA CAIXETA E FERREIRA RENOVATO", "pai": "TIAGO RENOVATO OLIVEIRA", "responsavel": "KAMILA CAIXETA E FERREIRA RENOVATO"}, {"turma": "6ºA2026", "aluno": "RICARDO CLAUDINO DOS SANTOS ALESSIO", "mae": "LUANA CLAUDINO DOS SANTOS", "pai": "RODRIGO DE ALMEIDA ALESSIO", "responsavel": "LUANA CLAUDINO DOS SANTOS"}, {"turma": "6ºA2026", "aluno": "VITOR GABRIEL ALVES DE ANDRADE", "mae": "VALERIA DE ANDRADE PAULA", "pai": "ITANIEL ALVES DA ROCHA", "responsavel": "VALERIA DE ANDRADE PAULA"}, {"turma": "7ºA2026", "aluno": "ÁLEX ELI GOMES DOS SANTOS", "mae": "VERONNICA RODRIGUES DOS SANNTOS", "pai": "ALEX SANDRO GOMES DOS SANTOS", "responsavel": "ALEX SANDRO GOMES DOS SANTOS"}, {"turma": "7ºA2026", "aluno": "AMANDA PEREIRA CAMBUY", "mae": "ISABELLA ESTEVÃO PEREIRA CAMBUY", "pai": "RUBENS DE OLIVEIRA CAMBUY", "responsavel": "ISABELLA ESTEVÃO PEREIRA CAMBUY"}, {"turma": "7ºA2026", "aluno": "ARTHUR CARDOSO BELÉM", "mae": "MONIQUE APARECIDA DA SILVA BELÉM", "pai": "GLAUTER CARDOSO SILVA", "responsavel": "MONIQUE APARECIDA DA SILVA BELÉM"}, {"turma": "7ºA2026", "aluno": "ARTHUR DA SILVA BARBOSA", "mae": "MARYELLE CRISTINA PEREIRA SILVA", "pai": "ELINALDO SANTANA BARBOSA", "responsavel": "MARYELLE CRISTINA PEREIRA SILVA"}, {"turma": "7ºA2026", "aluno": "BERNARDO SERAFIM DA SILVA FERREIRA", "mae": "ANA CRISTINA SERAFIM DA SILVA", "pai": "", "responsavel": "ANA CRISTINA SERAFIM DA SILVA"}, {"turma": "7ºA2026", "aluno": "BRUNA SOARES SILVA BORGES", "mae": "HAMISTENIE ROSSANA PINTO DE SOUSA SOARES", "pai": "ANDRE LUIZ SILVA BORGES", "responsavel": "HAMISTENIE ROSSANA PINTO DE SOUSA SOARES"}, {"turma": "7ºA2026", "aluno": "CARLOS EDUARDO DIAS FERREIRA", "mae": "WILLIANE COELHO DIAS FERREIRA", "pai": "CARLOS FERREIRA", "responsavel": "WILLIANE COELHO DIAS FERREIRA"}, {"turma": "7ºA2026", "aluno": "DAVI LUCAS SILVA BARBOSA", "mae": "LUZIA PEREIRA DA SILVA", "pai": "EMERSON GUIMARÃES BARBOSA", "responsavel": "LUZIA PEREIRA DA SILVA"}, {"turma": "7ºA2026", "aluno": "GIOVANNA LUTHIANE MENDES MEDEIROS", "mae": "MAIARA LUTHIANE MENDES SOARES MEDEIROS", "pai": "PEDRO HUGO ALVES NETO MEDEIROS", "responsavel": "PEDRO HUGO ALVES NETO MEDEIROS"}, {"turma": "7ºA2026", "aluno": "HEITOR AIRES CASTRO COSTA", "mae": "MAYRA AIRES DE CASTRO COSTA", "pai": "MAURICIO CASTRO COSTA", "responsavel": "MAYRA AIRES DE CASTRO COSTA"}, {"turma": "7ºA2026", "aluno": "IANE EMANUELLE PEREIRA LEITE", "mae": "IRAIDES MORAIS SILVA LEITE", "pai": "EDIMILSON PEREIRA DOS SANTOS", "responsavel": "IRAIDES MORAIS SILVA LEITE"}, {"turma": "7ºA2026", "aluno": "ISAAC MASTELLA DA SILVA", "mae": "DENISE CRISTINA MASTELLA", "pai": "GIOVANO CAVALHEIRO DA SILVA", "responsavel": "GIOVANO CAVALHEIRO DA SILVA"}, {"turma": "7ºA2026", "aluno": "ISABELLA BASTOS MACIEL", "mae": "MAURICÉIA BASTOS DA SILVA", "pai": "", "responsavel": "MAURICÉIA BASTOS DA SILVA MACIEL"}, {"turma": "7ºA2026", "aluno": "ISABELLA DE ALMEIDA RODRIGUES", "mae": "LUDMILLA DE ALMEIDA FARIA", "pai": "JOÃO MIGUEL RODRIGUES", "responsavel": "LUDMILLA DE ALMEIDA FARIA"}, {"turma": "7ºA2026", "aluno": "ISABELLA PEREIRA ARRAIS", "mae": "KEILA CRISTINA PEREIRA", "pai": "EDGAR DA SILVA ARRAIS", "responsavel": "EDGAR DA SILVA ARRAIS"}, {"turma": "7ºA2026", "aluno": "JOÃO GABRIEL ARAÚJO MACHADO", "mae": "CRISTIANE ARAÚJO PEREIRA", "pai": "ALVANY PEREIRA MACHADO JÚNIOR", "responsavel": "ALVANY PEREIRA MACHADO JÚNIOR"}, {"turma": "7ºA2026", "aluno": "JOÃO GABRIEL MONTE CHAVES", "mae": "BERENICE DOS SANTOS MONTE CHAVES", "pai": "MARCONDES PEREIRA CHAVES", "responsavel": "BERENICE DOS SANTOS MONTE CHAVES"}, {"turma": "7ºA2026", "aluno": "JOÃO GABRIEL RODRIGUES ARAÚJO", "mae": "ATINA RUBIA RODRIGUES DELGADO", "pai": "FRANCISCO DUARTE DE ARAÚJO JUNIOR", "responsavel": "ATINA RUBIA RODRIGUES DELGADO"}, {"turma": "7ºA2026", "aluno": "JOÃO VICENTE FERREIRA COSTA", "mae": "MARIA JULIANA DE LIMA FERREIRA", "pai": "FERNANDO LUIZ VICENTE COSTA", "responsavel": "FERNANDO LUIZ VICENTE COSTA"}, {"turma": "7ºA2026", "aluno": "JORDANA LEÃO NERIS", "mae": "REJANE NERIS DE SOUSA LEÃO", "pai": "ONALDO LEÃO FERREIRA JUNIOR", "responsavel": "REJANE NERIS DE SOUSA LEÃO"}, {"turma": "7ºA2026", "aluno": "MAISA GUIMARÃES FRANCELLINO LEITE", "mae": "LOREN APARECIDA FRANCELLINO", "pai": "PAULO GOMIDE LEITE NETO", "responsavel": "PAULO GOMIDE LEITE NETO"}, {"turma": "7ºA2026", "aluno": "MANUELA BASTOS ROQUE", "mae": "CAMILLA PEREIRA BASTOS", "pai": "MARCUS CAMILO FLORIANO ROQUE", "responsavel": "CAMILLA PEREIRA BASTOS"}, {"turma": "7ºA2026", "aluno": "MARÍLIA MARTINS PINHEIRO", "mae": "MARIA HELENA MARTINS DO NASCIMENTO PINHEIRO", "pai": "FRANCISCO MARTINS PINHEIRO", "responsavel": "FRANCISCO MARTINS PINHEIRO"}, {"turma": "7ºA2026", "aluno": "MIGUEL ARAUJO DA COSTA", "mae": "NAYANNE DE ARAUJO LIMA DA COSTA", "pai": "LEANDRO MAIA DA COSTA", "responsavel": "NAYANNE DE ARAUJO LIMA DA COSTA"}, {"turma": "7ºA2026", "aluno": "NATALIA ALVES DOS SANTOS", "mae": "LUCILEIA FERREIRA DOS SANTOS", "pai": "GILSON ALVES DA SILVA", "responsavel": "LUCILEIA FERREIRA DOS SANTOS"}, {"turma": "7ºA2026", "aluno": "ROMAIN FREIRE NETO", "mae": "GILMARA MOREIRA SENN", "pai": "ROMAIN FREIRE FILHO", "responsavel": "GILMARA MOREIRA SENN"}, {"turma": "7ºA2026", "aluno": "SAMUEL OTAVIO ALVES DE SOUSA", "mae": "ANA RODRIGUES DE SOUSA", "pai": "EDVALDO ALVES BRITO", "responsavel": "ANA RODRIGUES DE SOUSA"}, {"turma": "7ºA2026", "aluno": "SOFIA PARENTE FERREIRA", "mae": "ROSIANE TAVARES PARENTE", "pai": "FÁBIO DE REZENDE FERREIRA", "responsavel": "FÁBIO DE REZENDE FERREIRA"}, {"turma": "7ºA2026", "aluno": "SOFIA SOUSA BITTENCOURT", "mae": "ANDREANE DA SILVA BITTENCOURT", "pai": "FREDERICO AUGUSTO CAMPOS BITTENCOURT", "responsavel": "FREDERICO AUGUSTO CAMPOS BITTENCOURT"}, {"turma": "7ºA2026", "aluno": "TÁSSILA GOMES MORAIS", "mae": "TISSIANE GOMES COSTA MORAIS", "pai": "OSCAR PEREIRA DE MORAIS JUNIOR", "responsavel": "OSCAR PEREIRA DE MORAIS JUNIOR"}, {"turma": "8ºA2026", "aluno": "ALICIA PEREIRA DE ALMEIDA", "mae": "VALDIRENE PEREIRA DE ALMEIDA", "pai": "CARLOS OSMA DE ALMEIDA", "responsavel": "CARLOS OSMA DE ALMEIDA"}, {"turma": "8ºA2026", "aluno": "ANA CLARA MENEZES FERNANDES", "mae": "MARIA LEUDIANE DA SILVA MENEZES", "pai": "HAGAMENON ARAUJO FERNANDES", "responsavel": "HAGAMENON ARAUJO FERNANDES"}, {"turma": "8ºA2026", "aluno": "DAVI GOMES GALVÃO", "mae": "JOCÉLIA CAVALCANTE GOMES", "pai": "MENANDES CARLOS RODRIGUES GALVÃO", "responsavel": "CATIA CILENE RODRIGUES GALVAO"}, {"turma": "8ºA2026", "aluno": "ENZO GABRIEL MARTINS ROQUE", "mae": "ELIANA NEVES MARTINS", "pai": "MARCIO DE ALMEIRA ROQUE", "responsavel": "ELIANA NEVES MARTINS"}, {"turma": "8ºA2026", "aluno": "GABRIEL VIEIRA CAIXETA", "mae": "CAMILA DA SILVA VIEIRA", "pai": "ANTERO PEREIRA CAIXETA NETO", "responsavel": "ANTERO PEREIRA CAIXETA NETO"}, {"turma": "8ºA2026", "aluno": "GEOVANA ROSA TAUBE", "mae": "SARA PRISCILLA GABRIEL PEREIRA", "pai": "CARLOS ALBERTO TAUBE JUNIOR", "responsavel": "SARA PRISCILLA GABRIEL PEREIRA"}, {"turma": "8ºA2026", "aluno": "HEVELYN VITORIA LUZ NASCIMENTO", "mae": "GESSIKA MIGUEL DA LUZ SOARES", "pai": "AILTON JUNIOR SOARES", "responsavel": "AILTON JUNIOR SOARES"}, {"turma": "8ºA2026", "aluno": "HIAGO GOMES COSTA", "mae": "DENIS COSTA AMADO", "pai": "WESLEY PUTENCIO GOMES", "responsavel": "DENIS COSTA AMADO"}, {"turma": "8ºA2026", "aluno": "ISABELLA RIBEIRO LOPES", "mae": "NAIZA RAQUEL RIBEIRO ARAUJO", "pai": "SALATIEL LOPES GONÇALVES", "responsavel": "NAIZA RAQUEL RIBEIRO ARAUJO"}, {"turma": "8ºA2026", "aluno": "ISAQUE EMANUEL BARRENSE ALVES", "mae": "LINDIANI BARRENSE ALVES DE OLIVEIRA", "pai": "RODRIGO ALVES DE OLIVEIRA", "responsavel": "RODRIGO ALVES DE OLIVEIRA"}, {"turma": "8ºA2026", "aluno": "JOÃO HENRIQUE DE CASTRO MOREIRA SALES", "mae": "VANESSA ALLINE DE CASTRO MOREIRA", "pai": "LUIS HENRIQUE ALVES SALES", "responsavel": "LUIS HENRIQUE ALVES SALES"}, {"turma": "8ºA2026", "aluno": "JOÃO PEDRO GONÇALVES ALENCAR", "mae": "MARCELLA GONÇALVES ARANTES", "pai": "NÃO INFORMADO", "responsavel": "MARCELLA GONÇALVES ARANTES"}, {"turma": "8ºA2026", "aluno": "KAUAN AGUIAR PEREIRA", "mae": "DAIANE CRISTINA DO NASCIMENTO AGUIAR PEREIRA", "pai": "CLEITON PEREIRA DOS SANTOS", "responsavel": "DAIANE CRISTINA DO NASCIMENTO AGUIAR PEREIRA"}, {"turma": "8ºA2026", "aluno": "MARIA JOAQUINNA FERREIRA DE SOUZA", "mae": "VANEUSA FERREIRA DA HORA", "pai": "SERGIO ANTONIO DE SOUZA", "responsavel": "VANEUSA FERREIRA DA HORA"}, {"turma": "8ºA2026", "aluno": "PAULO VITOR ANDRADE GOMES", "mae": "VALDIRENE FONSECA ANDRADE", "pai": "LINDOMAR ALVES GOMES", "responsavel": "VALDIRENE FONSECA ANDRADE"}, {"turma": "8ºA2026", "aluno": "PEDRO LUCAS NUNES FERREIRA", "mae": "DINORÁ NUNES OSCAR FERREIRA", "pai": "RÔMERO RODRIGUES FERREIRA", "responsavel": "DINORÁ NUNES OSCAR FERREIRA"}, {"turma": "8ºA2026", "aluno": "RAFAEL BARROS MARTINS", "mae": "LEILA CRISTINA FERREIRA BARROS MARTINS DOS SANTOS", "pai": "ANDRÉ MARTINS DOS SANTOS", "responsavel": "LEILA CRISTINA FERREIRA BARROS MARTINS DOS SANTOS"}, {"turma": "8ºA2026", "aluno": "THAYLA RAFAELE MENDES MACIEL", "mae": "ROSANA MENDES DE MORAIS", "pai": "THIAGO PINHEIRO MACIEL", "responsavel": "THIAGO PINHEIRO MACIEL"}, {"turma": "8ºA2026", "aluno": "THEO HENRIQUE VALADÃO DIAS", "mae": "MARILIA INACIA VALADAO", "pai": "WANDERSON SANTOS SILVA DIAS", "responsavel": "MARILIA INACIA VALADAO"}, {"turma": "9ºA2026", "aluno": "ALLANA CAVALCANTE MONTEIRO", "mae": "ADRIANA CAVALCANTE NASCIMENTO MONTEIRO", "pai": "ALLAN GARCIA FARIAS MONTEIRO", "responsavel": "ALLAN GARCIA FARIAS MONTEIRO"}, {"turma": "9ºA2026", "aluno": "ANA FLAVIA FERREIRA NOLETO", "mae": "ADRIANE MARIA BORBOSA FERREIRA NOLETO", "pai": "ROMULO NOLETO PASSOS", "responsavel": "ADRIANE MARIA BORBOSA FERREIRA NOLETO"}, {"turma": "9ºA2026", "aluno": "ANDRÉ LUÍS COÊLHO FARKAS", "mae": "NÁDIA CRISTINA DA COSTA COÊLHO", "pai": "TOMAS ATILA FARKAS", "responsavel": "NÁDIA CRISTINA DA COSTA COÊLHO"}, {"turma": "9ºA2026", "aluno": "ANDRÉ LUIS RODRIGUES SOARES TOGISAKI CHAGAS", "mae": "ROBERTA RODRIGUES SOARES TOGISAKI", "pai": "ROGERIO TOGISAKI DAS CHAGAS", "responsavel": "ROGERIO TOGISAKI DAS CHAGAS"}, {"turma": "9ºA2026", "aluno": "ARTHUR CICHORSKI GONÇALVES", "mae": "RENATA CRISTINA MAI CICHORSKI GONÇALVES", "pai": "GILNEI ANDRADE GONÇALVES JUNIOR", "responsavel": "RENATA CRISTINA MAI CICHORSKI GONÇALVES"}, {"turma": "9ºA2026", "aluno": "ARTHUR VIANA BITTENCOURT", "mae": "THAIS VIANA DE SOUZA BITTENCOURT", "pai": "MAURICIO JOÃO BITTENCOURT", "responsavel": "THAIS VIANA DE SOUZA BITTENCOURT"}, {"turma": "9ºA2026", "aluno": "ARTUR SILVA MOREIRA", "mae": "CLEIDIANE DE JESUS MOREIRA", "pai": "LUIZ ALBERTO SILVA", "responsavel": "ISAURA SERAFIM DOS SANTOS"}, {"turma": "9ºA2026", "aluno": "ASAFE REGO BRANDÃO", "mae": "O ALUNO", "pai": "DANILLO CASTRO BRANDÃO", "responsavel": "DANILLO CASTRO BRANDÃO"}, {"turma": "9ºA2026", "aluno": "BEATRIZ ARAUJO VIANA ROCHA", "mae": "MARA VARIDIANE CARDOSO ROCHA", "pai": "PABLO VIANA GARCIA ROCHA", "responsavel": "PABLO VIANA GARCIA ROCHA"}, {"turma": "9ºA2026", "aluno": "DANIELLE DE SOUSA NUNES", "mae": "CALCEDÔNIA DE SOUSA LOPES", "pai": "EMANUEL LOBATO NUNES", "responsavel": "CALCEDÔNIA DE SOUSA LOPES"}, {"turma": "9ºA2026", "aluno": "EDUARDA MACÊDO NUNES", "mae": "ARACI DE MACEDO LOPES", "pai": "JOÃO NUNES DA SILVA", "responsavel": "JOÃO NUNES DA SILVA"}, {"turma": "9ºA2026", "aluno": "ELIZA ABREU LOPES", "mae": "POLIANA CORDEIRO DE ABREU LOPES", "pai": "JUAREZ LOPES", "responsavel": "JUAREZ LOPES"}, {"turma": "9ºA2026", "aluno": "ELOAH PICANÇO BARBOZA", "mae": "DANIELE JAMILE MIRA PICANÇO DIAS", "pai": "ELIO BARBOZA AGUIAR JUNIOR", "responsavel": "ELIO BARBOZA AGUIAR JUNIOR"}, {"turma": "9ºA2026", "aluno": "GABRIEL ALVES OLIVEIRA CATANOSSI", "mae": "LÍVIA ALVES OLIVEIRA", "pai": "ROGERIO CATANOSSI", "responsavel": "ROGERIO CATANOSSI"}, {"turma": "9ºA2026", "aluno": "GABRIELLY GUEDES DA SILVA", "mae": "ANA LUCIA DA SILVA", "pai": "DANILO HENRIQUE GUEDES MOREIRA", "responsavel": "ANA LUCIA DA SILVA"}, {"turma": "9ºA2026", "aluno": "GEOVANA COUTINHO DE ALMEIDA", "mae": "SILMARIA BRITO COUTINHO", "pai": "RONNE WELBER PENHA DE ALMEIDA", "responsavel": "SILMARIA BRITO COUTINHO"}, {"turma": "9ºA2026", "aluno": "GUILHERME ALVES OLIVEIRA CATANOSSI", "mae": "LÍVIA ALVES OLIVEIRA", "pai": "ROGERIO CATANOSSI", "responsavel": "ROGERIO CATANOSSI"}, {"turma": "9ºA2026", "aluno": "GUSTAVO SILVA LIMA", "mae": "CLEIA BATISTA MIGUEL E SILVA", "pai": "FRANCISCO SEIXAS TADEU DE LIMA", "responsavel": "CLEIA BATISTA MIGUEL E SILVA"}, {"turma": "9ºA2026", "aluno": "ISABELA ALVES LIMA", "mae": "GISELMA ALVES DOS ESPIRITO SANTO LIMA", "pai": "SUEIDE BARBOSA LIMA", "responsavel": "SUEIDE BARBOSA LIMA"}, {"turma": "9ºA2026", "aluno": "JOÃO LUIZ RENOVATO CAIXETA", "mae": "KAMILA CAIXETA E FERREIRA RENOVATO", "pai": "TIAGO RENOVATO OLIVEIRA", "responsavel": "KAMILA CAIXETA E FERREIRA RENOVATO"}, {"turma": "9ºA2026", "aluno": "JOÃO TESTE", "mae": "MAE TESTE", "pai": "", "responsavel": "JOÃO TESTE"}, {"turma": "9ºA2026", "aluno": "LUIZ EDUARDO COSTA ALVES", "mae": "LUCILENE GOMES DA COSTA ALVES", "pai": "ERISVALDO DE OLIVEIRA ALVES", "responsavel": "ERISVALDO DE OLIVEIRA ALVES"}, {"turma": "9ºA2026", "aluno": "MARIA EDUARDA MONTEIRO VALADARES", "mae": "LEILA MONTEIRO COELHO", "pai": "JAIR VALADARES CORREIA", "responsavel": "LEILA MONTEIRO COELHO"}, {"turma": "9ºA2026", "aluno": "MARIANA ALBUQUERQUE ALVES", "mae": "ALINI CARDOSO DE ALBURQUERQUE ALVES", "pai": "PEDRO HENRIQUE DE JESUS ALVES", "responsavel": "ALINI CARDOSO DE ALBURQUERQUE ALVES"}, {"turma": "9ºA2026", "aluno": "MEL LIS SANTOS", "mae": "NAYANE DE SOUSA SILVA SANTOS", "pai": "DHANYLHO LAUREANO DOS SANTOS", "responsavel": "NAYANE DE SOUSA SILVA SANTOS"}, {"turma": "9ºA2026", "aluno": "PAULO CEZAR BONFIM COELHO", "mae": "ANA CLÉSIA MARTINS TAVEIRA BONFIM COELHO", "pai": "RICARDO DIEGO ALVES COELHO", "responsavel": "ANA CLÉSIA MARTINS TAVEIRA BONFIM COELHO"}, {"turma": "9ºA2026", "aluno": "PEDRO LUCAS PIRES SOUZA", "mae": "MARIA CLEUZA PIRES SOUZA", "pai": "ANTONIO CARLOS DE SOUZA", "responsavel": "MARIA CLEUZA PIRES SOUZA"}, {"turma": "9ºA2026", "aluno": "PEDRO SOUZA RODRIGUES", "mae": "ANGELA FERREIRA DE SOUZA", "pai": "", "responsavel": "ANGELA FERREIRA DE SOUZA"}, {"turma": "9ºA2026", "aluno": "SOPHIA CARDOSO BELÉM", "mae": "MONIQUE APARECIDA DA SILVA BELÉM", "pai": "GLAUTER CARDOSO SILVA", "responsavel": "MONIQUE APARECIDA DA SILVA BELÉM"}, {"turma": "9ºA2026", "aluno": "WANESSA MARQUES SOUSA", "mae": "AMETISTA DE SOUSA LOPES", "pai": "NÃO INFORMADO", "responsavel": "AMETISTA DE SOUSA LOPES"}, {"turma": "INF2A2026", "aluno": "ANTHONY SANTOS SILVA", "mae": "SHEILA DOS SANTOS RODRIGUES", "pai": "JHONATHA SILVA", "responsavel": "SHEILA DOS SANTOS RODRIGUES"}, {"turma": "INF2A2026", "aluno": "ARAN SALES MACIEL", "mae": "DHAYELLE SOUSA SALES MACIEL", "pai": "KAIO MACIEL DOS SANTOS", "responsavel": "KAIO MACIEL DOS SANTOS"}, {"turma": "INF2A2026", "aluno": "AVIV BARROS NASCIMENTO", "mae": "QUESSYLLA MAYLLA MAGALHÃES", "pai": "GLEYSON PEREIEA DO NASCIMENTO", "responsavel": "QUESSYLLA MAYLLA MAGALHÃES BARROS"}, {"turma": "INF2A2026", "aluno": "CHLOE VIRGULINO PRADO", "mae": "TAMIRYS VIRGULINO RIBEIRO PRADO", "pai": "ÁLEX SILVA DO PRADO", "responsavel": "ÁLEX SILVA DO PRADO"}, {"turma": "INF2A2026", "aluno": "ISA MARIA SANTOS PEREIRA", "mae": "ANA GABRIELA OLIVEIRA DOS SANTOS", "pai": "THIAGO PEREIRA DOS ANJOS", "responsavel": "THIAGO PEREIRA DOS ANJOS"}, {"turma": "INF2A2026", "aluno": "LUAN AUGUSTO NUNES SOARES", "mae": "ALÍCIA NUNES DA SILVA", "pai": "LUCAS RIBEIRO SOARES", "responsavel": "ALICIA NUNES DA SILVA"}, {"turma": "INF2A2026", "aluno": "LUIZA MONTEIRO RIGON", "mae": "SAMARINE MONTEIRO PEREIRA", "pai": "CHARLES DALL AGNOL", "responsavel": "CHARLES DALL AGNOL"}, {"turma": "INF2A2026", "aluno": "MARIA HELENA CARDOSO BUENO", "mae": "KARLA LITHELY RODRIGUES CARDOSO", "pai": "ARLINDO BUENO GUIMARAES JUNIOR", "responsavel": "KARLA LITHELY RODRIGUES CARDOSO"}, {"turma": "INF2A2026", "aluno": "MURILO NUNES", "mae": "CAMILA FRANCISCA DA SILVA", "pai": "JEFFERSON RAMOS NUNES", "responsavel": "CAMILA FRANCISCA DA SILVA"}, {"turma": "INF2A2026", "aluno": "REBECA SOUSA MARINHO", "mae": "PRISCILA CRUZ DE SOUSA MARINHO", "pai": "SUELTON MARINHO DA SILVA", "responsavel": "SUELTON MARINHO DA SILVA"}, {"turma": "INF2A2026", "aluno": "TARCÍSIO PAULO ALVES DE MESQUITA", "mae": "MAELLY SANTOS ALVES MESQUITA", "pai": "GUSTAVO MARTINS DE MESQUITA", "responsavel": "MAELLY SANTOS ALVES MESQUITA"}, {"turma": "INF2A2026", "aluno": "THÉO MONTEIRO OLIVEIRA", "mae": "LEILA MONTEIRO COÊLHO", "pai": "", "responsavel": "LEILA MONTEIRO COELHO"}, {"turma": "INF2B2026", "aluno": "AURORA DOS SANTOS ROCHA", "mae": "ANNY BRAULY HELLEN DOS SANTOS CASTRO", "pai": "JOAQUIM ROCHA PEREIRA", "responsavel": "ANNY BRAULY HELLEN DOS SANTOS CASTRO"}, {"turma": "INF2B2026", "aluno": "BENICIO SOUSA MONTEIRO", "mae": "THAISA MONTEIRO DE MEDEIROS", "pai": "DENIS CARLOS DE SOUSA", "responsavel": "DENIS CARLOS DE SOUSA"}, {"turma": "INF2B2026", "aluno": "DIANA MOTA CUSTÓDIO", "mae": "ANA LUIZA GOMES MOTA", "pai": "JOÃO PEDRO OLIVEIRA CUSTÓDIO", "responsavel": "ANA LUIZA GOMES MOTA"}, {"turma": "INF2B2026", "aluno": "HADASSA MENELIK SOARES", "mae": "JULIANA MENELIK COSTA", "pai": "SIRNANDE SOARES BRITO", "responsavel": "JULIANA MENELIK COSTA"}, {"turma": "INF2B2026", "aluno": "HELENA PEDROSA", "mae": "MARINETE PEDROSA", "pai": "NÃO INFORMADO", "responsavel": "MARINETE PEDROSA"}, {"turma": "INF2B2026", "aluno": "ÍSIS MARIA GONTIJO CIRQUEIRA LOURENÇO LOPES", "mae": "JAYNARA CIRQUEIRA LOPES GONTIJO", "pai": "DANILLO GONTIJO CÂNDIDO DE SOUZA", "responsavel": "DANILLO GONTIJO CÂNDIDO DE SOUZA"}, {"turma": "INF2B2026", "aluno": "JOAO MIGUEL VIEIRA PEREIRA", "mae": "KAUANY ROCHA VIEIRA", "pai": "", "responsavel": "KAUANY ROCHA VIEIRA"}, {"turma": "INF2B2026", "aluno": "MARIA CLARA CAVALCANTE CÂMARA", "mae": "JÉSSYKA CAVALCANTE CÂMARA", "pai": "MICHAEL ARAUJO CAMARA", "responsavel": "MICHAEL ARAUJO CAMARA"}, {"turma": "INF3A2026", "aluno": "ÁGATA BEZERRA NOGUEIRA", "mae": "LUANA BEZERRA NOGUEIRA", "pai": "RAMON DE ALMEIDA NOGUEIRA", "responsavel": "RAMON DE ALMEIDA NOGUEIRA"}, {"turma": "INF3A2026", "aluno": "AMBROSIO BERNARDO SENA LEÃO", "mae": "DANIELLY CAROLLINE SENA DE ANDRADE", "pai": "CLEMON ANDRÉ LEÃO", "responsavel": "DANIELLY CAROLLINE SENA DE ANDRADE"}, {"turma": "INF3A2026", "aluno": "ANNA ALICE BENTO DE ALENCAR", "mae": "CRISTIANE DANIELE BENTO", "pai": "CLECIO JORGE DE ALENCAR", "responsavel": "CRISTIANE DANIELE BENTO"}, {"turma": "INF3A2026", "aluno": "BERNARDO AUGUSTO FERNANDES REIS", "mae": "ILDIMEIRE FERNANDES FEITOSA", "pai": "AFONSO AUGUSTO GOMES DOS REIS", "responsavel": "AFONSO AUGUSTO GOMES DOS REIS"}, {"turma": "INF3A2026", "aluno": "CARLOS EDUARDO MESQUITA CAVALCANTI", "mae": "SAMIRA GUIMARÃES MESQUITA CAVALCANTI", "pai": "CARLOS CAVALCANTI DE BRITO NETO", "responsavel": "CARLOS CAVALCANTI DE BRITO NETO"}, {"turma": "INF3A2026", "aluno": "DANIEL BARUC BONFIM COELHO", "mae": "ANA CLÉSIA MARTINS TAVEIRA BONFIM COELHO", "pai": "RICARDO DIEGO ALVES COELHO", "responsavel": "ANA CLÉSIA MARTINS TAVEIRA BONFIM COELHO"}, {"turma": "INF3A2026", "aluno": "ESTHER VIANA BITTENCOUT", "mae": "THAIS VIANA DE SOUZA BITTENCOURT", "pai": "MAURICIO JOÃO BITTENCOURT", "responsavel": "THAIS VIANA DE SOUZA BITTENCOURT"}, {"turma": "INF3A2026", "aluno": "GAEL GOMES BATISTA", "mae": "ELDILEIA ALVES GOMES", "pai": "ADAO BATISTA GOMES", "responsavel": "ADAO BATISTA GOMES"}, {"turma": "INF3A2026", "aluno": "ISABELA PINHEIRO DO CARMO SOARES", "mae": "LAUDECY ALVES DO CARMO SOARES", "pai": "JOELSON SOARES DA SILVA", "responsavel": "LAUDECY ALVES DO CARMO SOARES"}, {"turma": "INF3A2026", "aluno": "ISIS ALVES GALVÃO", "mae": "ISLANA RODRIGUES SOUSA ALVES", "pai": "WANDERSON CARLOS BORGES GALVÃO", "responsavel": "WANDERSON CARLOS BORGES GALVÃO"}, {"turma": "INF3A2026", "aluno": "JOÃO LUCAS PIRES PEREIRA", "mae": "LILIAN FLÁVIA FAUSTINO PIRES PEREIRA", "pai": "CHARLES MORAIS PEREIRA", "responsavel": "CHARLES MORAIS PEREIRA"}, {"turma": "INF3A2026", "aluno": "JOÃO MIGUEL SERAFIM SANTOS", "mae": "ANA CRISTINA SERAFIM DA SILVA", "pai": "RUDSON SOARES SANTOS", "responsavel": "ANA CRISTINA SERAFIM DA SILVA"}, {"turma": "INF3A2026", "aluno": "LAURA PEREIRA ARRAIS", "mae": "KEILA CRISTINA PEREIRA", "pai": "EDGAR DA SILVA ARRAIS", "responsavel": "EDGAR DA SILVA ARRAIS"}, {"turma": "INF3A2026", "aluno": "MARIA FERNANDA FERREIRA COSTA", "mae": "MARIA JULIANA DE LIMA FERREIRA", "pai": "FERNANDO LUIZ VICENTE COSTA", "responsavel": "FERNANDO LUIZ VICENTE COSTA"}, {"turma": "INF3B2026", "aluno": "ANA VITÓRIA SANTOS OLIVEIRA", "mae": "WILLANE DOS SANTOS SILVA OLIVEIRA", "pai": "AGENOR ALVES DE OLIVEIRA NETO", "responsavel": "AGENOR ALVES DE OLIVEIRA NETO"}, {"turma": "INF3B2026", "aluno": "ARTHUR DE SOUZA FERREIRA", "mae": "NATALLYA SAMARA SOUZA FERREIRA", "pai": "NATHAN BATISTA FERREIRA SOUZA", "responsavel": "NATALLYA SAMARA SOUZA FERREIRA"}, {"turma": "INF3B2026", "aluno": "BENICIO TAVEIRA SOARES", "mae": "RAIELLY SOARES DA SILVA", "pai": "ALDO TAVEIRA DA SILVA", "responsavel": "RAIELLY SOARES DA SILVA"}, {"turma": "INF3B2026", "aluno": "CECÍLIA CARVALHO ABREU CAMPOS", "mae": "GEOVANNA CARVALHO ABREU", "pai": "HUGO VICTÓRIO LOPES CAMPOS", "responsavel": "GEOVANNA CARVALHO ABREU"}, {"turma": "INF3B2026", "aluno": "CIBELLE SOFIA CAPISTRANO XAVIER", "mae": "LARISSA XAVIER SILVA", "pai": "WASHINGTON WAGNER FONSECA CAPISTRANO", "responsavel": "WASHINGTON WAGNER FONSECA CAPISTRANO"}, {"turma": "INF3B2026", "aluno": "DANIEL BARUC BONFIM COELHO", "mae": "ANA CLÉSIA MARTINS TAVEIRA BONFIM COELHO", "pai": "RICARDO DIEGO ALVES COELHO", "responsavel": "ANA CLÉSIA MARTINS TAVEIRA BONFIM COELHO"}, {"turma": "INF3B2026", "aluno": "MARIA ALICE LOPES REIS", "mae": "AOLÍBAMA MÔNICA ELITA LOPES COSTA", "pai": "JOSE NASCIMENTO DOS REIS", "responsavel": "AOLÍBAMA MÔNICA ELITA LOPES COSTA"}, {"turma": "INF3B2026", "aluno": "MATTEO ARAÚJO MACÊDO PIRES DE ABREU", "mae": "JULIANY HALLINY PIRES DE ABREU", "pai": "ISAIAS ALVES ARAÚJO MACÊDO NETO", "responsavel": "ISAIAS ALVES ARAÚJO MACÊDO NETO"}, {"turma": "INF3B2026", "aluno": "PEDRO FRANCO BERNARDES FILHO", "mae": "THAYANNE MYRELLE SANTOS GUIMARÃES", "pai": "PEDRO FRANCO BERNARDES", "responsavel": "THAYANNE MYRELLE SANTOS GUIMARÃES"}, {"turma": "INF3B2026", "aluno": "RAFAELA SILVA LEAL", "mae": "JULIANA DA SILVA SANTOS", "pai": "RAFAEL EVANGELISTA DE SOUZA LEAL", "responsavel": "RAFAEL EVANGELISTA DE SOUZA LEAL"}, {"turma": "INF3B2026", "aluno": "SOPHIA FELIX DE GOES MACHADO", "mae": "BRUNA FELIX DE GOES", "pai": "RODRIGO MARTINS MACHADO", "responsavel": "BRUNA FELIX DE GOES"}, {"turma": "INF4A2026", "aluno": "ÁLVARO JOAQUIM GUIMARÃES", "mae": "ALINE APARECIDA SLUSARZ", "pai": "LUAN GUIMARÃES", "responsavel": "ALINE APARECIDA SLUSARZ"}, {"turma": "INF4A2026", "aluno": "AMBROSIO BENICIO SENA LEÃO", "mae": "DANIELLY CAROLLINE SENA DE ANDRADE", "pai": "CLEMON ANDRÉ LEÃO", "responsavel": "DANIELLY CAROLLINE SENA DE ANDRADE"}, {"turma": "INF4A2026", "aluno": "ANTÔNIO FLÁVIO CORREIA VERAS", "mae": "PATRÍCIA LUSTOSA CORREIA", "pai": "EMANUEL SOARES VERAS", "responsavel": "PATRÍCIA LUSTOSA CORREIA"}, {"turma": "INF4A2026", "aluno": "ANTONY ELOY AMORIM", "mae": "LANNA ELOY GOMES SOARES", "pai": "GUSTAVO CHRISTIAN ROCHA", "responsavel": "LANNA ELOY GOMES SOARES"}, {"turma": "INF4A2026", "aluno": "ARTHUR ANDRADE ARRAIS", "mae": "AYNE ALMEIDA ANDRADE", "pai": "WARLES FERREIRA ARRAIS", "responsavel": "WARLES FERREIRA ARRAIS"}, {"turma": "INF4A2026", "aluno": "ARTHUR SANTOS LEANDRO", "mae": "RAIFFA RAIELLY SANTOS DA SILVA", "pai": "SERGIO LEANDRO DOS SANTOS NETO", "responsavel": "RAIFFA RAIELLY SANTOS DA SILVA"}, {"turma": "INF4A2026", "aluno": "DAVI TAVARES REZENDE", "mae": "ANTÉIA DE CASSIA ANDRADE TAVARES", "pai": "LEONARDO SARAIVA REZENDE", "responsavel": "LEONARDO SARAIVA REZENDE"}, {"turma": "INF4A2026", "aluno": "EDUARDA AMORIM PIRES", "mae": "VALÉRIA BRAGA AMORIM SOUSA PIRES", "pai": "LUCAS VINICIUS PIRES", "responsavel": "VALÉRIA BRAGA AMORIM SOUSA PIRES"}, {"turma": "INF4A2026", "aluno": "ENZO GABRIEL DOS SANTOS AGUIAR", "mae": "SONAIRA GABRIELA DOS SANTOS AGUIAR", "pai": "LUILTON BARREIRA AGUIAR", "responsavel": "SONAIRA GABRIELA DOS SANTOS"}, {"turma": "INF4A2026", "aluno": "ESTELA OLIVEIRA DE SÁ LEAL RODRIGUES", "mae": "MARIA ISABEL LEAL RODRIGUES", "pai": "MAUIR OLIVEIRA DE SA FILHO", "responsavel": "EDVAN MARIA LEAL RODRIGUES"}, {"turma": "INF4A2026", "aluno": "JOÃO PAULO NOLETO FIGUEIREDO", "mae": "KELISMENE DA SILVA GOMES", "pai": "NÃO INFORMADO", "responsavel": "KELISMENE DA SILVA GOMES"}, {"turma": "INF4A2026", "aluno": "LAURA SILVA DE MACEDO", "mae": "KÁSSIA PEREIRA SILVA MELO MACEDO", "pai": "GEEFERSON MELO DE MACEDO", "responsavel": "GEEFERSON MELO DE MACEDO"}, {"turma": "INF4A2026", "aluno": "LUIZA MATTOZINHO ALVES DE BRITO", "mae": "NATALIA MATTOZINHO DA CRUZ DE BRITO", "pai": "YGOR MATHEUS ALVES DE BRITO", "responsavel": "YGOR MATHEUS ALVES DE BRITO"}, {"turma": "INF4A2026", "aluno": "MARIA JÚLIA RIBEIRO FONSECA", "mae": "AYLA RIBEIRO MARTINS FONSECA", "pai": "RAMON FONSECA FEITOSA", "responsavel": "AYLA RIBEIRO MARTINS FONSECA"}, {"turma": "INF4A2026", "aluno": "MIGUEL TAVARES REZENDE", "mae": "ANTÉIA DE CASSIA ANDRADE TAVARES", "pai": "LEONARDO SARAIVA REZENDE", "responsavel": "LEONARDO SARAIVA REZENDE"}, {"turma": "INF4A2026", "aluno": "NICOLAS KATO SIMÕES", "mae": "ANAISA KATO CAVALCANTE", "pai": "MAICON ROBERTO DA MATTA SIMÕES", "responsavel": "ANAISA KATO CAVALCANTE"}, {"turma": "INF4A2026", "aluno": "OLIVER LIMA OLIVEIRA", "mae": "ERICA DA SILVA OLIVEIRA LIMA", "pai": "SAMUEL LIMA SANTOS OLIVEIRA", "responsavel": "ERICA DA SILVA OLIVEIRA LIMA"}, {"turma": "INF4A2026", "aluno": "PEDRO SALIOU FERREIRA SARR", "mae": "ERIKA LOWRRAYNNY FERREIRA ALVES", "pai": "SERIGNE SARR", "responsavel": "ERIKA LOWRRAYNNY FERREIRA ALVES"}, {"turma": "INF4A2026", "aluno": "RAFAEL DE CARVALHO PEREIRA BARROS", "mae": "SARA DE CARVALHO BARROS PEREIRA", "pai": "MARCOS JOSÉ PEREIRA BARROS", "responsavel": "MARCOS JOSÉ PEREIRA BARROS"}, {"turma": "INF4A2026", "aluno": "VINICIUS FERNANDES OLIVEIRA JÚNIOR", "mae": "VANESSA BRAGA AMORIM SOUSA", "pai": "VINICIUS FERNANDES OLIVEIRA", "responsavel": "VINICIUS FERNANDES OLIVEIRA"}, {"turma": "INF4B2026", "aluno": "ANA CLARA QUEIROZ DE ARAUJO", "mae": "ALINE DE ARAUJO SILVA", "pai": "EMIVALDO LUIZ DE QUEIROZ", "responsavel": "MARLI LUIZ DE QUEIROZ GUIMARÃES"}, {"turma": "INF4B2026", "aluno": "ANTONY DOS REIS NERES", "mae": "HELENA DOS REIS SILVA", "pai": "JOSÉ ROMÃO FERREIRA NERES", "responsavel": "JOSÉ ROMÃO FERREIRA NERES"}, {"turma": "INF4B2026", "aluno": "ARTUR BARBOSA PROENÇO", "mae": "LÍVIA BARBOSA DA SILVA", "pai": "BRENO PROENCIO PINHEIRO", "responsavel": "LÍVIA BARBOSA DA SILVA"}, {"turma": "INF4B2026", "aluno": "AYLLA DE BRITO ALVES", "mae": "ANDREIA SOFIA DE BRITO", "pai": "", "responsavel": "MARIA DAS DORES LOPES ALVES"}, {"turma": "INF4B2026", "aluno": "BENÍCIO DOS SANTOS VALE", "mae": "VALERIA DE OLIVEIRA SANTOS", "pai": "DIEGO CARDOSO VALE", "responsavel": "VALERIA DE OLIVEIRA SANTOS"}, {"turma": "INF4B2026", "aluno": "DANIEL RODRIGUES MOREIRA MENDONÇA", "mae": "GEOVANA MOREIRA MENDONÇA", "pai": "GLEIDSON RODRIGUES DE ABREU MENDONÇA", "responsavel": "GLEIDSON RODRIGUES DE ABREU MENDONÇA"}, {"turma": "INF4B2026", "aluno": "ELIS MARIA SOUSA COÊLHO", "mae": "LILIANE DA SILVA COÊLHO", "pai": "CASSIO SANTANA DE SOUSA", "responsavel": "LILIANE DA SILVA COÊLHO"}, {"turma": "INF4B2026", "aluno": "ERICK VALENTIN SOARES PIMENTEL", "mae": "LEILA FERREIRA PIMENTEL", "pai": "BRUNO SOARES DE OLIVEIRA", "responsavel": "BRUNO SOARES DE OLIVEIRA"}, {"turma": "INF4B2026", "aluno": "GABRIEL DE SOUSA FEITOSA", "mae": "ANA GABRIELA MACHADO DE SOUSA", "pai": "MARLO GALVÃO FEITOSA", "responsavel": "MARLO GALVÃO FEITOSA"}, {"turma": "INF4B2026", "aluno": "GAEL SOUSA TOLEDO", "mae": "MARIA JOSÉ ALVES DE SOUSA", "pai": "CARLOS RENATO MATEUS TOLEDO", "responsavel": "CARLOS RENATO MATEUS TOLEDO"}, {"turma": "INF4B2026", "aluno": "GIOVANNA SOUZA PACHECO", "mae": "ANA CAROLINA MORAES PACHECO DE SOUZA", "pai": "CARLOS EDUARDO SOUSA", "responsavel": "CARLOS EDUARDO SOUSA"}, {"turma": "INF4B2026", "aluno": "GUSTAVO SOUSA CAFÉ", "mae": "MAÍRA DE SOUSA SANTOS CAFÉ", "pai": "DELIO CAFÉ BARRETO", "responsavel": "DELIO CAFÉ BARRETO"}, {"turma": "INF4B2026", "aluno": "HEITOR CÂNDIDO GUIMARÃES HOECKELE", "mae": "ANDREIA GUIMARAES BATISTA", "pai": "MARCOS ODOUGLAS GIACOMINI HOECKELE", "responsavel": "ANDREIA GUIMARAES BATISTA"}, {"turma": "INF4B2026", "aluno": "JOÃO GABRIEL DA COSTA SOUSA", "mae": "JORGEANA DA COSTA SILVA", "pai": "FRANCISCO VIANA DE SOUSA JUNIOR", "responsavel": "JORGEANA DA COSTA SILVA"}, {"turma": "INF4B2026", "aluno": "LARAH GABRIELLA MILHOMEM ALVES", "mae": "MIKHAUANE SOUZA SILVA MILHOMEM", "pai": "WILLIAN ALVES PEREIRA", "responsavel": "MIKHAUANE SOUZA SILVA MILHOMEM"}, {"turma": "INF4B2026", "aluno": "LAURA CICOTTI FEITOSA", "mae": "HELEM MARIA CICOTTI SILVA", "pai": "MAGNO GALVAO FEITOSA", "responsavel": "MAGNO GALVAO FEITOSA"}, {"turma": "INF4B2026", "aluno": "LEO FERNANDES MEDRADO RAMOS", "mae": "LEIDIANE DOS NASCIMENTO VIEIRA", "pai": "LEONARDO MEDRADO RAMOS", "responsavel": "LEIDIANE DOS NASCIMENTO VIEIRA"}, {"turma": "INF4B2026", "aluno": "LEVI BERNARDO MATIAS SILVA", "mae": "THALITA KELLEM MATIAS NERY", "pai": "LEONCIO JUNIOR DA SILVA", "responsavel": "THALITA KELLEM MATIAS NERY"}, {"turma": "INF4B2026", "aluno": "LUIZA BRITTO GALVÃO", "mae": "CLAUDIA BRITTO GALVÃO", "pai": "ANDRÉ GALVÃO EUGÊNIO", "responsavel": "CLAUDIA BRITTO GALVÃO"}, {"turma": "INF4B2026", "aluno": "LUIZ MIGUEL GOMIDES SOUZA", "mae": "JULIANA DO NASCIMENTO GOMIDES", "pai": "RAMIRO LOUENÇO DE SOUZA JUNIOR", "responsavel": "RAMIRO LOURENÇO DE SOUZA JUNIOR"}, {"turma": "INF4B2026", "aluno": "MAITÊ ROSSI DE CASTRO", "mae": "JOANA CRISTINA ROSSI CARDOSO", "pai": "GUILHERME GONÇALVES DE CASTRO", "responsavel": "JOANA CRISTINA ROSSI CARDOSO"}, {"turma": "INF4B2026", "aluno": "MANOELLA MENDES", "mae": "GABRIELLA OLIVEIRA MENDES", "pai": "NÃO INFORMADO", "responsavel": "GABRIELLA OLIVEIRA MENDES"}, {"turma": "INF4B2026", "aluno": "MARIA CLARA SERPA SOUSA", "mae": "FRANCISCA SOUSA DOS SANTOS SERPA", "pai": "WARIHINGTON CIRQUEIRA SERPA", "responsavel": "WARIHINGTON CIRQUEIRA SERPA"}, {"turma": "INF4B2026", "aluno": "MARIA JULIA NAVES MARTINS", "mae": "SHALLANG KELLYTHA VIEIRA NAVES", "pai": "JOAO DOS REIS MARTINS", "responsavel": "SHALLANG KELLYTHA VIEIRA NAVES"}, {"turma": "INF4B2026", "aluno": "MELISSA MARINHO LOPES", "mae": "DANIELA BULHÕES MARINHO", "pai": "ALLEFF LIAN MESAQUE LOPES COSTA", "responsavel": "ALLEFF MESAQUE MESAQUE"}, {"turma": "INF5A2026", "aluno": "AGHATA MARIANA DOS SANTOS MACIEL", "mae": "NAYR CRISTINA PEREIRA DOS SANTOS", "pai": "FRANCISCO LUCAS SANTOS MACIEL", "responsavel": "GLECIANE DE MARIA LIMA SANTOS MACIEL"}, {"turma": "INF5A2026", "aluno": "ALICE SANTOS ARAUJO", "mae": "TATIANA ROSA DE ARAUJO", "pai": "VALDIR ANTONIO SANTOS", "responsavel": "ANA ROSA DE ARAUJO"}, {"turma": "INF5A2026", "aluno": "BENÍCIO ROCHA CAMPOS", "mae": "KÁTIA SILENE RIBEIRO CAMPOS", "pai": "ÍTALO PABLO ROCHA CAMPO", "responsavel": "ÍTALO PABLO ROCHA CAMPO"}, {"turma": "INF5A2026", "aluno": "BERNARDO VIEIRA RESPLANDES", "mae": "PATRÍCIA MARTINS RESPLANDES", "pai": "RHUAN VIEIRA DE SOUZA", "responsavel": "PATRÍCIA MARTINS RESPLANDES"}, {"turma": "INF5A2026", "aluno": "ELISA CONCEIÇÃO RAMOS", "mae": "IVETE CONCEIÇÃO RAMOS", "pai": "ZACARIAS SILVA RAMOS", "responsavel": "IVETE CONCEIÇÃO RAMOS"}, {"turma": "INF5A2026", "aluno": "ÉVELYN ALVES CASTRO", "mae": "HEMILY DAYARA SILVA CASTRO", "pai": "ECLESIASTES ALVES DOS SANTOS", "responsavel": "ECLESIASTES ALVES DOS SANTOS"}, {"turma": "INF5A2026", "aluno": "HEITOR LIMA BURGUE", "mae": "JÉSSICA RAYANE LIMA PAIVA BURGUE", "pai": "PAULO DE SOUSA BURGUE", "responsavel": "PAULO DE SOUSA BURGUE"}, {"turma": "INF5A2026", "aluno": "HUGO HENRIQUE RIBEIRO SILVA", "mae": "DÉBORA PEREIRA DA SILVA", "pai": "LOURIVAL DE CARVALHO RIBEIRO JUNIOR", "responsavel": "DÉBORA PEREIRA DA SILVA"}, {"turma": "INF5A2026", "aluno": "ISA MORAIS REIS", "mae": "JOSSIMARA BEZERRA DOS REIS MORAIS", "pai": "RONYS PEREIRA MORAIS", "responsavel": "JOSSIMARA BEZERRA DOS REIS MORAIS"}, {"turma": "INF5A2026", "aluno": "ISIS MOREIRA FALCÃO", "mae": "ELLANE JACQUELINE COELHO MOREIRA GOMES", "pai": "DANIEL FARIA FALCÃO", "responsavel": "ELLANE JACQUELINE COELHO MOREIRA GOMES"}, {"turma": "INF5A2026", "aluno": "ISIS PERES MENDES", "mae": "MARAIZA PERES EVANGELISTA", "pai": "ALEX MENDES DO NASCIMENTO", "responsavel": "MARAIZA PERES EVANGELISTA"}, {"turma": "INF5A2026", "aluno": "JOÃO ARTUR VIEIRA SCHWENGBER", "mae": "DJESICA VANDRESSA HENRICHSEN VIEIRA", "pai": "NILO JOSE SCHWENGBER NETO", "responsavel": "DJESICA VANDRESSA HENRICHSEN VIEIRA"}, {"turma": "INF5A2026", "aluno": "JOSÉ LUIZ CAVALCANTE CARVALHO", "mae": "LAIS SANTOS DE CARVALHO", "pai": "KLAYTON LIMA CAVALCANTE CARVALHO", "responsavel": "KLAYTON LIMA CAVALCANTE CARVALHO"}, {"turma": "INF5A2026", "aluno": "LOUYS MARIA DE SOUSA LÚCIO", "mae": "MARIA LINDALVA GOMES MIRANDA", "pai": "CARLOS DANIEL LÚCIO PEREIRA", "responsavel": "CARLOS DANIEL LUCIO PEREIRA"}, {"turma": "INF5A2026", "aluno": "MAITÊ LUSTOSA BEZERRA BENVINDO", "mae": "LUANA LUSTOSA BEZERRA", "pai": "IRVAINE BENVINDO DE OLIVEIRA", "responsavel": "IRVAINE BENVINDO DE OLIVEIRA"}, {"turma": "INF5A2026", "aluno": "MARIA LUÍZA SAMPAIO RODRIGUES", "mae": "NATILA ANDREA SAMPAIO DOS SANTOS", "pai": "RODRIGO ALMEIDA RODRIGUES", "responsavel": "RODRIGO ALMEIDA RODRIGUES"}, {"turma": "INF5A2026", "aluno": "NOAH AUGUSTO FIORI KREUSCHER", "mae": "DANIELA FIORI DA SILVA KREUSCHER", "pai": "CRISTIANO RENATO FREGOLÃO KREUSCHER", "responsavel": "DANIELA FIORI DA SILVA KREUSCHER"}, {"turma": "INF5A2026", "aluno": "SAMUEL HENRIQUE SANTOS", "mae": "MILENA GABRIELLI ZANDONA", "pai": "GIOVANI CACIELLI ALMEIDA", "responsavel": "GIOVANI CACIELLI ALMEIDA"}, {"turma": "INF5A2026", "aluno": "SAMUEL RODRIGUES MORENO LANNS", "mae": "HERIKA LANNS RODRIGUES SANTONS MORENO", "pai": "ANTONIO JEFERSON DE DEUS MORENO", "responsavel": "ANTONIO JEFERSON DE DEUS MORENO"}, {"turma": "INF5B2026", "aluno": "ANA ALICE SANTANA QUEIROZ", "mae": "JADE TALILA SANTANA", "pai": "EMIVALDO LUIZ DE QUEIROZ", "responsavel": "MARLI LUIZ DE QUEIROZ GUIMARÃES"}, {"turma": "INF5B2026", "aluno": "ATHOS NOLETO ARAÚJO", "mae": "DEBORA NOLETO MACEDO ARAUJO", "pai": "JOSUÉ BATISTA DE ARAÚJO JÚNIOR", "responsavel": "JOSUÉ BATISTA DE ARAÚJO JÚNIOR"}, {"turma": "INF5B2026", "aluno": "AYALA DOS SANTOS ROCHA", "mae": "ANNY BRAULY HELLEN DOS SANTOS CASTRO", "pai": "JOAQUIM ROCHA PEREIRA", "responsavel": "ANNY BRAULY HELLEN DOS SANTOS CASTRO"}, {"turma": "INF5B2026", "aluno": "BERNARDO ARRUDA BRUNES", "mae": "HELLEN CRISTINA ALMEIDA BRUNES", "pai": "JEFFERSON ARTHUR COSTA ARRUDA MARTINS", "responsavel": "JEFFERSON ARTHUR COSTA ARRUDA MARTINS"}, {"turma": "INF5B2026", "aluno": "CASSANDRA LOBO PEREIRA SANTOS", "mae": "CLEIDIMAR PEREIRA DOS SANTOS LOBO", "pai": "NÃO INFORMADO", "responsavel": "CLEIDIMAR PEREIRA DOS SANTOS LOBO"}, {"turma": "INF5B2026", "aluno": "ELOÁH IZABEL CARDIM LIMA DOS SANTOS", "mae": "ALYNNE CARDIM LIMA", "pai": "EMERSON LEVI DE AZEVEDO SANTOS", "responsavel": "EMERSON LEVI DE AZEVEDO SANTOS"}, {"turma": "INF5B2026", "aluno": "ELOÁ MENDONÇA MARTINS", "mae": "AVILA TAVORA DE MENDONÇA MARTINS", "pai": "ALLYSSON RENAN MARTINS DE SÁ", "responsavel": "AVILA TAVORA DE MENDONÇA MARTINS"}, {"turma": "INF5B2026", "aluno": "GAEL PEREIRA MAIA", "mae": "THAYSLLANNE PEREIRA PINTO", "pai": "GABRIEL SILVA MAIA", "responsavel": "GABRIEL SILVA MAIA"}, {"turma": "INF5B2026", "aluno": "GUSTAVO HENRIQUE RIBEIRO BRITO", "mae": "LARA LOANNE RIBEIRO DE SOUSA", "pai": "DANILO NONATO BRITO", "responsavel": "DANILO NONATO BRITO"}, {"turma": "INF5B2026", "aluno": "HENRIQUE PINHEIRO BRITO DOS SANTOS", "mae": "LUCIELE DA SILVA PINHEIRO", "pai": "SERGIO BRITO DOS SANTOS", "responsavel": "LUCIELE DA SILVA PINHEIRO"}, {"turma": "INF5B2026", "aluno": "ISABELA SIQUEIRA TUNDELLO", "mae": "JESSICA SIQUEIRA PINTO TUNDELLO", "pai": "DANILO TUNDELLO MATOS", "responsavel": "JESSICA SIQUEIRA PINTO TUNDELLO"}, {"turma": "INF5B2026", "aluno": "ISABELLA LACERDA TURIBIO", "mae": "MARA TORIBIO DE LACERDA", "pai": "CLEITON DE ASSIS MALQUIADES TURIBIO", "responsavel": "MARA TORIBIO DE LACERDA"}, {"turma": "INF5B2026", "aluno": "ISIS SOUSA CARVALHO", "mae": "VANESSA SILVA SOUSA", "pai": "HIGOR SAMUELL SILVA DE CARVALHO", "responsavel": "HIGOR SAMUELL SILVA DE CARVALHO"}, {"turma": "INF5B2026", "aluno": "LAIRA SOFIA DE BRITO ALVES", "mae": "ANDREIA SOFIA DE BRITO", "pai": "", "responsavel": "MARIA DAS DORES LOPES ALVES"}, {"turma": "INF5B2026", "aluno": "MANUELLA MIRANDA MONTEIRO DOS SANTOS", "mae": "CRYSLLAYNE MONTEIRO DOS SANTOS", "pai": "ALDERI MIRANDA DA JESUS", "responsavel": "CRYSLLAYNE MONTEIRO DOS SANTOS"}, {"turma": "INF5B2026", "aluno": "MARIA CLARA FERREIRA BRITO", "mae": "MARIZA PEREIRA BRITO FERNANDES", "pai": "JOSÉ ANTÔNIO FERREIRA FERNANDES", "responsavel": "JOSÉ ANTÔNIO FERREIRA FERNANDES"}, {"turma": "INF5B2026", "aluno": "MARIA LUISA BUENO ROCHA NOGUEIRA", "mae": "PRISCILA MACHADO DA ROCHA", "pai": "FLAVIO BUENO LUSTOSA NOGUEIRA", "responsavel": "FLAVIO BUENO LUSTOSA NOGUEIRA"}, {"turma": "INF5B2026", "aluno": "NICOLAS UBALDO DIAS AZEVEDO", "mae": "ROSICLEA DIAS FERREIRA", "pai": "MARCELO AZEVEDO DE MACHADO", "responsavel": "ROSICLEA DIAS FERREIRA"}, {"turma": "INF5B2026", "aluno": "NOAH MELO", "mae": "JOICE FERREIRA DA CONCEIÇÃO AMARAL DE MELO", "pai": "NÃO INFORMADO", "responsavel": "SELMA DA CONCEIÇÃO AMARAL DE MELO"}, {"turma": "INF5B2026", "aluno": "OSWALDO DOURADO FREITAS NETO", "mae": "JÚLIA DANIELLE FREITAS ALVES", "pai": "OSVALDO ROCHA DOURADO JUNIOR", "responsavel": "JÚLIA DANIELLE FREITAS ALVES"}, {"turma": "INF5B2026", "aluno": "PIETRO FRANKLIN CARVALHO", "mae": "AIRA FRANKLIN CARVALHO VIANA", "pai": "EDINALDO MANZAN DA SILVA", "responsavel": "AIRA FRANKLIN CARVALHO VIANA"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "ALICE BRAGA MATOS", "mae": "MARIA RAQUEL BRAGA", "pai": "LEONARDO FERNANDES MATOS", "responsavel": "THAÍS RODRIGUES BRAGA MOROMIZATO"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "BIANCA AIRES ARAUJO JAPIASSÚ", "mae": "MILENA AIRES BARROS", "pai": "FELIPE ALVES ARAUJO JAPIASSU", "responsavel": "MILENA AIRES BARROS"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "BRYAN LUCAS MILHOMEM ALVES", "mae": "MIKHAUANE SOUZA SILVA MILHOMEM", "pai": "WILLIAN ALVES PEREIRA", "responsavel": "MIKHAUANE SOUZA SILVA MILHOMEM"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "CHLOE VIRGULINO PRADO", "mae": "TAMIRYS VIRGULINO RIBEIRO PRADO", "pai": "ÁLEX SILVA DO PRADO", "responsavel": "ÁLEX SILVA DO PRADO"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "DAVI ALMEIDA DOS SANTOS", "mae": "ALEXIA RIGINA DOS SANTOS", "pai": "CLAUDIO RODOLFO ALMEIDA SOUSA", "responsavel": "CLAUDIO RODOLFO ALMEIDA SOUSA"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "EDUARDA AMORIM PIRES", "mae": "VALÉRIA BRAGA AMORIM SOUSA PIRES", "pai": "LUCAS VINICIUS PIRES", "responsavel": "VALÉRIA BRAGA AMORIM SOUSA PIRES"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "ESTEVÃO MARTINS BRANDÃO NASCENTE", "mae": "IZABELLA MARTINS NUNES RODRIGUES", "pai": "FRED MOREIRA NASCENTE", "responsavel": "IZABELLA MARTINS NUNES RODRIGUES"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "ISABELA PINHEIRO DO CARMO SOARES", "mae": "LAUDECY ALVES DO CARMO SOARES", "pai": "JOELSON SOARES DA SILVA", "responsavel": "LAUDECY ALVES DO CARMO SOARES"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "JOSÉ LUIZ CAVALCANTE CARVALHO", "mae": "LAIS SANTOS DE CARVALHO", "pai": "KLAYTON LIMA CAVALCANTE CARVALHO", "responsavel": "KLAYTON LIMA CAVALCANTE CARVALHO"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "JULIA PAIVA DE SOUZA ZUIN", "mae": "JACKELLINY PAIVA DE SOUZA", "pai": "FABIANO ZUIN", "responsavel": "FABIANO ZUIN"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "LARAH GABRIELLA MILHOMEM ALVES", "mae": "MIKHAUANE SOUZA SILVA MILHOMEM", "pai": "WILLIAN ALVES PEREIRA", "responsavel": "MIKHAUANE SOUZA SILVA MILHOMEM"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "LARA PIRES AMORIM", "mae": "VALÉRIA BRAGA AMORIM SOUSA PIRES", "pai": "LUCAS VINICIUS PIRES", "responsavel": "VALÉRIA BRAGA AMORIM SOUSA PIRES"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "MARIA CECÍLIA DE OLIVEIRA SARDINHA BENEDITO", "mae": "JENIFER MICHELE DE OLIVEIRA BATISTA", "pai": "DORIVANDER DOMINGOS S BENEDITO", "responsavel": "DORIVANDER DOMINGOS S BENEDITO"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "MARIANA MARINHO LOPES", "mae": "DANIELA BULHÕES MARINHO", "pai": "ALLEFF LIAN MESAQUE LOPES COSTA", "responsavel": "ALLEFF LIAN MESAQUE LOPES COSTA"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "MELISSA MARINHO LOPES", "mae": "DANIELA BULHÕES MARINHO", "pai": "ALLEFF LIAN MESAQUE LOPES COSTA", "responsavel": "ALLEFF MESAQUE MESAQUE"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "NICOLAS KATO SIMÕES", "mae": "ANAISA KATO CAVALCANTE", "pai": "MAICON ROBERTO DA MATTA SIMÕES", "responsavel": "ANAISA KATO CAVALCANTE"}, {"turma": "COLÔNIA DE FÉRIAS 2026.1", "aluno": "RAFAEL ARTHUR MILHOMEM ALVES", "mae": "MIKHAUANE SOUZA SILVA MILHOMEM", "pai": "WILLIAN ALVES PEREIRA", "responsavel": "MIKHAUANE SOUZA SILVA MILHOMEM"}, {"turma": "KIDS2026M2E3", "aluno": "ANA VITÓRIA SANTOS OLIVEIRA", "mae": "WILLANE DOS SANTOS SILVA OLIVEIRA", "pai": "AGENOR ALVES DE OLIVEIRA NETO", "responsavel": "AGENOR ALVES DE OLIVEIRA NETO"}, {"turma": "KIDS2026M2E3", "aluno": "BENICIO SOUSA MONTEIRO", "mae": "THAISA MONTEIRO DE MEDEIROS", "pai": "DENIS CARLOS DE SOUSA", "responsavel": "DENIS CARLOS DE SOUSA"}, {"turma": "KIDS2026M2E3", "aluno": "ELOÁ AGUIAR FREITAS", "mae": "LUDIANE PIMENTA DE AGUIAR FREITAS", "pai": "", "responsavel": "LUDIANE PIMENTA DE AGUIAR FREITAS"}, {"turma": "KIDS2026M2E3", "aluno": "ISABELA PINHEIRO DO CARMO SOARES", "mae": "LAUDECY ALVES DO CARMO SOARES", "pai": "JOELSON SOARES DA SILVA", "responsavel": "LAUDECY ALVES DO CARMO SOARES"}, {"turma": "KIDS2026M2E3", "aluno": "ISIS ALVES GALVÃO", "mae": "ISLANA RODRIGUES SOUSA ALVES", "pai": "WANDERSON CARLOS BORGES GALVÃO", "responsavel": "WANDERSON CARLOS BORGES GALVÃO"}, {"turma": "KIDS2026M2E3", "aluno": "JOAO MIGUEL VIEIRA PEREIRA", "mae": "KAUANY ROCHA VIEIRA", "pai": "", "responsavel": "KAUANY ROCHA VIEIRA"}, {"turma": "KIDS2026M4,5E6", "aluno": "ABIMAEL MOSCON FONSECA DIAS", "mae": "BRUNESSA MOSCON", "pai": "ALAILSON FONSECA DIAS MOSCON", "responsavel": "BRUNESSA MOSCON"}, {"turma": "KIDS2026M4,5E6", "aluno": "ANTHONY FERREIRA MORAES DE OLIVEIRA", "mae": "ALESSANDRA FERREIRA DE MORAES", "pai": "RUBENS FERNANDO DE OLIVEIRA", "responsavel": "ALESSANDRA FERREIRA DE MORAES"}, {"turma": "KIDS2026M4,5E6", "aluno": "AYLLA DE BRITO ALVES", "mae": "ANDREIA SOFIA DE BRITO", "pai": "", "responsavel": "MARIA DAS DORES LOPES ALVES"}, {"turma": "KIDS2026M4,5E6", "aluno": "CASSANDRA LOBO PEREIRA SANTOS", "mae": "CLEIDIMAR PEREIRA DOS SANTOS LOBO", "pai": "NÃO INFORMADO", "responsavel": "CLEIDIMAR PEREIRA DOS SANTOS LOBO"}, {"turma": "KIDS2026M4,5E6", "aluno": "DAVI GUERRA NAZÁRIO DE OLIVEIRA CONCEIÇÃO", "mae": "PAOLA GUERRA JARDIM DE OLIVEIRA", "pai": "ALESANDRO NAZÁRIO GUIMARÃES CONCEIÇÃO", "responsavel": "HELENA MARIA GUERRA JARDIM LOMBARDI"}, {"turma": "KIDS2026M4,5E6", "aluno": "DAVI MANOEL MATOS DE ABREU", "mae": "MAYARA TAMILA SILVA DE MATOS", "pai": "BRUNO OLIVEIRA DE ABREU", "responsavel": "BRUNO DE OLIVEIRA DE ABREU"}, {"turma": "KIDS2026M4,5E6", "aluno": "ELOÁ MENDONÇA MARTINS", "mae": "AVILA TAVORA DE MENDONÇA MARTINS", "pai": "ALLYSSON RENAN MARTINS DE SÁ", "responsavel": "AVILA TAVORA DE MENDONÇA MARTINS"}, {"turma": "KIDS2026M4,5E6", "aluno": "ESTHER AGUIAR FREITAS", "mae": "LUDIANE PIMENTA DE AGUIAR FREITAS", "pai": "EMERSON DIAS DE FREITAS", "responsavel": "LUDIANE PIMENTA DE AGUIAR FREITAS"}, {"turma": "KIDS2026M4,5E6", "aluno": "GAEL SOUSA TOLEDO", "mae": "MARIA JOSÉ ALVES DE SOUSA", "pai": "CARLOS RENATO MATEUS TOLEDO", "responsavel": "CARLOS RENATO MATEUS TOLEDO"}, {"turma": "KIDS2026M4,5E6", "aluno": "ISIS SOUSA CARVALHO", "mae": "VANESSA SILVA SOUSA", "pai": "HIGOR SAMUELL SILVA DE CARVALHO", "responsavel": "HIGOR SAMUELL SILVA DE CARVALHO"}, {"turma": "KIDS2026M4,5E6", "aluno": "JOÃO OLIVEIRA SILVA", "mae": "VITÓRIA OLIVEIRA DOS SANTOS", "pai": "MARCOS AURÉLIO DA SILVA", "responsavel": "MARISA PEREIRA DOS SANTOS"}, {"turma": "KIDS2026M4,5E6", "aluno": "LAIRA SOFIA DE BRITO ALVES", "mae": "ANDREIA SOFIA DE BRITO", "pai": "", "responsavel": "MARIA DAS DORES LOPES ALVES"}, {"turma": "KIDS2026M4,5E6", "aluno": "LEVI BERNARDO MATIAS SILVA", "mae": "THALITA KELLEM MATIAS NERY", "pai": "LEONCIO JUNIOR DA SILVA", "responsavel": "THALITA KELLEM MATIAS NERY"}, {"turma": "KIDS2026M4,5E6", "aluno": "LUIZA BRITTO GALVÃO", "mae": "CLAUDIA BRITTO GALVÃO", "pai": "ANDRÉ GALVÃO EUGÊNIO", "responsavel": "CLAUDIA BRITTO GALVÃO"}, {"turma": "KIDS2026M4,5E6", "aluno": "LUIZ MIGUEL GOMIDES SOUZA", "mae": "JULIANA DO NASCIMENTO GOMIDES", "pai": "RAMIRO LOUENÇO DE SOUZA JUNIOR", "responsavel": "RAMIRO LOURENÇO DE SOUZA JUNIOR"}, {"turma": "KIDS2026M4,5E6", "aluno": "MAITÊ ROSSI DE CASTRO", "mae": "JOANA CRISTINA ROSSI CARDOSO", "pai": "GUILHERME GONÇALVES DE CASTRO", "responsavel": "JOANA CRISTINA ROSSI CARDOSO"}, {"turma": "KIDS2026M4,5E6", "aluno": "MARIA CECILIA SOARES DE MOURA FREITAS", "mae": "SIRLENE SOARES DE MOURA", "pai": "ANTONIO PAULO DE FREITAS", "responsavel": "SIRLENE SOARES DE MOURA"}, {"turma": "KIDS2026M4,5E6", "aluno": "MAYTÊ LEITE TEIXEIRA", "mae": "RAISSA COSTA LEITE", "pai": "MAYKHON DOUGLAS SOARES TEIXEIRA", "responsavel": "RAISSA COSTA LEITE"}, {"turma": "KIDS2026M4,5E6", "aluno": "NICOLAS UBALDO DIAS AZEVEDO", "mae": "ROSICLEA DIAS FERREIRA", "pai": "MARCELO AZEVEDO DE MACHADO", "responsavel": "ROSICLEA DIAS FERREIRA"}, {"turma": "KIDS2026M4,5E6", "aluno": "NOAH MELO", "mae": "JOICE FERREIRA DA CONCEIÇÃO AMARAL DE MELO", "pai": "NÃO INFORMADO", "responsavel": "SELMA DA CONCEIÇÃO AMARAL DE MELO"}, {"turma": "KIDS2026M4,5E6", "aluno": "PIETRO FRANKLIN CARVALHO", "mae": "AIRA FRANKLIN CARVALHO VIANA", "pai": "EDINALDO MANZAN DA SILVA", "responsavel": "AIRA FRANKLIN CARVALHO VIANA"}, {"turma": "KIDS2026M4,5E6", "aluno": "VALENTINA AIRES BANDEIRA", "mae": "RAFAELA AIRES DE SOUZA BANDEIRA", "pai": "", "responsavel": "RAFAELA AIRES DE SOUZA BANDEIRA"}, {"turma": "KIDS2026M7A10", "aluno": "ANNA LAURA COELHO LEITE MESQUITA", "mae": "KÉZIA COELHO DOS SANTOS SILVA", "pai": "MURILO LEITE MESQUITA", "responsavel": "MURILO LEITE MESQUITA"}, {"turma": "KIDS2026M7A10", "aluno": "ARTHUR FERNANDO FERREIRA MORAES DE OLIVEIRA", "mae": "ALESSANDRA FERREIRA DE MORAES", "pai": "RUBENS FERNANDO DE OLIVEIRA", "responsavel": "ALESSANDRA FERREIRA DE MORAES"}, {"turma": "KIDS2026M7A10", "aluno": "DAVI ROSSI DE CASTRO", "mae": "JOANA CRISTINA ROSSI CARDOSO", "pai": "GUILHERME GONÇALVES DE CASTRO", "responsavel": "JOANA CRISTINA ROSSI CARDOSO"}, {"turma": "KIDS2026M7A10", "aluno": "ÍSIS COSTA AMARAL NEGRE", "mae": "JAQUELLYNNE AIRES COSTA", "pai": "MAXWEL CHEGUEVARA BRITO AMARAL NEGRE", "responsavel": "MAXWEL CHEGUEVARA BRITO AMARAL NEGRE"}, {"turma": "KIDS2026M7A10", "aluno": "JAIME NETO SARDINHA DE AZEVEDO", "mae": "ALCIONE ALVES SARDINHA DE AZEVEDO", "pai": "CÉLIO DE AZEVEDO", "responsavel": "CÉLIO DE AZEVEDO"}, {"turma": "KIDS2026M7A10", "aluno": "JOÃO GUILHERME SARDINHA DE AZEVEDO", "mae": "ALCIONE ALVES SARDINHA DE AZEVEDO", "pai": "CÉLIO DE AZEVEDO", "responsavel": "CÉLIO DE AZEVEDO"}, {"turma": "KIDS2026M7A10", "aluno": "MARIA FERNANDA VENÂNCIO STEFFEN", "mae": "ISABELLA LOURENCO VENANCIO", "pai": "FERNANDO STEFFEN", "responsavel": "ISABELLA LOURENCO VENANCIO"}, {"turma": "KIDS2026M7A10", "aluno": "SAMUEL GEDSON RAMOS CARDOSO", "mae": "VALDINA RAMOS CARDOSO", "pai": "GEDSON SILVA CARDOSO", "responsavel": "VALDINA RAMOS CARDOSO"}, {"turma": "KIDS2026M7A10", "aluno": "VITOR AIRES BANDEIRA", "mae": "RAFAELA AIRES DE SOUZA BANDEIRA", "pai": "", "responsavel": "RAFAELA AIRES DE SOUZA BANDEIRA"}, {"turma": "KIDS2026M7A10", "aluno": "VITOR GABRIEL BARREIRA REIS", "mae": "TEREZINHA RIBEIRO REIS", "pai": "FRANCISCO DE ASSIS BARREIRA NUNES", "responsavel": "FRANCISCO DE ASSIS BARREIRA NUNES"}, {"turma": "KIDS2026M7A10", "aluno": "YASMIN CORRÊA MAIA", "mae": "ALCILENE DOMICIANA CORREA FERREIRA", "pai": "FABIO MAIA RODRIGUES", "responsavel": "FABIO MAIA RODRIGUES"}, {"turma": "KIDS2026T2E3", "aluno": "AMBROSIO BERNARDO SENA LEÃO", "mae": "DANIELLY CAROLLINE SENA DE ANDRADE", "pai": "CLEMON ANDRÉ LEÃO", "responsavel": "DANIELLY CAROLLINE SENA DE ANDRADE"}, {"turma": "KIDS2026T2E3", "aluno": "DIANA MOTA CUSTÓDIO", "mae": "ANA LUIZA GOMES MOTA", "pai": "JOÃO PEDRO OLIVEIRA CUSTÓDIO", "responsavel": "ANA LUIZA GOMES MOTA"}, {"turma": "KIDS2026T2E3", "aluno": "ISA MARIA SANTOS PEREIRA", "mae": "ANA GABRIELA OLIVEIRA DOS SANTOS", "pai": "THIAGO PEREIRA DOS ANJOS", "responsavel": "THIAGO PEREIRA DOS ANJOS"}, {"turma": "KIDS2026T2E3", "aluno": "JOÃO MIGUEL SERAFIM SANTOS", "mae": "ANA CRISTINA SERAFIM DA SILVA", "pai": "RUDSON SOARES SANTOS", "responsavel": "ANA CRISTINA SERAFIM DA SILVA"}, {"turma": "KIDS2026T2E3", "aluno": "JOSÉ LUIZ CAVALCANTE CARVALHO", "mae": "LAIS SANTOS DE CARVALHO", "pai": "KLAYTON LIMA CAVALCANTE CARVALHO", "responsavel": "KLAYTON LIMA CAVALCANTE CARVALHO"}, {"turma": "KIDS2026T2E3", "aluno": "LUAN AUGUSTO NUNES SOARES", "mae": "ALÍCIA NUNES DA SILVA", "pai": "LUCAS RIBEIRO SOARES", "responsavel": "ALICIA NUNES DA SILVA"}, {"turma": "KIDS2026T2E3", "aluno": "MURILO NUNES", "mae": "CAMILA FRANCISCA DA SILVA", "pai": "JEFFERSON RAMOS NUNES", "responsavel": "CAMILA FRANCISCA DA SILVA"}, {"turma": "KIDS2026T4,5E6", "aluno": "ALISSA MACHADO DE FREITAS ROCHA", "mae": "TALITA MARIA MACHADO DE FREITAS", "pai": "ANDERSON ROCHA LOBO", "responsavel": "TALITA MARIA MACHADO DE FREITAS"}, {"turma": "KIDS2026T4,5E6", "aluno": "AMBROSIO BENICIO SENA LEÃO", "mae": "DANIELLY CAROLLINE SENA DE ANDRADE", "pai": "CLEMON ANDRÉ LEÃO", "responsavel": "DANIELLY CAROLLINE SENA DE ANDRADE"}, {"turma": "KIDS2026T4,5E6", "aluno": "ARTHUR ANDRADE ARRAIS", "mae": "AYNE ALMEIDA ANDRADE", "pai": "WARLES FERREIRA ARRAIS", "responsavel": "WARLES FERREIRA ARRAIS"}, {"turma": "KIDS2026T4,5E6", "aluno": "EDUARDA AMORIM PIRES", "mae": "VALÉRIA BRAGA AMORIM SOUSA PIRES", "pai": "LUCAS VINICIUS PIRES", "responsavel": "VALÉRIA BRAGA AMORIM SOUSA PIRES"}, {"turma": "KIDS2026T4,5E6", "aluno": "ELISA NYARA MOURA DA CRUZ", "mae": "TAÍS IONARA MOURA SANTOS", "pai": "NYORORSON SANTOS CRUZ", "responsavel": "NYORORSON SANTOS CRUZ"}, {"turma": "KIDS2026T4,5E6", "aluno": "ESTELA OLIVEIRA DE SÁ LEAL RODRIGUES", "mae": "MARIA ISABEL LEAL RODRIGUES", "pai": "MAUIR OLIVEIRA DE SA FILHO", "responsavel": "EDVAN MARIA LEAL RODRIGUES"}, {"turma": "KIDS2026T4,5E6", "aluno": "FRANCISCO VALMÔR BEZERRA DE ALCÂNTARA NETO", "mae": "PATRÍCIA DA SILVA ALCÂNTARA", "pai": "", "responsavel": "PATRÍCIA DA SILVA ALCÂNTARA"}, {"turma": "KIDS2026T4,5E6", "aluno": "GAEL GOMES BATISTA", "mae": "ELDILEIA ALVES GOMES", "pai": "ADAO BATISTA GOMES", "responsavel": "ADAO BATISTA GOMES"}, {"turma": "KIDS2026T4,5E6", "aluno": "GUSTAVO COSTA FERREIRA", "mae": "DAYANE EVELYN BARROS COSTA FERREIRA", "pai": "ERICK OLIVEIRA FERREIRA", "responsavel": "DAYANE EVELYN BARROS COSTA FERREIRA"}, {"turma": "KIDS2026T4,5E6", "aluno": "HELLENA BARROS SILVA", "mae": "STEFANE PEREIRA BARROS", "pai": "EVANDRO PEREIRA DA SILVA", "responsavel": "STEFANE PEREIRA BARROS"}, {"turma": "KIDS2026T4,5E6", "aluno": "HUGO HENRIQUE RIBEIRO SILVA", "mae": "DÉBORA PEREIRA DA SILVA", "pai": "LOURIVAL DE CARVALHO RIBEIRO JUNIOR", "responsavel": "DÉBORA PEREIRA DA SILVA"}, {"turma": "KIDS2026T4,5E6", "aluno": "ISIS MANUELLA RODRIGUES GHISLENI", "mae": "KARINE GHISLENI", "pai": "JORGE ANDRE ROPDRIGUES PINTO", "responsavel": "KARINE GHISLENI"}, {"turma": "KIDS2026T4,5E6", "aluno": "ISIS MOREIRA FALCÃO", "mae": "ELLANE JACQUELINE COELHO MOREIRA GOMES", "pai": "DANIEL FARIA FALCÃO", "responsavel": "ELLANE JACQUELINE COELHO MOREIRA GOMES"}, {"turma": "KIDS2026T4,5E6", "aluno": "JOÃO ARTUR VIEIRA SCHWENGBER", "mae": "DJESICA VANDRESSA HENRICHSEN VIEIRA", "pai": "NILO JOSE SCHWENGBER NETO", "responsavel": "DJESICA VANDRESSA HENRICHSEN VIEIRA"}, {"turma": "KIDS2026T4,5E6", "aluno": "JOHN MATHEUS ALMEIDA SILVA CARDOSO", "mae": "FRANCISCA THAÍS FERREIRA SILVA", "pai": "DIONISIO DHEYZEMBERG CARDOSO SOARES", "responsavel": "DIONISIO DHEYZEMBERG CARDOSO SOARES"}, {"turma": "KIDS2026T4,5E6", "aluno": "LIZ SOUSA FONSECA", "mae": "SHIRLEY DE SOUSA CUNHA", "pai": "BRUNO MARTINS FONSECA", "responsavel": "BRUNO MARTINS FONSECA"}, {"turma": "KIDS2026T4,5E6", "aluno": "LORENZO SILVA MEDEIROS", "mae": "KELLEN DA SILVA BATISTA", "pai": "NÃO INFORMADO", "responsavel": "KELLEN DA SILVA BATISTA MEDEIROS"}, {"turma": "KIDS2026T4,5E6", "aluno": "LOUYS MARIA DE SOUSA LÚCIO", "mae": "MARIA LINDALVA GOMES MIRANDA", "pai": "CARLOS DANIEL LÚCIO PEREIRA", "responsavel": "CARLOS DANIEL LUCIO PEREIRA"}, {"turma": "KIDS2026T4,5E6", "aluno": "LUISA MOURÃO ONGARATTO", "mae": "DAYLLANE MOURÃO DE OLIVEIRA", "pai": "MAX GERMANO ONGARATTO", "responsavel": "DAYLLANE MOURÃO DE OLIVEIRA"}, {"turma": "KIDS2026T4,5E6", "aluno": "MAITÊ LUSTOSA BEZERRA BENVINDO", "mae": "LUANA LUSTOSA BEZERRA", "pai": "IRVAINE BENVINDO DE OLIVEIRA", "responsavel": "IRVAINE BENVINDO DE OLIVEIRA"}, {"turma": "KIDS2026T4,5E6", "aluno": "MARIA JÚLIA RIBEIRO FONSECA", "mae": "AYLA RIBEIRO MARTINS FONSECA", "pai": "RAMON FONSECA FEITOSA", "responsavel": "AYLA RIBEIRO MARTINS FONSECA"}, {"turma": "KIDS2026T4,5E6", "aluno": "MIRELLA PRADO BEZERRA", "mae": "DÉBORA MONTEIRO PRADO", "pai": "RODRIGO BEZERRA SILVA", "responsavel": "DÉBORA MONTEIRO PRADO"}, {"turma": "KIDS2026T4,5E6", "aluno": "NICOLAS KATO SIMÕES", "mae": "ANAISA KATO CAVALCANTE", "pai": "MAICON ROBERTO DA MATTA SIMÕES", "responsavel": "ANAISA KATO CAVALCANTE"}, {"turma": "KIDS2026T4,5E6", "aluno": "SAMUEL HENRIQUE SANTOS", "mae": "MILENA GABRIELLI ZANDONA", "pai": "GIOVANI CACIELLI ALMEIDA", "responsavel": "GIOVANI CACIELLI ALMEIDA"}, {"turma": "KIDS2026T4,5E6", "aluno": "VICENTE LEAL RODRIGUES MINGHINI", "mae": "MARIA ISABEL LEAL RODRIGUES", "pai": "VINICIO MINGHINI", "responsavel": "EDVAN MARIA LEAL RODRIGUES"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "ALICIA PEREIRA DE ALMEIDA", "mae": "VALDIRENE PEREIRA DE ALMEIDA", "pai": "CARLOS OSMA DE ALMEIDA", "responsavel": "CARLOS OSMA DE ALMEIDA"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "AMANDA PEREIRA CAMBUY", "mae": "ISABELLA ESTEVÃO PEREIRA CAMBUY", "pai": "RUBENS DE OLIVEIRA CAMBUY", "responsavel": "ISABELLA ESTEVÃO PEREIRA CAMBUY"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "ANA CLARA MENEZES FERNANDES", "mae": "MARIA LEUDIANE DA SILVA MENEZES", "pai": "HAGAMENON ARAUJO FERNANDES", "responsavel": "HAGAMENON ARAUJO FERNANDES"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "ARTHUR MENEZES FERNANDES", "mae": "MARIA LEUDIANE DA SILVA MENEZES", "pai": "HAGAMENON ARAUJO FERNANDES", "responsavel": "HAGAMENON ARAUJO FERNANDES"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "BERNARDO SERAFIM DA SILVA FERREIRA", "mae": "ANA CRISTINA SERAFIM DA SILVA", "pai": "", "responsavel": "ANA CRISTINA SERAFIM DA SILVA"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "JOÃO PEDRO MARTINS MACIEL", "mae": "KERLLEY MARTINS MIRANDA", "pai": "FABRICIO MARTINS MACIEL", "responsavel": "KERLLEY MARTINS MIRANDA"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "MANUELA BASTOS ROQUE", "mae": "CAMILLA PEREIRA BASTOS", "pai": "MARCUS CAMILO FLORIANO ROQUE", "responsavel": "CAMILLA PEREIRA BASTOS"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "PEDRO PAULO RODRIGUES NISHMURA", "mae": "NÃO INFORMADO", "pai": "ADEMIR NISHMURA JUNIOR", "responsavel": "ADEMIR NISHMURA JUNIOR"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "RICARDO CLAUDINO DOS SANTOS ALESSIO", "mae": "LUANA CLAUDINO DOS SANTOS", "pai": "RODRIGO DE ALMEIDA ALESSIO", "responsavel": "LUANA CLAUDINO DOS SANTOS"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "SOFIA PARENTE FERREIRA", "mae": "ROSIANE TAVARES PARENTE", "pai": "FÁBIO DE REZENDE FERREIRA", "responsavel": "FÁBIO DE REZENDE FERREIRA"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "SOFIA SOUSA BITTENCOURT", "mae": "ANDREANE DA SILVA BITTENCOURT", "pai": "FREDERICO AUGUSTO CAMPOS BITTENCOURT", "responsavel": "FREDERICO AUGUSTO CAMPOS BITTENCOURT"}, {"turma": "KIDS2026T6AO9ANO", "aluno": "TÁSSILA GOMES MORAIS", "mae": "TISSIANE GOMES COSTA MORAIS", "pai": "OSCAR PEREIRA DE MORAIS JUNIOR", "responsavel": "OSCAR PEREIRA DE MORAIS JUNIOR"}, {"turma": "KIDS2026T7A10", "aluno": "ALICE ANDRADE ARRAIS", "mae": "AYNE ALMEIDA ANDRADE", "pai": "WARLES FERREIRA ARRAIS", "responsavel": "WARLES FERREIRA ARRAIS"}, {"turma": "KIDS2026T7A10", "aluno": "ALICE FREITAS BRITO MOI", "mae": "AMANDA LOANE BRITO MOI", "pai": "MAURO CEZAR FREITAS MOI", "responsavel": "MAURO CEZAR FREITAS MOI"}, {"turma": "KIDS2026T7A10", "aluno": "AMABILE VALENTINA SANTOS FERREIRA DA CUNHA", "mae": "JULIANA TERESA DOS SANTOS FERREIRA", "pai": "ELDON CLAYTON FERREIRA DA CUNHA", "responsavel": "ELDON CLAYTON FERREIRA DA CUNHA"}, {"turma": "KIDS2026T7A10", "aluno": "AMANDA SOTERO RIBEIRO", "mae": "SORAYA SOTERO SILVA RIBEIRO", "pai": "THIAGO REZENDE RIBEIRO", "responsavel": "SORAYA SOTERO SILVA RIBEIRO"}, {"turma": "KIDS2026T7A10", "aluno": "ANGELA MARIA DUARTE FONSECA", "mae": "ALLANNA INGRID DUARTE LOPES FONSECA", "pai": "JARLAN DIOGENES FONSECA", "responsavel": "ALLANNA INGRID DUARTE LOPES FONSECA"}, {"turma": "KIDS2026T7A10", "aluno": "AYLLA SOPHIA NUNES MOREIRA", "mae": "ALICIA NUNES DA SILVA", "pai": "DAILAM MOREIRA DA SILVA", "responsavel": "ALICIA NUNES DA SILVA"}, {"turma": "KIDS2026T7A10", "aluno": "BERNARDO RIBEIRO BORGES", "mae": "VIVIANNY VIRGINIA BORGES CARVALHO", "pai": "KAIO ROBERTO RIBEIRO DE CARVALHO BORGES", "responsavel": "KAIO ROBERTO RIBEIRO DE CARVALHO BORGES"}, {"turma": "KIDS2026T7A10", "aluno": "BIANCA AIRES ARAUJO JAPIASSÚ", "mae": "MILENA AIRES BARROS", "pai": "FELIPE ALVES ARAUJO JAPIASSU", "responsavel": "MILENA AIRES BARROS"}, {"turma": "KIDS2026T7A10", "aluno": "CÉSAR GOMES MORAIS", "mae": "TISSIANE GOMES COSTA MORAIS", "pai": "OSCAR PEREIRA DE MORAIS JUNIOR", "responsavel": "OSCAR PEREIRA DE MORAIS JUNIOR"}, {"turma": "KIDS2026T7A10", "aluno": "CRISTIANO JUNIOR ARAUJO VIEIRA", "mae": "VALERIA BORGES ARAUJO", "pai": "CRISTIANO PEREIRA VIEIRA", "responsavel": "VALERIA BORGES ARAUJO"}, {"turma": "KIDS2026T7A10", "aluno": "ENZO MIGUEL DUARTE FONSECA", "mae": "ALLANNA INGRID DUARTE LOPES FONSECA", "pai": "JARLAN DIOGENES FONSECA", "responsavel": "ALLANNA INGRID DUARTE LOPES FONSECA"}, {"turma": "KIDS2026T7A10", "aluno": "ERIC DIEGO NEUHAUS", "mae": "SILVIA NEUHAUS", "pai": "JENS NEUHAUS", "responsavel": "SILVIA NEUHAUS"}, {"turma": "KIDS2026T7A10", "aluno": "FABIO NETO SIQUEIRA MORAIS", "mae": "LUNELLE MORAIS DO COUTO", "pai": "GABRIEL SIQUEIRA MONTEIRO", "responsavel": "LUNELLE MORAIS DO COUTO"}, {"turma": "KIDS2026T7A10", "aluno": "FLAVIO JUNIOR FAGUNDES ANDRADE", "mae": "CRISTIANE LOPES DE OLIVEIRA", "pai": "FLAVIO CESAR DE ANDRADE", "responsavel": "CRISTIANE LOPES DE OLIVEIRA"}, {"turma": "KIDS2026T7A10", "aluno": "GABRIEL MUNIZ TUNDELLO MATOS", "mae": "VANILA TUNDELLO MATOS COSTA", "pai": "THULIO MUNIZ COSTA", "responsavel": "DEUSINA DE SOUSA MATOS"}, {"turma": "KIDS2026T7A10", "aluno": "HEITOR SILVA MASCARENHAS", "mae": "CLEIDIANE SILVA DOS SANTOS", "pai": "ELY MASCARENHAS BARROS", "responsavel": "ELY MASCARENHAS BARROS"}, {"turma": "KIDS2026T7A10", "aluno": "ISABELA FERNANDES SILVÉRIO", "mae": "MILENA FERNANDES FERREIRA", "pai": "LEONARDO SILVÉRIO DOS SANTOS", "responsavel": "LEONARDO SILVÉRIO DOS SANTOS"}, {"turma": "KIDS2026T7A10", "aluno": "ISIS BERNARDES LEMES MONTEIRO", "mae": "BIANCA STEPHANY LEMES MONTEIRO", "pai": "LUCAS BERNARDES DE ALMEIDA FERREIRA", "responsavel": "BIANCA STEPHANY LEMES MONTEIRO"}, {"turma": "KIDS2026T7A10", "aluno": "JOÃO BERNARDO MENDANHA", "mae": "NAYARA EUGENIA GOMES", "pai": "ADEMIR NISHMURA JUNIOR", "responsavel": "JOÃO BATISTA GOMES"}, {"turma": "KIDS2026T7A10", "aluno": "JOÃO MIGUEL AGUIAR VIEIRA", "mae": "LILIANA AGUIAR NEGREIROS", "pai": "RONIVON GOMES VIEIRA", "responsavel": "RONIVON GOMES VIEIRA"}, {"turma": "KIDS2026T7A10", "aluno": "LARA PIRES AMORIM", "mae": "VALÉRIA BRAGA AMORIM SOUSA PIRES", "pai": "LUCAS VINICIUS PIRES", "responsavel": "VALÉRIA BRAGA AMORIM SOUSA PIRES"}, {"turma": "KIDS2026T7A10", "aluno": "LORENZO LUCAS DE MENEZES LIMA", "mae": "SELMA MESQUITA DE MENEZES LIMA", "pai": "ANDRESON LUCAS DE LIMA", "responsavel": "SELMA MESQUITA DE MENEZES LIMA"}, {"turma": "KIDS2026T7A10", "aluno": "LUIZ RAFAEL DE SOUZA TEIXEIRA", "mae": "RENATA KELLY COSTA SOUZA", "pai": "ALEX LOPES TEIXEIRA", "responsavel": "RENATA KELLY COSTA SOUZA"}, {"turma": "KIDS2026T7A10", "aluno": "MARIA CLARA PEIXOTO MEDEIROS", "mae": "LIVIA MEDEIROS TEIXEIRA", "pai": "ALDO PEIXOTO DA SILVA", "responsavel": "LIVIA MEDEIROS TEIXEIRA"}, {"turma": "KIDS2026T7A10", "aluno": "MARIA CLARA VIEIRA SCHWENGBER", "mae": "DJESICA VANDRESSA HENRICHSEN VIEIRA", "pai": "NILO JOSE SCHWENGBER NETO", "responsavel": "DJESICA VANDRESSA HENRICHSEN VIEIRA"}, {"turma": "KIDS2026T7A10", "aluno": "MARJORY MOURA DA CRUZ SANTANA", "mae": "MARGARETE MOURA DA CRUZ", "pai": "JUNIOR CESAR SANTANA DE SOUZA", "responsavel": "MARGARETE MOURA DA CRUZ"}, {"turma": "KIDS2026T7A10", "aluno": "NATASHA DIAS NEVES", "mae": "MAGNA DIAS BARBOSA", "pai": "ESTEVAM CIRQUEIRA DAS NEVES FILHO", "responsavel": "MAGNA DIAS BARBOSA"}, {"turma": "KIDS2026T7A10", "aluno": "PEDRO LUCAS PEREIRA TAUBE", "mae": "SARA PRISCILLA GABRIEL PEREIRA", "pai": "CARLOS ALBERTO TAUBE JUNIOR", "responsavel": "SARA PRISCILLA GABRIEL PEREIRA"}, {"turma": "KIDS2026T7A10", "aluno": "PHILLIPP NEUHAUS", "mae": "SILVIA NEUHAUS", "pai": "JENS NEUHAUS", "responsavel": "SILVIA NEUHAUS"}, {"turma": "KIDS2026T7A10", "aluno": "RAVI CAVALCANTE VELOSO BERNADELLE", "mae": "MÃE", "pai": "", "responsavel": "RAYAN CAVALCANTE VELOSO BARBOSA"}, {"turma": "KIDS2026T7A10", "aluno": "RENATO SOUSA TOLEDO", "mae": "MARIA JOSÉ ALVES DE SOUSA", "pai": "CARLOS RENATO MATEUS TOLEDO", "responsavel": "CARLOS RENATO MATEUS TOLEDO"}, {"turma": "KIDS2026T7A10", "aluno": "SAMUEL PEREIRA CAMBUY", "mae": "ISABELLA ESTEVÃO PEREIRA CAMBUY", "pai": "RUBENS DE OLIVEIRA CAMBUY", "responsavel": "ISABELLA ESTEVÃO PEREIRA CAMBUY"}, {"turma": "KIDS2026T7A10", "aluno": "THEO ETHAN FARIAS FERREIRA", "mae": "SARA BRIGIDA FARIAS FERREIRA", "pai": "ANDERSON FERREIRA", "responsavel": "SARA BRIGIDA FARIAS FERREIRA"}, {"turma": "KIDS2026T7A10", "aluno": "THÉO MORAES NUNES", "mae": "LAYANE DE SOUSA NUNES", "pai": "YURE SILVA MORAES", "responsavel": "LAYANE DE SOUSA NUNES"}, {"turma": "KIDS2026T7A10", "aluno": "VALENTINA DE SOUSA BORGES LIMA", "mae": "LETÍCIA MARIA DE SOUSA BORGES LIMA", "pai": "WARLISON BORGES LIMA", "responsavel": "LETÍCIA MARIA DE SOUSA BORGES LIMA"}, {"turma": "KIDS2026T7A10", "aluno": "VITOR GABRIEL BARREIRA REIS", "mae": "TEREZINHA RIBEIRO REIS", "pai": "FRANCISCO DE ASSIS BARREIRA NUNES", "responsavel": "FRANCISCO DE ASSIS BARREIRA NUNES"}];
 
 let usuario = null;
+let todosUsuarios = [];
 let familiaSelecionada = null;
-let responsavelSelecionado = "";
+let responsavelTicket = { nome: "", email: "" };
 
-// ── UTILS ──
-function toast(msg, tipo=''){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast visivel '+tipo;
-  setTimeout(()=>t.className='toast',3000);
+function toast(msg, tipo="") {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = "toast visivel " + tipo;
+  setTimeout(() => t.className = "toast", 3000);
 }
-async function api(dados){
-  const r=await fetch(API,{method:'POST',redirect:'follow',body:JSON.stringify(dados)});
+
+async function api(dados) {
+  const r = await fetch(API, { method:"POST", redirect:"follow", body: JSON.stringify(dados) });
   return r.json();
 }
 
 // ── LOGIN ──
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.getElementById('tela-login').style.display!=='none') fazerLogin();
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && document.getElementById("tela-login").style.display !== "none") fazerLogin();
 });
-async function fazerLogin(){
-  const email=document.getElementById('login-email').value.trim();
-  const senha=document.getElementById('login-senha').value.trim();
-  const btn=document.getElementById('btn-entrar');
-  const erro=document.getElementById('erro-login');
-  if(!email||!senha){erro.textContent='Preencha e-mail e senha.';return;}
-  btn.disabled=true; btn.textContent='Entrando...'; erro.textContent='';
-  try{
-    const res=await api({acao:'login',email,senha});
-    if(res.ok){
-      usuario=res.usuario;
-      document.getElementById('tela-login').style.display='none';
-      document.getElementById('tela-app').style.display='block';
-      document.getElementById('nome-usuario').textContent=usuario.nome;
-      if(usuario.perfil==='ADMIN') document.querySelectorAll('.admin-tab').forEach(t=>t.style.display='');
-      irPara('painel');
-    } else { erro.textContent=res.erro||'Erro ao entrar.'; }
-  } catch(e){ erro.textContent='Erro de conexão.'; }
-  btn.disabled=false; btn.textContent='Entrar';
+
+async function fazerLogin() {
+  const email = document.getElementById("login-email").value.trim();
+  const senha = document.getElementById("login-senha").value.trim();
+  const btn = document.getElementById("btn-entrar");
+  const erro = document.getElementById("erro-login");
+  if (!email || !senha) { erro.textContent = "Preencha e-mail e senha."; return; }
+  btn.disabled = true; btn.textContent = "Entrando..."; erro.textContent = "";
+  try {
+    const res = await api({ acao: "login", email, senha });
+    if (res.ok) {
+      usuario = res.usuario;
+      document.getElementById("tela-login").style.display = "none";
+      document.getElementById("tela-app").style.display = "block";
+      document.getElementById("nome-usuario").textContent = usuario.nome;
+      if (usuario.perfil === "ADMIN") document.querySelectorAll(".admin-tab").forEach(t => t.style.display = "");
+      // Carregar usuários e notificações
+      carregarUsuarios();
+      verificarNotificacoes();
+      irPara("painel");
+    } else { erro.textContent = res.erro || "Erro ao entrar."; }
+  } catch(e) { erro.textContent = "Erro de conexão."; }
+  btn.disabled = false; btn.textContent = "Entrar";
 }
-function sair(){
-  usuario=null;
-  document.getElementById('tela-login').style.display='flex';
-  document.getElementById('tela-app').style.display='none';
-  document.getElementById('login-senha').value='';
+
+function sair() {
+  usuario = null; todosUsuarios = [];
+  document.getElementById("tela-login").style.display = "flex";
+  document.getElementById("tela-app").style.display = "none";
+  document.getElementById("login-senha").value = "";
+}
+
+async function carregarUsuarios() {
+  try {
+    const res = await api({ acao: "listarUsuarios" });
+    todosUsuarios = res.usuarios || [];
+  } catch(e) {}
+}
+
+async function verificarNotificacoes() {
+  try {
+    const res = await api({ acao: "listarNotificacoes", email: usuario.email });
+    const naoLidas = (res.notificacoes || []).filter(n => n.lida === "NAO").length;
+    const badge = document.getElementById("notif-badge");
+    if (naoLidas > 0) { badge.textContent = naoLidas; badge.style.display = "flex"; }
+    else { badge.style.display = "none"; }
+  } catch(e) {}
 }
 
 // ── NAVEGAÇÃO ──
-function irPara(aba){
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('ativo'));
-  const abas=['painel','novo','tickets','logs','usuarios'];
-  document.querySelectorAll('.nav-tab')[abas.indexOf(aba)]?.classList.add('ativo');
-  if(aba==='painel')   renderPainel();
-  if(aba==='novo')     renderNovoTicket();
-  if(aba==='tickets')  renderTickets();
-  if(aba==='logs')     renderLogs();
-  if(aba==='usuarios') renderUsuarios();
+function irPara(aba) {
+  document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("ativo"));
+  const abas = ["painel","novo","tickets","logs","usuarios","notificacoes"];
+  document.querySelectorAll(".nav-tab")[abas.indexOf(aba)]?.classList.add("ativo");
+  if (aba === "painel")        renderPainel();
+  if (aba === "novo")          renderNovoTicket();
+  if (aba === "tickets")       renderTickets();
+  if (aba === "logs")          renderLogs();
+  if (aba === "usuarios")      renderUsuarios();
+  if (aba === "notificacoes")  renderNotificacoes();
 }
 
 // ── PAINEL ──
-async function renderPainel(){
-  const c=document.getElementById('conteudo');
-  c.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
-  try{
-    const res=await api({acao:'listarTickets',status:'TODOS'});
-    const tickets=res.tickets||[];
-    const abertos=tickets.filter(t=>t.status==='Aberto').length;
-    const andamento=tickets.filter(t=>t.status==='Em andamento').length;
-    const resolvidos=tickets.filter(t=>t.status==='Resolvido').length;
-    const recentes=tickets.slice(0,5);
-    c.innerHTML=`
+async function renderPainel() {
+  const c = document.getElementById("conteudo");
+  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try {
+    const res = await api({ acao: "listarTickets", status: "TODOS" });
+    const tks = res.tickets || [];
+    const ab = tks.filter(t => t.status === "Aberto").length;
+    const an = tks.filter(t => t.status === "Em andamento").length;
+    const rv = tks.filter(t => t.status === "Resolvido").length;
+    c.innerHTML = `
       <div class="resumo-grid">
-        <div class="resumo-card"><div class="num">${tickets.length}</div><div class="label">Total</div></div>
-        <div class="resumo-card aberto"><div class="num">${abertos}</div><div class="label">Abertos</div></div>
-        <div class="resumo-card andamento"><div class="num">${andamento}</div><div class="label">Em andamento</div></div>
-        <div class="resumo-card resolvido"><div class="num">${resolvidos}</div><div class="label">Resolvidos</div></div>
+        <div class="resumo-card"><div class="num">${tks.length}</div><div class="label">Total</div></div>
+        <div class="resumo-card aberto"><div class="num">${ab}</div><div class="label">Abertos</div></div>
+        <div class="resumo-card andamento"><div class="num">${an}</div><div class="label">Em andamento</div></div>
+        <div class="resumo-card resolvido"><div class="num">${rv}</div><div class="label">Resolvidos</div></div>
       </div>
       <div style="font-size:13px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Últimos registros</div>
-      <div class="ticket-lista">${recentes.length?recentes.map(cardTicket).join(''):'<div class="vazio"><div class="icone">📭</div><p>Nenhum ticket ainda.</p></div>'}</div>`;
-  } catch(e){ c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar.</p></div>'; }
+      <div class="ticket-lista">${tks.slice(0,5).map(cardTicket).join("") || '<div class="vazio"><div class="icone">📭</div><p>Nenhum ticket ainda.</p></div>'}</div>`;
+  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar.</p></div>'; }
 }
 
-// ── BUSCA FAMÍLIA ──
-function renderNovoTicket(){
-  familiaSelecionada=null; responsavelSelecionado='';
-  document.getElementById('conteudo').innerHTML=`
+// ── NOVO TICKET ──
+function renderNovoTicket() {
+  familiaSelecionada = null;
+  responsavelTicket = { nome: "", email: "" };
+  document.getElementById("conteudo").innerHTML = `
     <div class="form-card">
       <h2>Registrar nova ocorrência</h2>
       <div class="form-grid">
@@ -330,57 +332,68 @@ function renderNovoTicket(){
           <label>Origem do contato</label>
           <select id="f-origem">
             <option>WhatsApp</option><option>E-mail</option>
-            <option>Telefone</option><option>Presencial</option>
-            <option>Sistema interno</option>
+            <option>Telefone</option><option>Presencial</option><option>Sistema interno</option>
           </select>
         </div>
 
-        <!-- BLOCO EXTERNO: busca família -->
-        <div class="form-campo full" id="bloco-externo">
-          <div class="familia-box">
-            <h3>🔍 Buscar aluno ou responsável</h3>
-            <div class="busca-wrapper">
-              <input class="busca-input" id="busca-familia" placeholder="Digite o nome do aluno, mãe, pai ou responsável..." oninput="buscarFamilia()" autocomplete="off">
-              <div class="busca-dropdown" id="busca-dropdown"></div>
+        <!-- BLOCO EXTERNO -->
+        <div id="bloco-externo" class="familia-box">
+          <h3>🔍 Buscar aluno ou responsável</h3>
+          <div class="busca-wrapper">
+            <input class="busca-input" id="busca-familia" placeholder="Digite o nome do aluno, mãe, pai ou responsável..." oninput="buscarFamilia()" autocomplete="off">
+            <div class="busca-dropdown" id="busca-dropdown"></div>
+          </div>
+          <div class="familia-selecionada" id="familia-selecionada">
+            <div class="familia-info" id="familia-info"></div>
+            <div class="resp-escolha">
+              <label>Quem está abrindo o ticket?</label>
+              <div class="resp-opcoes" id="resp-opcoes"></div>
             </div>
-            <div class="familia-selecionada" id="familia-selecionada">
-              <div class="familia-info" id="familia-info"></div>
-              <div class="resp-escolha">
-                <label>Quem está abrindo / é o solicitante?</label>
-                <div class="resp-opcoes" id="resp-opcoes"></div>
-              </div>
-            </div>
-            <div class="outro-nome" id="outro-nome">
-              <div class="form-campo" style="margin-top:10px">
-                <label>Nome do solicitante externo</label>
-                <input id="f-solicitante-outro" placeholder="Nome completo de quem não é aluno cadastrado">
-              </div>
+          </div>
+          <div class="outro-nome" id="outro-nome">
+            <div class="form-campo" style="margin-top:10px">
+              <label>Nome do solicitante</label>
+              <input id="f-solicitante-outro" placeholder="Nome de quem não é aluno cadastrado">
             </div>
           </div>
         </div>
 
-        <!-- BLOCO INTERNO: campo simples -->
-        <div class="form-campo" id="bloco-interno" style="display:none">
+        <!-- BLOCO INTERNO -->
+        <div id="bloco-interno" class="form-campo" style="display:none">
           <label>Setor solicitante</label>
           <select id="f-setor-origem">
-            <option>Secretaria</option><option>Pedagógico</option>
-            <option>Financeiro</option><option>Direção</option>
-            <option>Coordenação</option><option>Administrativo</option>
+            <option>Secretaria</option><option>Pedagógico</option><option>Financeiro</option>
+            <option>Direção</option><option>Coordenação</option><option>Administrativo</option>
           </select>
         </div>
 
         <div class="form-campo">
           <label>Setor destinatário</label>
           <select id="f-setor">
-            <option>Secretaria</option><option>Pedagógico</option>
-            <option>Financeiro</option><option>Direção</option>
-            <option>Coordenação</option><option>Administrativo</option>
+            <option>Secretaria</option><option>Pedagógico</option><option>Financeiro</option>
+            <option>Direção</option><option>Coordenação</option><option>Administrativo</option>
           </select>
         </div>
+
+        <!-- ABERTO POR (preenchido automático) -->
         <div class="form-campo">
-          <label>Responsável pelo atendimento</label>
-          <input id="f-responsavel" placeholder="Seu nome ou do responsável">
+          <label>Aberto por</label>
+          <input id="f-aberto-por" value="${usuario ? usuario.nome : ""}" readonly>
         </div>
+
+        <!-- RESPONSÁVEL: lista de usuários ou nome livre -->
+        <div class="resp-select-box full">
+          <h3>👤 Responsável pelo atendimento</h3>
+          <div class="resp-lista" id="resp-lista-usuarios">
+            ${todosUsuarios.map(u => `
+              <button class="resp-user-btn" onclick="selecionarResponsavelUsuario(this,'${u.nome}','${u.email}')">
+                <div class="avatar">${u.nome.charAt(0)}</div>
+                <span>${u.nome}</span>
+              </button>`).join("") || '<span style="font-size:13px;color:var(--cinza3)">Carregando...</span>'}
+          </div>
+          <input class="resp-outro-input" id="f-resp-outro" placeholder="Ou digite um nome que não está na lista..." oninput="digitarResponsavel(this.value)">
+        </div>
+
         <div class="form-campo full">
           <label>Assunto (resumo)</label>
           <input id="f-assunto" placeholder="Ex: Solicitação de declaração">
@@ -397,213 +410,219 @@ function renderNovoTicket(){
     </div>`;
 }
 
-function toggleTipo(){
-  const tipo=document.getElementById('f-tipo').value;
-  document.getElementById('bloco-externo').style.display=tipo==='Externo'?'':'none';
-  document.getElementById('bloco-interno').style.display=tipo==='Interno'?'':'none';
+function toggleTipo() {
+  const tipo = document.getElementById("f-tipo").value;
+  document.getElementById("bloco-externo").style.display = tipo === "Externo" ? "" : "none";
+  document.getElementById("bloco-interno").style.display = tipo === "Interno" ? "" : "none";
 }
 
-function buscarFamilia(){
-  const termo=document.getElementById('busca-familia').value.trim().toLowerCase();
-  const dd=document.getElementById('busca-dropdown');
-  if(termo.length<2){dd.classList.remove('aberto');dd.innerHTML='';return;}
+function selecionarResponsavelUsuario(btn, nome, email) {
+  document.querySelectorAll(".resp-user-btn").forEach(b => b.classList.remove("selecionado"));
+  btn.classList.add("selecionado");
+  responsavelTicket = { nome, email };
+  document.getElementById("f-resp-outro").value = "";
+}
 
-  const resultados=FAMILIAS.filter(f=>
-    f.aluno.toLowerCase().includes(termo)||
-    f.mae.toLowerCase().includes(termo)||
-    f.pai.toLowerCase().includes(termo)||
+function digitarResponsavel(valor) {
+  document.querySelectorAll(".resp-user-btn").forEach(b => b.classList.remove("selecionado"));
+  responsavelTicket = { nome: valor, email: "" };
+}
+
+// ── BUSCA FAMÍLIA ──
+function buscarFamilia() {
+  const termo = document.getElementById("busca-familia").value.trim().toLowerCase();
+  const dd = document.getElementById("busca-dropdown");
+  if (termo.length < 2) { dd.classList.remove("aberto"); return; }
+
+  const res = FAMILIAS.filter(f =>
+    f.aluno.toLowerCase().includes(termo) ||
+    f.mae.toLowerCase().includes(termo) ||
+    f.pai.toLowerCase().includes(termo) ||
     f.responsavel.toLowerCase().includes(termo)
-  ).slice(0,10);
+  ).slice(0, 10);
 
-  if(!resultados.length){
-    dd.innerHTML='<div class="busca-item"><span style="color:var(--cinza3)">Nenhum resultado. Use "Outro" abaixo.</span></div>';
-    dd.classList.add('aberto');
-    return;
+  if (!res.length) {
+    dd.innerHTML = '<div class="busca-item"><span style="color:var(--cinza3)">Sem resultado. Use "Outro" abaixo.</span></div>' +
+      '<div class="busca-item" onclick="selecionarOutro()" style="color:var(--azul);font-weight:700">➕ Outro / não é aluno cadastrado</div>';
+  } else {
+    dd.innerHTML = res.map(f => {
+      const idx = FAMILIAS.indexOf(f);
+      return `<div class="busca-item" onclick="selecionarFamilia(${idx})">
+        <div class="ia">${f.aluno}</div>
+        <div class="it">${f.turma} · ${f.mae || f.pai || f.responsavel}</div>
+      </div>`;
+    }).join("") + '<div class="busca-item" onclick="selecionarOutro()" style="color:var(--azul);font-weight:700">➕ Outro / não é aluno cadastrado</div>';
   }
-
-  dd.innerHTML=resultados.map((f,i)=>`
-    <div class="busca-item" onclick="selecionarFamilia(${FAMILIAS.indexOf(f)})">
-      <div class="item-aluno">${f.aluno}</div>
-      <div class="item-turma">${f.turma} · ${f.mae||f.pai||f.responsavel}</div>
-    </div>`).join('');
-
-  dd.innerHTML+='<div class="busca-item" onclick="selecionarOutro()" style="color:var(--azul);font-weight:700">➕ Outro / não é aluno cadastrado</div>';
-  dd.classList.add('aberto');
+  dd.classList.add("aberto");
 }
 
-function selecionarFamilia(idx){
-  familiaSelecionada=FAMILIAS[idx];
-  responsavelSelecionado='';
-  document.getElementById('busca-dropdown').classList.remove('aberto');
-  document.getElementById('busca-familia').value=familiaSelecionada.aluno;
-  document.getElementById('outro-nome').classList.remove('visivel');
+function selecionarFamilia(idx) {
+  familiaSelecionada = FAMILIAS[idx];
+  document.getElementById("busca-dropdown").classList.remove("aberto");
+  document.getElementById("busca-familia").value = familiaSelecionada.aluno;
+  document.getElementById("outro-nome").classList.remove("visivel");
 
-  const info=document.getElementById('familia-info');
-  info.innerHTML=`
+  const info = document.getElementById("familia-info");
+  info.innerHTML = `
     <div class="fi-linha"><span class="fi-label">Aluno</span><span class="fi-valor">${familiaSelecionada.aluno}</span></div>
     <div class="fi-linha"><span class="fi-label">Turma</span><span class="fi-valor">${familiaSelecionada.turma}</span></div>
-    ${familiaSelecionada.mae?`<div class="fi-linha"><span class="fi-label">Mãe</span><span class="fi-valor">${familiaSelecionada.mae}</span></div>`:''}
-    ${familiaSelecionada.pai?`<div class="fi-linha"><span class="fi-label">Pai</span><span class="fi-valor">${familiaSelecionada.pai}</span></div>`:''}
-    ${familiaSelecionada.responsavel?`<div class="fi-linha"><span class="fi-label">Resp.</span><span class="fi-valor">${familiaSelecionada.responsavel}</span></div>`:''}`;
+    ${familiaSelecionada.mae ? `<div class="fi-linha"><span class="fi-label">Mãe</span><span class="fi-valor">${familiaSelecionada.mae}</span></div>` : ""}
+    ${familiaSelecionada.pai ? `<div class="fi-linha"><span class="fi-label">Pai</span><span class="fi-valor">${familiaSelecionada.pai}</span></div>` : ""}
+    ${familiaSelecionada.responsavel ? `<div class="fi-linha"><span class="fi-label">Resp.</span><span class="fi-valor">${familiaSelecionada.responsavel}</span></div>` : ""}`;
 
-  const opcoes=[];
-  opcoes.push({label:'Aluno: '+familiaSelecionada.aluno, valor:familiaSelecionada.aluno});
-  if(familiaSelecionada.mae) opcoes.push({label:'Mãe: '+familiaSelecionada.mae, valor:familiaSelecionada.mae});
-  if(familiaSelecionada.pai) opcoes.push({label:'Pai: '+familiaSelecionada.pai, valor:familiaSelecionada.pai});
-  if(familiaSelecionada.responsavel && familiaSelecionada.responsavel!==familiaSelecionada.mae && familiaSelecionada.responsavel!==familiaSelecionada.pai)
-    opcoes.push({label:'Resp.: '+familiaSelecionada.responsavel, valor:familiaSelecionada.responsavel});
+  const opcoes = [{ label: "Aluno: " + familiaSelecionada.aluno, valor: familiaSelecionada.aluno }];
+  if (familiaSelecionada.mae) opcoes.push({ label: "Mãe: " + familiaSelecionada.mae, valor: familiaSelecionada.mae });
+  if (familiaSelecionada.pai) opcoes.push({ label: "Pai: " + familiaSelecionada.pai, valor: familiaSelecionada.pai });
+  if (familiaSelecionada.responsavel && familiaSelecionada.responsavel !== familiaSelecionada.mae && familiaSelecionada.responsavel !== familiaSelecionada.pai)
+    opcoes.push({ label: "Resp.: " + familiaSelecionada.responsavel, valor: familiaSelecionada.responsavel });
 
-  document.getElementById('resp-opcoes').innerHTML=opcoes.map(o=>`
-    <button class="resp-btn" onclick="selecionarResponsavel(this,'${o.valor.replace(/'/g,"\'")}')">
-      ${o.label}
-    </button>`).join('');
-
-  document.getElementById('familia-selecionada').classList.add('visivel');
+  document.getElementById("resp-opcoes").innerHTML = opcoes.map(o =>
+    `<button class="resp-btn" onclick="selecionarSolicitanteExterno(this,'${o.valor.replace(/'/g, "\'")}')">${o.label}</button>`
+  ).join("");
+  document.getElementById("familia-selecionada").classList.add("visivel");
 }
 
-function selecionarResponsavel(btn, valor){
-  document.querySelectorAll('.resp-btn').forEach(b=>b.classList.remove('selecionado'));
-  btn.classList.add('selecionado');
-  responsavelSelecionado=valor;
+let solicitanteExterno = "";
+function selecionarSolicitanteExterno(btn, valor) {
+  document.querySelectorAll(".resp-btn").forEach(b => b.classList.remove("selecionado"));
+  btn.classList.add("selecionado");
+  solicitanteExterno = valor;
 }
 
-function selecionarOutro(){
-  familiaSelecionada=null; responsavelSelecionado='';
-  document.getElementById('busca-dropdown').classList.remove('aberto');
-  document.getElementById('familia-selecionada').classList.remove('visivel');
-  document.getElementById('outro-nome').classList.add('visivel');
+function selecionarOutro() {
+  familiaSelecionada = null; solicitanteExterno = "";
+  document.getElementById("busca-dropdown").classList.remove("aberto");
+  document.getElementById("familia-selecionada").classList.remove("visivel");
+  document.getElementById("outro-nome").classList.add("visivel");
 }
 
-async function salvarTicket(){
-  const tipo=document.getElementById('f-tipo').value;
-  const assunto=document.getElementById('f-assunto').value.trim();
-  let solicitante='';
+async function salvarTicket() {
+  const tipo = document.getElementById("f-tipo").value;
+  const assunto = document.getElementById("f-assunto").value.trim();
+  let solicitante = "";
 
-  if(tipo==='Externo'){
-    if(familiaSelecionada){
-      if(!responsavelSelecionado){toast('Selecione quem está abrindo o ticket.','vermelho');return;}
-      solicitante=responsavelSelecionado+' (Aluno: '+familiaSelecionada.aluno+' / '+familiaSelecionada.turma+')';
+  if (tipo === "Externo") {
+    if (familiaSelecionada) {
+      if (!solicitanteExterno) { toast("Selecione quem está abrindo o ticket.", "vermelho"); return; }
+      solicitante = solicitanteExterno + " (Aluno: " + familiaSelecionada.aluno + " / " + familiaSelecionada.turma + ")";
     } else {
-      solicitante=document.getElementById('f-solicitante-outro')?.value.trim()||'Externo não identificado';
+      solicitante = document.getElementById("f-solicitante-outro")?.value.trim() || "Externo não identificado";
     }
   } else {
-    solicitante='Setor: '+(document.getElementById('f-setor-origem').value||'Interno');
+    solicitante = "Setor: " + (document.getElementById("f-setor-origem")?.value || "Interno");
   }
 
-  if(!assunto){toast('Preencha o assunto.','vermelho');return;}
+  if (!assunto) { toast("Preencha o assunto.", "vermelho"); return; }
+  if (!responsavelTicket.nome) { toast("Selecione ou digite o responsável.", "vermelho"); return; }
 
-  const btn=document.querySelector('.form-acoes .btn-primario');
-  btn.disabled=true; btn.textContent='Salvando...';
+  const btn = document.querySelector(".form-acoes .btn-primario");
+  btn.disabled = true; btn.textContent = "Salvando...";
 
-  try{
-    const res=await api({
-      acao:'criarTicket', tipo,
-      origem:document.getElementById('f-origem').value,
+  try {
+    const res = await api({
+      acao: "criarTicket", tipo,
+      origem: document.getElementById("f-origem").value,
       solicitante,
-      setorDestino:document.getElementById('f-setor').value,
+      setorDestino: document.getElementById("f-setor").value,
       assunto,
-      descricao:document.getElementById('f-descricao').value,
-      responsavel:document.getElementById('f-responsavel').value,
-      usuarioNome:usuario.nome
+      descricao: document.getElementById("f-descricao").value,
+      responsavel: responsavelTicket.nome,
+      responsavelEmail: responsavelTicket.email,
+      abertoBy: usuario.nome,
+      usuarioNome: usuario.nome
     });
-    if(res.ok){ toast('Ticket registrado!','verde'); irPara('tickets'); }
-    else { toast(res.erro||'Erro ao salvar.','vermelho'); }
-  } catch(e){ toast('Erro de conexão.','vermelho'); }
-  btn.disabled=false; btn.textContent='Registrar ocorrência';
+    if (res.ok) {
+      toast("Ticket registrado" + (responsavelTicket.email ? " — " + responsavelTicket.nome + " foi notificado!" : "!"), "verde");
+      irPara("tickets");
+    } else { toast(res.erro || "Erro ao salvar.", "vermelho"); }
+  } catch(e) { toast("Erro de conexão.", "vermelho"); }
+  btn.disabled = false; btn.textContent = "Registrar ocorrência";
 }
 
 // ── LISTA TICKETS ──
-async function renderTickets(){
-  const c=document.getElementById('conteudo');
-  c.innerHTML=`
+async function renderTickets() {
+  const c = document.getElementById("conteudo");
+  c.innerHTML = `
     <div class="filtros">
-      <select id="fil-status">
-        <option value="TODOS">Todos os status</option>
-        <option value="Aberto">Aberto</option>
-        <option value="Em andamento">Em andamento</option>
-        <option value="Resolvido">Resolvido</option>
-      </select>
-      <select id="fil-tipo">
-        <option value="TODOS">Todos os tipos</option>
-        <option value="Externo">Externo</option>
-        <option value="Interno">Interno</option>
-      </select>
-      <select id="fil-setor">
-        <option value="TODOS">Todos os setores</option>
-        <option>Secretaria</option><option>Pedagógico</option>
-        <option>Financeiro</option><option>Direção</option>
-        <option>Coordenação</option><option>Administrativo</option>
-      </select>
+      <select id="fil-status"><option value="TODOS">Todos os status</option><option>Aberto</option><option>Em andamento</option><option>Resolvido</option></select>
+      <select id="fil-tipo"><option value="TODOS">Todos os tipos</option><option>Externo</option><option>Interno</option></select>
+      <select id="fil-setor"><option value="TODOS">Todos os setores</option><option>Secretaria</option><option>Pedagógico</option><option>Financeiro</option><option>Direção</option><option>Coordenação</option><option>Administrativo</option></select>
       <input id="fil-busca" placeholder="Buscar por nome ou assunto..." style="flex:1;min-width:180px">
       <button class="btn-filtrar" onclick="buscarTickets()">Buscar</button>
     </div>
-    <div id="lista-tickets" class="ticket-lista">
-      <div class="loading"><div class="spinner"></div>Carregando...</div>
-    </div>`;
+    <div id="lista-tickets" class="ticket-lista"><div class="loading"><div class="spinner"></div>Carregando...</div></div>`;
   buscarTickets();
 }
 
-async function buscarTickets(){
-  const status=document.getElementById('fil-status')?.value||'TODOS';
-  const tipo=document.getElementById('fil-tipo')?.value||'TODOS';
-  const setor=document.getElementById('fil-setor')?.value||'TODOS';
-  const busca=(document.getElementById('fil-busca')?.value||'').toLowerCase();
-  const lista=document.getElementById('lista-tickets');
-  lista.innerHTML='<div class="loading"><div class="spinner"></div>Buscando...</div>';
-  try{
-    const res=await api({acao:'listarTickets',status,setor,tipo});
-    let tickets=res.tickets||[];
-    if(busca) tickets=tickets.filter(t=>
-      t.solicitante?.toLowerCase().includes(busca)||
-      t.assunto?.toLowerCase().includes(busca)
-    );
-    lista.innerHTML=tickets.length?tickets.map(cardTicket).join(''):
-      '<div class="vazio"><div class="icone">🔍</div><p>Nenhum ticket encontrado.</p></div>';
-  } catch(e){ lista.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro ao buscar.</p></div>'; }
+async function buscarTickets() {
+  const status = document.getElementById("fil-status")?.value || "TODOS";
+  const tipo   = document.getElementById("fil-tipo")?.value   || "TODOS";
+  const setor  = document.getElementById("fil-setor")?.value  || "TODOS";
+  const busca  = (document.getElementById("fil-busca")?.value || "").toLowerCase();
+  const lista  = document.getElementById("lista-tickets");
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div>Buscando...</div>';
+  try {
+    const res = await api({ acao: "listarTickets", status, setor, tipo });
+    let tks = res.tickets || [];
+    if (busca) tks = tks.filter(t => t.solicitante?.toLowerCase().includes(busca) || t.assunto?.toLowerCase().includes(busca));
+    lista.innerHTML = tks.length ? tks.map(cardTicket).join("") : '<div class="vazio"><div class="icone">🔍</div><p>Nenhum ticket encontrado.</p></div>';
+  } catch(e) { lista.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro ao buscar.</p></div>'; }
 }
 
-function cardTicket(t){
-  return `<div class="ticket-card ${t.status}" onclick="abrirModal('${t.id}')">
+function cardTicket(t) {
+  const st = t.status || "Aberto";
+  const stClass = st.split(" ")[0];
+  return `<div class="ticket-card ${stClass}" onclick="abrirModal('${t.id}')">
     <div class="ticket-top">
       <span class="ticket-id">${t.id}</span>
-      <span class="badge badge-status-${t.status}">${t.status}</span>
-      <span class="badge badge-tipo-${t.tipo}">${t.tipo||''}</span>
+      <span class="badge badge-${stClass}">${st}</span>
+      <span class="badge badge-${t.tipo}">${t.tipo || ""}</span>
     </div>
     <div class="ticket-assunto">${t.assunto}</div>
     <div class="ticket-info">
       <span>👤 ${t.solicitante}</span>
       <span>📁 ${t.setorDestino}</span>
       <span>📅 ${t.data}</span>
-      ${t.responsavel?`<span>🔧 ${t.responsavel}</span>`:''}
+      ${t.responsavel ? `<span>🔧 ${t.responsavel}</span>` : ""}
+      ${t.abertoBy ? `<span>✍️ ${t.abertoBy}</span>` : ""}
     </div>
   </div>`;
 }
 
-// ── MODAL ──
-async function abrirModal(id){
-  const overlay=document.getElementById('modal-overlay');
-  const modal=document.getElementById('modal-conteudo');
-  modal.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
-  overlay.classList.add('aberto');
-  try{
-    const res=await api({acao:'listarTickets',status:'TODOS'});
-    const t=(res.tickets||[]).find(x=>x.id===id);
-    if(!t){modal.innerHTML='<p>Ticket não encontrado.</p>';return;}
-    modal.innerHTML=`
+// ── MODAL DETALHE ──
+async function abrirModal(id) {
+  const overlay = document.getElementById("modal-overlay");
+  const modal   = document.getElementById("modal-conteudo");
+  modal.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  overlay.classList.add("aberto");
+  try {
+    const res = await api({ acao: "listarTickets", status: "TODOS" });
+    const t = (res.tickets || []).find(x => x.id === id);
+    if (!t) { modal.innerHTML = "<p>Ticket não encontrado.</p>"; return; }
+    const st = t.status || "Aberto"; const stClass = st.split(" ")[0];
+
+    // Montar lista de responsáveis para o modal
+    const respOpcoes = todosUsuarios.map(u =>
+      `<button class="resp-user-btn" onclick="selecionarRespModal(this,'${u.nome}','${u.email}')">
+        <div class="avatar">${u.nome.charAt(0)}</div><span>${u.nome}</span>
+      </button>`).join("");
+
+    modal.innerHTML = `
       <div class="modal-topo"><h2>${t.assunto}</h2><button class="btn-fechar" onclick="fecharModal()">×</button></div>
       <div class="modal-linha">
-        <span class="badge badge-status-${t.status}">${t.status}</span>
-        <span class="badge badge-tipo-${t.tipo}">${t.tipo}</span>
+        <span class="badge badge-${stClass}">${st}</span>
+        <span class="badge badge-${t.tipo}">${t.tipo}</span>
       </div>
       <div class="modal-linha">
         <div class="modal-secao"><label>Solicitante</label><p>${t.solicitante}</p></div>
+        <div class="modal-secao"><label>Aberto por</label><p>${t.abertoBy || "—"}</p></div>
         <div class="modal-secao"><label>Setor destino</label><p>${t.setorDestino}</p></div>
         <div class="modal-secao"><label>Origem</label><p>${t.origem}</p></div>
-        <div class="modal-secao"><label>Responsável</label><p>${t.responsavel||'—'}</p></div>
+        <div class="modal-secao"><label>Responsável</label><p>${t.responsavel || "—"}</p></div>
         <div class="modal-secao"><label>Data</label><p>${t.data}</p></div>
       </div>
-      <div class="modal-secao"><label>Descrição</label><p>${t.descricao||'—'}</p></div>
-      ${t.tratativa?`<div class="modal-secao"><label>Histórico de tratativa</label><p>${t.tratativa}</p></div>`:''}
+      <div class="modal-secao"><label>Descrição</label><p>${t.descricao || "—"}</p></div>
+      ${t.tratativa ? `<div class="modal-secao"><label>Histórico de tratativa</label><p>${t.tratativa}</p></div>` : ""}
       <div class="modal-atualizar">
         <h3>Atualizar ticket</h3>
         <div class="modal-grid">
@@ -614,9 +633,10 @@ async function abrirModal(id){
               <option>Aberto</option><option>Em andamento</option><option>Resolvido</option>
             </select>
           </div>
-          <div class="form-campo">
-            <label>Responsável</label>
-            <input id="upd-responsavel" placeholder="${t.responsavel||'Nome do responsável'}">
+          <div class="form-campo full">
+            <label>Reatribuir responsável</label>
+            <div class="resp-lista" id="resp-lista-modal" style="margin-bottom:8px">${respOpcoes}</div>
+            <input class="resp-outro-input" id="upd-resp-outro" placeholder="Ou digite um nome..." oninput="digitarRespModal(this.value)">
           </div>
           <div class="form-campo full">
             <label>Adicionar tratativa</label>
@@ -625,39 +645,84 @@ async function abrirModal(id){
         </div>
         <button class="btn-primario" style="width:auto;padding:10px 28px" onclick="atualizarTicket('${t.id}')">Salvar atualização</button>
       </div>`;
-  } catch(e){ modal.innerHTML='<p>Erro ao carregar.</p>'; }
+  } catch(e) { modal.innerHTML = "<p>Erro ao carregar.</p>"; }
 }
 
-async function atualizarTicket(id){
-  const status=document.getElementById('upd-status').value;
-  const responsavel=document.getElementById('upd-responsavel').value.trim();
-  const tratativa=document.getElementById('upd-tratativa').value.trim();
-  if(!status&&!responsavel&&!tratativa){toast('Preencha ao menos um campo.','vermelho');return;}
-  const btn=document.querySelector('.modal-atualizar .btn-primario');
-  btn.disabled=true; btn.textContent='Salvando...';
-  try{
-    const res=await api({acao:'atualizarTicket',id,status,responsavel,tratativa,usuarioNome:usuario.nome});
-    if(res.ok){toast('Ticket atualizado!','verde');fecharModal();buscarTickets();}
-    else{toast(res.erro||'Erro.','vermelho');}
-  } catch(e){ toast('Erro de conexão.','vermelho'); }
-  btn.disabled=false; btn.textContent='Salvar atualização';
+let respModal = { nome: "", email: "" };
+function selecionarRespModal(btn, nome, email) {
+  document.querySelectorAll("#resp-lista-modal .resp-user-btn").forEach(b => b.classList.remove("selecionado"));
+  btn.classList.add("selecionado");
+  respModal = { nome, email };
+  document.getElementById("upd-resp-outro").value = "";
+}
+function digitarRespModal(valor) {
+  document.querySelectorAll("#resp-lista-modal .resp-user-btn").forEach(b => b.classList.remove("selecionado"));
+  respModal = { nome: valor, email: "" };
 }
 
-function fecharModal(event){
-  if(!event||event.target===document.getElementById('modal-overlay'))
-    document.getElementById('modal-overlay').classList.remove('aberto');
+async function atualizarTicket(id) {
+  const status    = document.getElementById("upd-status").value;
+  const tratativa = document.getElementById("upd-tratativa").value.trim();
+  if (!status && !respModal.nome && !tratativa) { toast("Preencha ao menos um campo.", "vermelho"); return; }
+  const btn = document.querySelector(".modal-atualizar .btn-primario");
+  btn.disabled = true; btn.textContent = "Salvando...";
+  try {
+    const res = await api({
+      acao: "atualizarTicket", id, status,
+      responsavel: respModal.nome,
+      responsavelEmail: respModal.email,
+      notificar: !!respModal.email,
+      tratativa, usuarioNome: usuario.nome
+    });
+    if (res.ok) {
+      toast("Ticket atualizado" + (respModal.email ? " — " + respModal.nome + " notificado!" : "!"), "verde");
+      fecharModal(); buscarTickets(); verificarNotificacoes();
+    } else { toast(res.erro || "Erro.", "vermelho"); }
+  } catch(e) { toast("Erro de conexão.", "vermelho"); }
+  btn.disabled = false; btn.textContent = "Salvar atualização";
+}
+
+function fecharModal(event) {
+  if (!event || event.target === document.getElementById("modal-overlay"))
+    document.getElementById("modal-overlay").classList.remove("aberto");
+}
+
+// ── NOTIFICAÇÕES ──
+async function renderNotificacoes() {
+  const c = document.getElementById("conteudo");
+  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando notificações...</div>';
+  try {
+    const res = await api({ acao: "listarNotificacoes", email: usuario.email });
+    const notifs = res.notificacoes || [];
+    c.innerHTML = notifs.length ? `
+      <div style="font-size:13px;color:var(--cinza3);margin-bottom:12px;">${notifs.length} notificação(ões)</div>
+      <div class="notif-lista">${notifs.map(n => `
+        <div class="notif-item ${n.lida === 'SIM' ? 'lida' : ''}" onclick="abrirNotif('${n.id}','${n.ticketId}')">
+          <div class="notif-titulo">${n.titulo}</div>
+          <div class="notif-msg">${n.mensagem}</div>
+          <div class="notif-data">${n.data}</div>
+        </div>`).join("")}</div>` :
+      '<div class="vazio"><div class="icone">🔔</div><p>Nenhuma notificação.</p></div>';
+    document.getElementById("notif-badge").style.display = "none";
+  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>'; }
+}
+
+async function abrirNotif(notifId, ticketId) {
+  await api({ acao: "marcarLida", id: notifId });
+  verificarNotificacoes();
+  if (ticketId) abrirModal(ticketId);
 }
 
 // ── LOGS ──
-async function renderLogs(){
-  const c=document.getElementById('conteudo');
-  c.innerHTML='<div class="loading"><div class="spinner"></div>Carregando logs...</div>';
-  try{
-    const res=await api({acao:'listarLogs'});
-    const logs=res.logs||[];
-    c.innerHTML=logs.length?`
-      <div style="font-size:13px;color:var(--cinza3);margin-bottom:12px;">Últimos ${logs.length} registros de auditoria</div>
-      <div class="log-lista">${logs.map(l=>`
+async function renderLogs() {
+  const c = document.getElementById("conteudo");
+  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try {
+    const res = await api({ acao: "listarLogs" });
+    const logs = res.logs || [];
+    c.innerHTML = logs.length ? `
+      <div style="font-size:13px;color:var(--cinza3);margin-bottom:12px;">Últimos ${logs.length} registros</div>
+      <div class="log-lista">${logs.map(l => `
         <div class="log-item">
           <div class="log-dot"></div>
           <div class="log-info">
@@ -665,35 +730,36 @@ async function renderLogs(){
             <div class="log-detalhe">${l.detalhes}</div>
           </div>
           <div class="log-hora">${l.dataHora}</div>
-        </div>`).join('')}</div>`:
-      '<div class="vazio"><div class="icone">🔍</div><p>Nenhum log ainda.</p></div>';
-  } catch(e){ c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>'; }
+        </div>`).join("")}</div>` :
+      '<div class="vazio"><div class="icone">🔍</div><p>Nenhum log.</p></div>';
+  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>'; }
 }
 
 // ── USUÁRIOS ──
-async function renderUsuarios(){
-  const c=document.getElementById('conteudo');
-  c.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
-  try{
-    const res=await api({acao:'listarUsuarios'});
-    const users=res.usuarios||[];
-    c.innerHTML=`
+async function renderUsuarios() {
+  const c = document.getElementById("conteudo");
+  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try {
+    const res = await api({ acao: "listarUsuarios" });
+    const users = res.usuarios || [];
+    todosUsuarios = users;
+    c.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <div style="font-size:13px;color:var(--cinza3)">${users.length} usuário(s)</div>
         <button class="btn-primario" style="width:auto;padding:9px 20px" onclick="renderNovoUsuario()">+ Novo usuário</button>
       </div>
-      <div class="usuario-lista">${users.map(u=>`
+      <div class="usuario-lista">${users.map(u => `
         <div class="usuario-item">
-          <div class="usuario-avatar">${u.nome?.charAt(0)||'?'}</div>
+          <div class="usuario-avatar">${u.nome?.charAt(0) || "?"}</div>
           <div class="usuario-dados"><div class="usuario-nome">${u.nome}</div><div class="usuario-email">${u.email}</div></div>
-          <span class="badge badge-perfil-${u.perfil}">${u.perfil}</span>
+          <span class="badge badge-${u.perfil}">${u.perfil}</span>
           <span class="badge" style="background:${u.ativo==='SIM'?'#e6f4ed':'#fdecea'};color:${u.ativo==='SIM'?'var(--verde)':'var(--vermelho)'}">${u.ativo==='SIM'?'Ativo':'Inativo'}</span>
-        </div>`).join('')}</div>`;
-  } catch(e){ c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>'; }
+        </div>`).join("")}</div>`;
+  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro.</p></div>'; }
 }
 
-function renderNovoUsuario(){
-  document.getElementById('conteudo').innerHTML=`
+function renderNovoUsuario() {
+  document.getElementById("conteudo").innerHTML = `
     <div class="form-card" style="max-width:480px">
       <h2>Novo usuário</h2>
       <div style="display:flex;flex-direction:column;gap:14px">
@@ -701,10 +767,7 @@ function renderNovoUsuario(){
         <div class="form-campo"><label>E-mail</label><input id="nu-email" type="email" placeholder="email@einstein.com"></div>
         <div class="form-campo"><label>Senha inicial</label><input id="nu-senha" placeholder="Padrão: einstein2026"></div>
         <div class="form-campo"><label>Perfil</label>
-          <select id="nu-perfil">
-            <option value="OPERADOR">Operador</option>
-            <option value="ADMIN">Administrador</option>
-          </select>
+          <select id="nu-perfil"><option value="OPERADOR">Operador</option><option value="ADMIN">Administrador</option></select>
         </div>
       </div>
       <div class="form-acoes" style="margin-top:20px">
@@ -714,26 +777,26 @@ function renderNovoUsuario(){
     </div>`;
 }
 
-async function salvarUsuario(){
-  const nome=document.getElementById('nu-nome').value.trim();
-  const email=document.getElementById('nu-email').value.trim();
-  if(!nome||!email){toast('Preencha nome e e-mail.','vermelho');return;}
-  const btn=document.querySelector('.form-acoes .btn-primario');
-  btn.disabled=true; btn.textContent='Criando...';
-  try{
-    const res=await api({acao:'criarUsuario',nome,email,
-      senha:document.getElementById('nu-senha').value||'einstein2026',
-      perfil:document.getElementById('nu-perfil').value,
-      usuarioNome:usuario.nome});
-    if(res.ok){toast('Usuário criado!','verde');renderUsuarios();}
-    else{toast(res.erro||'Erro.','vermelho');}
-  } catch(e){ toast('Erro de conexão.','vermelho'); }
-  btn.disabled=false; btn.textContent='Criar usuário';
+async function salvarUsuario() {
+  const nome = document.getElementById("nu-nome").value.trim();
+  const email = document.getElementById("nu-email").value.trim();
+  if (!nome || !email) { toast("Preencha nome e e-mail.", "vermelho"); return; }
+  const btn = document.querySelector(".form-acoes .btn-primario");
+  btn.disabled = true; btn.textContent = "Criando...";
+  try {
+    const res = await api({ acao: "criarUsuario", nome, email,
+      senha: document.getElementById("nu-senha").value || "einstein2026",
+      perfil: document.getElementById("nu-perfil").value,
+      usuarioNome: usuario.nome });
+    if (res.ok) { toast("Usuário criado!", "verde"); carregarUsuarios(); renderUsuarios(); }
+    else { toast(res.erro || "Erro.", "vermelho"); }
+  } catch(e) { toast("Erro de conexão.", "vermelho"); }
+  btn.disabled = false; btn.textContent = "Criar usuário";
 }
 
-document.addEventListener('click',function(e){
-  const dd=document.getElementById('busca-dropdown');
-  if(dd&&!dd.contains(e.target)&&e.target.id!=='busca-familia') dd.classList.remove('aberto');
+document.addEventListener("click", function(e) {
+  const dd = document.getElementById("busca-dropdown");
+  if (dd && !dd.contains(e.target) && e.target.id !== "busca-familia") dd.classList.remove("aberto");
 });
 </script>
 </body>
