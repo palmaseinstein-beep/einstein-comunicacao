@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a2744">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Einstein">
+<title>Sistema Einstein</title>
+<style>
+  :root {
+    --azul:     #1a2744;
+    --azul2:    #243461;
+    --dourado:  #c9a84c;
+    --dourado2: #e8c96a;
+    --branco:   #ffffff;
+    --cinza1:   #f4f6fa;
+    --cinza2:   #e8ecf4;
+    --cinza3:   #9aa5bf;
+    --texto:    #1a2744;
+    --verde:    #2e7d52;
+    --vermelho: #b83232;
+    --laranja:  #c96820;
+    --sombra:   0 2px 16px rgba(26,39,68,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--cinza1); color: var(--texto); min-height: 100vh; }
+
+  /* ── TELA DE LOGIN ── */
+  #tela-login {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(145deg, var(--azul) 0%, var(--azul2) 100%);
+    padding: 24px;
+  }
+  .login-card {
+    background: var(--branco); border-radius: 16px; padding: 40px 36px;
+    width: 100%; max-width: 400px; box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  }
+  .login-logo {
+    text-align: center; margin-bottom: 32px;
+  }
+  .login-logo .sigla {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 64px; height: 64px; background: var(--azul); border-radius: 16px;
+    color: var(--dourado); font-size: 28px; font-weight: 800; margin-bottom: 12px;
+  }
+  .login-logo h1 { font-size: 18px; font-weight: 700; color: var(--azul); }
+  .login-logo p  { font-size: 13px; color: var(--cinza3); margin-top: 2px; }
+  .campo { margin-bottom: 16px; }
+  .campo label { display: block; font-size: 12px; font-weight: 600; color: var(--cinza3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+  .campo input {
+    width: 100%; padding: 12px 14px; border: 1.5px solid var(--cinza2);
+    border-radius: 10px; font-size: 15px; color: var(--texto);
+    transition: border-color .2s; outline: none; background: var(--cinza1);
+  }
+  .campo input:focus { border-color: var(--azul); background: var(--branco); }
+  .btn-primario {
+    width: 100%; padding: 13px; background: var(--azul); color: var(--branco);
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: background .2s; margin-top: 4px;
+  }
+  .btn-primario:hover { background: var(--azul2); }
+  .btn-primario:disabled { opacity: .6; cursor: not-allowed; }
+  .erro-login { color: var(--vermelho); font-size: 13px; text-align: center; margin-top: 12px; }
+
+  /* ── APP PRINCIPAL ── */
+  #tela-app { display: none; min-height: 100vh; }
+
+  /* TOPBAR */
+  .topbar {
+    background: var(--azul); color: var(--branco);
+    padding: 0 20px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100; box-shadow: var(--sombra);
+  }
+  .topbar-logo { display: flex; align-items: center; gap: 10px; }
+  .topbar-logo .sigla {
+    width: 34px; height: 34px; background: var(--dourado); border-radius: 8px;
+    color: var(--azul); font-size: 14px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .topbar-logo span { font-size: 15px; font-weight: 700; }
+  .topbar-usuario { display: flex; align-items: center; gap: 10px; }
+  .topbar-usuario .nome { font-size: 13px; color: var(--cinza2); }
+  .btn-sair {
+    background: rgba(255,255,255,0.12); color: var(--branco);
+    border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px;
+    cursor: pointer; font-weight: 600;
+  }
+  .btn-sair:hover { background: rgba(255,255,255,0.22); }
+
+  /* NAVEGAÇÃO */
+  .nav-tabs {
+    background: var(--branco); border-bottom: 2px solid var(--cinza2);
+    display: flex; overflow-x: auto; padding: 0 16px;
+  }
+  .nav-tab {
+    padding: 14px 18px; font-size: 13px; font-weight: 600; color: var(--cinza3);
+    border: none; background: none; cursor: pointer; white-space: nowrap;
+    border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all .2s;
+  }
+  .nav-tab.ativo { color: var(--azul); border-bottom-color: var(--dourado); }
+  .nav-tab:hover { color: var(--azul); }
+
+  /* CONTEÚDO */
+  .conteudo { padding: 20px; max-width: 900px; margin: 0 auto; }
+
+  /* CARDS RESUMO */
+  .resumo-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin-bottom: 24px;
+  }
+  .resumo-card {
+    background: var(--branco); border-radius: 12px; padding: 16px;
+    box-shadow: var(--sombra); text-align: center;
+  }
+  .resumo-card .num { font-size: 32px; font-weight: 800; color: var(--azul); }
+  .resumo-card .label { font-size: 12px; color: var(--cinza3); margin-top: 4px; font-weight: 600; }
+  .resumo-card.aberto .num  { color: var(--laranja); }
+  .resumo-card.andamento .num { color: var(--azul); }
+  .resumo-card.resolvido .num { color: var(--verde); }
+
+  /* FILTROS */
+  .filtros {
+    background: var(--branco); border-radius: 12px; padding: 16px;
+    box-shadow: var(--sombra); margin-bottom: 16px;
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;
+  }
+  .filtros select, .filtros input {
+    padding: 8px 12px; border: 1.5px solid var(--cinza2); border-radius: 8px;
+    font-size: 13px; color: var(--texto); background: var(--cinza1); outline: none;
+  }
+  .filtros select:focus, .filtros input:focus { border-color: var(--azul); }
+  .btn-filtrar {
+    padding: 8px 18px; background: var(--azul); color: var(--branco);
+    border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* LISTA DE TICKETS */
+  .ticket-lista { display: flex; flex-direction: column; gap: 10px; }
+  .ticket-card {
+    background: var(--branco); border-radius: 12px; padding: 16px;
+    box-shadow: var(--sombra); cursor: pointer; transition: box-shadow .2s;
+    border-left: 4px solid var(--cinza2);
+  }
+  .ticket-card:hover { box-shadow: 0 4px 24px rgba(26,39,68,0.15); }
+  .ticket-card.Aberto      { border-left-color: var(--laranja); }
+  .ticket-card.Em\ andamento { border-left-color: var(--azul); }
+  .ticket-card.Resolvido   { border-left-color: var(--verde); }
+  .ticket-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .ticket-id  { font-size: 10px; color: var(--cinza3); font-family: monospace; }
+  .badge {
+    padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .3px;
+  }
+  .badge-status-Aberto       { background: #fff3e6; color: var(--laranja); }
+  .badge-status-Em\ andamento { background: #e6eaf5; color: var(--azul); }
+  .badge-status-Resolvido    { background: #e6f4ed; color: var(--verde); }
+  .badge-tipo-Externo  { background: #f0e6ff; color: #6b35b8; }
+  .badge-tipo-Interno  { background: #e6f0ff; color: #1a5cbf; }
+  .ticket-assunto { font-size: 15px; font-weight: 700; color: var(--azul); margin-bottom: 4px; }
+  .ticket-info    { font-size: 12px; color: var(--cinza3); }
+  .ticket-info span { margin-right: 12px; }
+
+  /* FORMULÁRIO NOVO TICKET */
+  .form-card {
+    background: var(--branco); border-radius: 16px; padding: 24px;
+    box-shadow: var(--sombra);
+  }
+  .form-card h2 { font-size: 18px; font-weight: 800; color: var(--azul); margin-bottom: 20px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-campo { display: flex; flex-direction: column; gap: 6px; }
+  .form-campo.full { grid-column: 1 / -1; }
+  .form-campo label { font-size: 12px; font-weight: 600; color: var(--cinza3); text-transform: uppercase; letter-spacing: .4px; }
+  .form-campo input, .form-campo select, .form-campo textarea {
+    padding: 10px 13px; border: 1.5px solid var(--cinza2); border-radius: 10px;
+    font-size: 14px; color: var(--texto); background: var(--cinza1);
+    outline: none; font-family: inherit; transition: border-color .2s;
+  }
+  .form-campo input:focus, .form-campo select:focus, .form-campo textarea:focus {
+    border-color: var(--azul); background: var(--branco);
+  }
+  .form-campo textarea { resize: vertical; min-height: 90px; }
+  .form-acoes { margin-top: 20px; display: flex; gap: 10px; }
+  .btn-secundario {
+    padding: 11px 22px; background: var(--cinza2); color: var(--azul);
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+
+  /* MODAL DETALHE */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    z-index: 200; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.aberto { display: flex; }
+  .modal {
+    background: var(--branco); border-radius: 16px; padding: 28px;
+    max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 8px 48px rgba(0,0,0,0.3);
+  }
+  .modal-topo { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+  .modal-topo h2 { font-size: 18px; font-weight: 800; color: var(--azul); max-width: 80%; }
+  .btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza3); line-height: 1; }
+  .modal-secao { margin-bottom: 18px; }
+  .modal-secao label { font-size: 11px; font-weight: 700; color: var(--cinza3); text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 4px; }
+  .modal-secao p { font-size: 14px; color: var(--texto); line-height: 1.6; white-space: pre-wrap; }
+  .modal-linha { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; }
+  .modal-atualizar { border-top: 1.5px solid var(--cinza2); padding-top: 18px; margin-top: 8px; }
+  .modal-atualizar h3 { font-size: 14px; font-weight: 700; color: var(--azul); margin-bottom: 12px; }
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  @media (max-width: 480px) { .modal-grid { grid-template-columns: 1fr; } }
+
+  /* LOGS */
+  .log-lista { display: flex; flex-direction: column; gap: 8px; }
+  .log-item {
+    background: var(--branco); border-radius: 10px; padding: 12px 16px;
+    box-shadow: var(--sombra); display: flex; gap: 14px; align-items: flex-start;
+  }
+  .log-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dourado); margin-top: 5px; flex-shrink: 0; }
+  .log-info { flex: 1; }
+  .log-acao { font-size: 13px; font-weight: 700; color: var(--azul); }
+  .log-detalhe { font-size: 12px; color: var(--cinza3); margin-top: 2px; }
+  .log-hora { font-size: 11px; color: var(--cinza3); white-space: nowrap; }
+
+  /* USUÁRIOS */
+  .usuario-lista { display: flex; flex-direction: column; gap: 8px; }
+  .usuario-item {
+    background: var(--branco); border-radius: 10px; padding: 14px 18px;
+    box-shadow: var(--sombra); display: flex; align-items: center; gap: 14px;
+  }
+  .usuario-avatar {
+    width: 40px; height: 40px; border-radius: 10px; background: var(--azul);
+    color: var(--dourado); font-size: 16px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .usuario-dados { flex: 1; }
+  .usuario-nome  { font-size: 14px; font-weight: 700; color: var(--azul); }
+  .usuario-email { font-size: 12px; color: var(--cinza3); }
+  .badge-perfil-ADMIN    { background: #fff0d6; color: #8a5c00; }
+  .badge-perfil-OPERADOR { background: #e6eaf5; color: var(--azul); }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 40px; color: var(--cinza3); font-size: 14px; }
+  .spinner {
+    width: 32px; height: 32px; border: 3px solid var(--cinza2);
+    border-top-color: var(--azul); border-radius: 50%;
+    animation: spin .8s linear infinite; margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--azul); color: var(--branco); padding: 12px 24px;
+    border-radius: 100px; font-size: 14px; font-weight: 600;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25); z-index: 9999;
+    opacity: 0; transition: opacity .3s; pointer-events: none;
+  }
+  .toast.verde { background: var(--verde); }
+  .toast.vermelho { background: var(--vermelho); }
+  .toast.visivel { opacity: 1; }
+
+  .vazio { text-align: center; padding: 48px 16px; color: var(--cinza3); }
+  .vazio .icone { font-size: 40px; margin-bottom: 12px; }
+  .vazio p { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- LOGIN -->
+<div id="tela-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="sigla">E</div>
+      <h1>Colégio Einstein</h1>
+      <p>Sistema de Comunicação Interna</p>
+    </div>
+    <div class="campo">
+      <label>E-mail</label>
+      <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
+    </div>
+    <div class="campo">
+      <label>Senha</label>
+      <input type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-primario" id="btn-entrar" onclick="fazerLogin()">Entrar</button>
+    <div id="erro-login" class="erro-login"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="tela-app">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="sigla">E</div>
+      <span>Einstein</span>
+    </div>
+    <div class="topbar-usuario">
+      <span class="nome" id="nome-usuario"></span>
+      <button class="btn-sair" onclick="sair()">Sair</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab ativo" onclick="irPara('painel')">📊 Painel</button>
+    <button class="nav-tab" onclick="irPara('novo')">➕ Novo Ticket</button>
+    <button class="nav-tab" onclick="irPara('tickets')">📋 Tickets</button>
+    <button class="nav-tab admin-tab" onclick="irPara('logs')" style="display:none">🔍 Logs</button>
+    <button class="nav-tab admin-tab" onclick="irPara('usuarios')" style="display:none">👥 Usuários</button>
+  </div>
+
+  <div class="conteudo" id="conteudo"></div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" class="modal-overlay" onclick="fecharModal(event)">
+  <div class="modal" id="modal-conteudo"></div>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbwAQt5vSm3oZItiEqXsSn3OZDA-tgMVSW8qtvTE7xxqcWQkxw3dx2GjAs_o4jmBC4tH/exec";
+let usuario = null;
+let todosTickets = [];
+
+// ── UTILS ──
+function toast(msg, tipo = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast visivel ' + tipo;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+async function api(dados) {
+  const r = await fetch(API, {
+    method: 'POST', redirect: 'follow',
+    body: JSON.stringify(dados)
+  });
+  return r.json();
+}
+
+// ── LOGIN ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('tela-login').style.display !== 'none') fazerLogin();
+});
+
+async function fazerLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-senha').value.trim();
+  const btn   = document.getElementById('btn-entrar');
+  const erro  = document.getElementById('erro-login');
+
+  if (!email || !senha) { erro.textContent = 'Preencha e-mail e senha.'; return; }
+  btn.disabled = true; btn.textContent = 'Entrando...'; erro.textContent = '';
+
+  try {
+    const res = await api({ acao: 'login', email, senha });
+    if (res.ok) {
+      usuario = res.usuario;
+      document.getElementById('tela-login').style.display = 'none';
+      document.getElementById('tela-app').style.display = 'block';
+      document.getElementById('nome-usuario').textContent = usuario.nome;
+      if (usuario.perfil === 'ADMIN') {
+        document.querySelectorAll('.admin-tab').forEach(t => t.style.display = '');
+      }
+      irPara('painel');
+    } else {
+      erro.textContent = res.erro || 'Erro ao entrar.';
+    }
+  } catch(e) { erro.textContent = 'Erro de conexão.'; }
+  btn.disabled = false; btn.textContent = 'Entrar';
+}
+
+function sair() {
+  usuario = null; todosTickets = [];
+  document.getElementById('tela-login').style.display = 'flex';
+  document.getElementById('tela-app').style.display = 'none';
+  document.getElementById('login-senha').value = '';
+}
+
+// ── NAVEGAÇÃO ──
+function irPara(aba) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('ativo'));
+  const abas = ['painel','novo','tickets','logs','usuarios'];
+  const idx = abas.indexOf(aba);
+  document.querySelectorAll('.nav-tab')[idx]?.classList.add('ativo');
+
+  const c = document.getElementById('conteudo');
+  if (aba === 'painel')   renderPainel();
+  if (aba === 'novo')     renderNovoTicket();
+  if (aba === 'tickets')  renderTickets();
+  if (aba === 'logs')     renderLogs();
+  if (aba === 'usuarios') renderUsuarios();
+}
+
+// ── PAINEL ──
+async function renderPainel() {
+  const c = document.getElementById('conteudo');
+  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try {
+    const res = await api({ acao: 'listarTickets', status: 'TODOS' });
+    todosTickets = res.tickets || [];
+    const abertos    = todosTickets.filter(t => t.status === 'Aberto').length;
+    const andamento  = todosTickets.filter(t => t.status === 'Em andamento').length;
+    const resolvidos = todosTickets.filter(t => t.status === 'Resolvido').length;
+    const recentes   = todosTickets.slice(0, 5);
+
+    c.innerHTML = `
+      <div class="resumo-grid">
+        <div class="resumo-card"><div class="num">${todosTickets.length}</div><div class="label">Total</div></div>
+        <div class="resumo-card aberto"><div class="num">${abertos}</div><div class="label">Abertos</div></div>
+        <div class="resumo-card andamento"><div class="num">${andamento}</div><div class="label">Em andamento</div></div>
+        <div class="resumo-card resolvido"><div class="num">${resolvidos}</div><div class="label">Resolvidos</div></div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Últimos registros</div>
+      <div class="ticket-lista">${recentes.length ? recentes.map(cardTicket).join('') : '<div class="vazio"><div class="icone">📭</div><p>Nenhum ticket ainda.</p></div>'}</div>
+    `;
+  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar.</p></div>'; }
+}
+
+// ── NOVO TICKET ──
+function renderNovoTicket() {
+  document.getElementById('conteudo').innerHTML = `
+    <div class="form-card">
+      <h2>Registrar nova ocorrência</h2>
+      <div class="form-grid">
+        <div class="form-campo">
+          <label>Tipo</label>
+          <select id="f-tipo">
+            <option value="Externo">Externo (pai/responsável)</option>
+            <option value="Interno">Interno (setor → setor)</option>
+          </select>
+        </div>
+        <div class="form-campo">
+          <label>Origem do contato</label>
+          <select id="f-origem">
+            <option>WhatsApp</option>
+            <option>E-mail</option>
+            <option>Telefone</option>
+            <option>Presencial</option>
+            <option>Sistema interno</option>
+          </select>
+        </div>
+        <div class="form-campo">
+          <label>Solicitante / Nome</label>
+          <input id="f-solicitante" placeholder="Nome do pai, mãe ou setor">
+        </div>
+        <div class="form-campo">
+          <label>Setor destinatário</label>
+          <select id="f-setor">
+            <option>Secretaria</option>
+            <option>Pedagógico</option>
+            <option>Financeiro</option>
+            <option>Direção</option>
+            <option>Coordenação</option>
+            <option>Administrativo</option>
+          </select>
+        </div>
+        <div class="form-campo">
+          <label>Responsável pelo atendimento</label>
+          <input id="f-responsavel" placeholder="Seu nome ou do responsável">
+        </div>
+        <div class="form-campo">
+          <label>Assunto (resumo)</label>
+          <input id="f-assunto" placeholder="Ex: Solicitação de declaração">
+        </div>
+        <div class="form-campo full">
+          <label>Descrição completa</label>
+          <textarea id="f-descricao" placeholder="Descreva a solicitação com detalhes..."></textarea>
+        </div>
+      </div>
+      <div class="form-acoes">
+        <button class="btn-primario" style="width:auto;padding:11px 32px" onclick="salvarTicket()">Registrar ocorrência</button>
+        <button class="btn-secundario" onclick="irPara('tickets')">Cancelar</button>
+      </div>
+    </div>
+  `;
+}
+
+async function salvarTicket() {
+  const assunto = document.getElementById('f-assunto').value.trim();
+  const solicitante = document.getElementById('f-solicitante').value.trim();
+  if (!assunto || !solicitante) { toast('Preencha ao menos o solicitante e o assunto.', 'vermelho'); return; }
+
+  const btn = document.querySelector('.form-acoes .btn-primario');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+
+  try {
+    const res = await api({
+      acao: 'criarTicket',
+      tipo:          document.getElementById('f-tipo').value,
+      origem:        document.getElementById('f-origem').value,
+      solicitante,
+      setorDestino:  document.getElementById('f-setor').value,
+      assunto,
+      descricao:     document.getElementById('f-descricao').value,
+      responsavel:   document.getElementById('f-responsavel').value,
+      usuarioNome:   usuario.nome
+    });
+    if (res.ok) {
+      toast('Ticket registrado com sucesso!', 'verde');
+      irPara('tickets');
+    } else { toast(res.erro || 'Erro ao salvar.', 'vermelho'); }
+  } catch(e) { toast('Erro de conexão.', 'vermelho'); }
+  btn.disabled = false; btn.textContent = 'Registrar ocorrência';
+}
+
+// ── LISTA DE TICKETS ──
+async function renderTickets(filtros = {}) {
+  const c = document.getElementById('conteudo');
+  c.innerHTML = `
+    <div class="filtros">
+      <select id="fil-status">
+        <option value="TODOS">Todos os status</option>
+        <option value="Aberto">Aberto</option>
+        <option value="Em andamento">Em andamento</option>
+        <option value="Resolvido">Resolvido</option>
+      </select>
+      <select id="fil-tipo">
+        <option value="TODOS">Todos os tipos</option>
+        <option value="Externo">Externo</option>
+        <option value="Interno">Interno</option>
+      </select>
+      <select id="fil-setor">
+        <option value="TODOS">Todos os setores</option>
+        <option>Secretaria</option><option>Pedagógico</option>
+        <option>Financeiro</option><option>Direção</option>
+        <option>Coordenação</option><option>Administrativo</option>
+      </select>
+      <input id="fil-busca" placeholder="Buscar por solicitante ou assunto..." style="flex:1;min-width:180px">
+      <button class="btn-filtrar" onclick="buscarTickets()">Buscar</button>
+    </div>
+    <div id="lista-tickets" class="ticket-lista">
+      <div class="loading"><div class="spinner"></div>Carregando...</div>
+    </div>
+  `;
+  buscarTickets();
+}
+
+async function buscarTickets() {
+  const status = document.getElementById('fil-status')?.value || 'TODOS';
+  const tipo   = document.getElementById('fil-tipo')?.value   || 'TODOS';
+  const setor  = document.getElementById('fil-setor')?.value  || 'TODOS';
+  const busca  = (document.getElementById('fil-busca')?.value || '').toLowerCase();
+  const lista  = document.getElementById('lista-tickets');
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div>Buscando...</div>';
+
+  try {
+    const res = await api({ acao: 'listarTickets', status, setor, tipo });
+    let tickets = res.tickets || [];
+    if (busca) tickets = tickets.filter(t =>
+      t.solicitante?.toLowerCase().includes(busca) ||
+      t.assunto?.toLowerCase().includes(busca)
+    );
+    lista.innerHTML = tickets.length
+      ? tickets.map(cardTicket).join('')
+      : '<div class="vazio"><div class="icone">🔍</div><p>Nenhum ticket encontrado.</p></div>';
+  } catch(e) { lista.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro ao buscar.</p></div>'; }
+}
+
+function cardTicket(t) {
+  return `
+    <div class="ticket-card ${t.status}" onclick="abrirModal('${t.id}')">
+      <div class="ticket-top">
+        <span class="ticket-id">${t.id}</span>
+        <span class="badge badge-status-${t.status}">${t.status}</span>
+        <span class="badge badge-tipo-${t.tipo}">${t.tipo || ''}</span>
+      </div>
+      <div class="ticket-assunto">${t.assunto}</div>
+      <div class="ticket-info">
+        <span>👤 ${t.solicitante}</span>
+        <span>📁 ${t.setorDestino}</span>
+        <span>📅 ${t.data}</span>
+        ${t.responsavel ? `<span>🔧 ${t.responsavel}</span>` : ''}
+      </div>
+    </div>`;
+}
+
+// ── MODAL DETALHE ──
+async function abrirModal(id) {
+  const overlay = document.getElementById('modal-overlay');
+  const modal   = document.getElementById('modal-conteudo');
+  modal.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  overlay.classList.add('aberto');
+
+  try {
+    const res = await api({ acao: 'listarTickets', status: 'TODOS' });
+    const t = (res.tickets || []).find(x => x.id === id);
+    if (!t) { modal.innerHTML = '<p>Ticket não encontrado.</p>'; return; }
+
+    modal.innerHTML = `
+      <div class="modal-topo">
+        <h2>${t.assunto}</h2>
+        <button class="btn-fechar" onclick="fecharModal()">×</button>
+      </div>
+      <div class="modal-linha">
+        <div><span class="badge badge-status-${t.status}">${t.status}</span></div>
+        <div><span class="badge badge-tipo-${t.tipo}">${t.tipo}</span></div>
+      </div>
+      <div class="modal-linha">
+        <div class="modal-secao"><label>Solicitante</label><p>${t.solicitante}</p></div>
+        <div class="modal-secao"><label>Setor destino</label><p>${t.setorDestino}</p></div>
+        <div class="modal-secao"><label>Origem</label><p>${t.origem}</p></div>
+        <div class="modal-secao"><label>Responsável</label><p>${t.responsavel || '—'}</p></div>
+        <div class="modal-secao"><label>Data</label><p>${t.data}</p></div>
+      </div>
+      <div class="modal-secao"><label>Descrição</label><p>${t.descricao || '—'}</p></div>
+      ${t.tratativa ? `<div class="modal-secao"><label>Histórico de tratativa</label><p>${t.tratativa}</p></div>` : ''}
+
+      <div class="modal-atualizar">
+        <h3>Atualizar ticket</h3>
+        <div class="modal-grid">
+          <div class="form-campo">
+            <label>Novo status</label>
+            <select id="upd-status">
+              <option value="">— Manter atual —</option>
+              <option value="Aberto">Aberto</option>
+              <option value="Em andamento">Em andamento</option>
+              <option value="Resolvido">Resolvido</option>
+            </select>
+          </div>
+          <div class="form-campo">
+            <label>Responsável</label>
+            <input id="upd-responsavel" placeholder="${t.responsavel || 'Nome do responsável'}">
+          </div>
+          <div class="form-campo full">
+            <label>Adicionar tratativa</label>
+            <textarea id="upd-tratativa" placeholder="Descreva a ação tomada..." style="min-height:70px"></textarea>
+          </div>
+        </div>
+        <button class="btn-primario" style="width:auto;padding:10px 28px" onclick="atualizarTicket('${t.id}')">Salvar atualização</button>
+      </div>
+    `;
+  } catch(e) { modal.innerHTML = '<p>Erro ao carregar ticket.</p>'; }
+}
+
+async function atualizarTicket(id) {
+  const status      = document.getElementById('upd-status').value;
+  const responsavel = document.getElementById('upd-responsavel').value.trim();
+  const tratativa   = document.getElementById('upd-tratativa').value.trim();
+
+  if (!status && !responsavel && !tratativa) {
+    toast('Preencha ao menos um campo para atualizar.', 'vermelho'); return;
+  }
+
+  const btn = document.querySelector('.modal-atualizar .btn-primario');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+
+  try {
+    const res = await api({ acao: 'atualizarTicket', id, status, responsavel, tratativa, usuarioNome: usuario.nome });
+    if (res.ok) {
+      toast('Ticket atualizado!', 'verde');
+      fecharModal();
+      buscarTickets();
+    } else { toast(res.erro || 'Erro ao atualizar.', 'vermelho'); }
+  } catch(e) { toast('Erro de conexão.', 'vermelho'); }
+  btn.disabled = false; btn.textContent = 'Salvar atualização';
+}
+
+function fecharModal(event) {
+  if (!event || event.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('aberto');
+  }
+}
+
+// ── LOGS ──
+async function renderLogs() {
+  const c = document.getElementById('conteudo');
+  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando logs...</div>';
+  try {
+    const res = await api({ acao: 'listarLogs' });
+    const logs = res.logs || [];
+    c.innerHTML = logs.length ? `
+      <div style="font-size:13px;color:var(--cinza3);margin-bottom:12px;">Últimos ${logs.length} registros de auditoria</div>
+      <div class="log-lista">${logs.map(l => `
+        <div class="log-item">
+          <div class="log-dot"></div>
+          <div class="log-info">
+            <div class="log-acao">${l.acao} <span style="font-weight:400;color:var(--cinza3)">por ${l.usuario}</span></div>
+            <div class="log-detalhe">${l.detalhes}</div>
+          </div>
+          <div class="log-hora">${l.dataHora}</div>
+        </div>`).join('')}
+      </div>` :
+      '<div class="vazio"><div class="icone">🔍</div><p>Nenhum log registrado ainda.</p></div>';
+  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar logs.</p></div>'; }
+}
+
+// ── USUÁRIOS ──
+async function renderUsuarios() {
+  const c = document.getElementById('conteudo');
+  c.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try {
+    const res = await api({ acao: 'listarUsuarios' });
+    const usuarios = res.usuarios || [];
+    c.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div style="font-size:13px;color:var(--cinza3)">${usuarios.length} usuário(s) cadastrado(s)</div>
+        <button class="btn-primario" style="width:auto;padding:9px 20px" onclick="renderNovoUsuario()">+ Novo usuário</button>
+      </div>
+      <div class="usuario-lista">${usuarios.map(u => `
+        <div class="usuario-item">
+          <div class="usuario-avatar">${u.nome?.charAt(0) || '?'}</div>
+          <div class="usuario-dados">
+            <div class="usuario-nome">${u.nome}</div>
+            <div class="usuario-email">${u.email}</div>
+          </div>
+          <span class="badge badge-perfil-${u.perfil}">${u.perfil}</span>
+          <span class="badge" style="background:${u.ativo==='SIM'?'#e6f4ed':'#fdecea'};color:${u.ativo==='SIM'?'var(--verde)':'var(--vermelho)'}">${u.ativo==='SIM'?'Ativo':'Inativo'}</span>
+        </div>`).join('')}
+      </div>`;
+  } catch(e) { c.innerHTML = '<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar.</p></div>'; }
+}
+
+function renderNovoUsuario() {
+  document.getElementById('conteudo').innerHTML = `
+    <div class="form-card" style="max-width:480px">
+      <h2>Novo usuário</h2>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-campo"><label>Nome completo</label><input id="nu-nome" placeholder="Nome do funcionário"></div>
+        <div class="form-campo"><label>E-mail (usado para login)</label><input id="nu-email" type="email" placeholder="email@einstein.com"></div>
+        <div class="form-campo"><label>Senha inicial</label><input id="nu-senha" placeholder="Senha inicial (padrão: einstein2026)"></div>
+        <div class="form-campo">
+          <label>Perfil</label>
+          <select id="nu-perfil">
+            <option value="OPERADOR">Operador (acesso padrão)</option>
+            <option value="ADMIN">Administrador (acesso total)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-acoes" style="margin-top:20px">
+        <button class="btn-primario" style="width:auto;padding:11px 28px" onclick="salvarUsuario()">Criar usuário</button>
+        <button class="btn-secundario" onclick="renderUsuarios()">Cancelar</button>
+      </div>
+    </div>`;
+}
+
+async function salvarUsuario() {
+  const nome  = document.getElementById('nu-nome').value.trim();
+  const email = document.getElementById('nu-email').value.trim();
+  if (!nome || !email) { toast('Preencha nome e e-mail.', 'vermelho'); return; }
+
+  const btn = document.querySelector('.form-acoes .btn-primario');
+  btn.disabled = true; btn.textContent = 'Criando...';
+
+  try {
+    const res = await api({
+      acao: 'criarUsuario',
+      nome, email,
+      senha:       document.getElementById('nu-senha').value || 'einstein2026',
+      perfil:      document.getElementById('nu-perfil').value,
+      usuarioNome: usuario.nome
+    });
+    if (res.ok) { toast('Usuário criado!', 'verde'); renderUsuarios(); }
+    else { toast(res.erro || 'Erro ao criar.', 'vermelho'); }
+  } catch(e) { toast('Erro de conexão.', 'vermelho'); }
+  btn.disabled = false; btn.textContent = 'Criar usuário';
+}
+</script>
+</body>
+</html>
