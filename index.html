@@ -538,7 +538,7 @@ async function buscarTickets(){
   try{
     const res=await api({acao:"listarTickets",status,setor,tipo,emailUsuario:usuario.email,nomeUsuario:usuario.nome,perfilUsuario:usuario.perfil});
     let tks=res.tickets||[];
-    if(busca)tks=tks.filter(t=>t.solicitante?.toLowerCase().includes(busca)||t.assunto?.toLowerCase().includes(busca));
+    tks=tks.filter(t=>t.origem!=='SOP_COMUNICADO');if(busca)tks=tks.filter(t=>t.solicitante?.toLowerCase().includes(busca)||t.assunto?.toLowerCase().includes(busca));
     lista.innerHTML=tks.length?tks.map(cardTicket).join(""):'<div class="vazio"><div class="icone">🔍</div><p>Nenhum ticket encontrado.</p></div>';
   }catch(e){lista.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro ao buscar.</p></div>';}
 }
@@ -1077,7 +1077,7 @@ async function abrirModalSOP(id){
     if(!t){modal.innerHTML="<p>Comunicado não encontrado.</p>";return;}
     const st=t.status||"Rascunho";
     const isAdmin=usuario.perfil==="ADMIN";
-    const isAprovador=isAdmin||t.responsavel===usuario.nome||APROVADORES_SOP.includes(usuario.nome);
+    const isAprovador=(isAdmin&&!isAutor)||t.responsavel===usuario.nome||APROVADORES_SOP.includes(usuario.nome);
     const isAutor=t.abertoBy===usuario.nome;
     // Extrair metadados
     const publico=extrairMeta(t.descricao,"publico")||"—";
