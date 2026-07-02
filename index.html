@@ -175,6 +175,84 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
 .toast.visivel{opacity:1;}
 .vazio{text-align:center;padding:48px 16px;color:var(--cinza3);}
 .vazio .icone{font-size:40px;margin-bottom:12px;}
+
+/* ===== SOP DE COMUNICADOS ===== */
+.sop-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.sop-header h2{font-size:18px;font-weight:800;color:var(--azul);}
+.sop-filtros{display:flex;gap:8px;flex-wrap:wrap;}
+.sop-filtros select{padding:7px 12px;border:1.5px solid var(--cinza2);border-radius:8px;font-size:13px;background:var(--cinza1);outline:none;}
+.sop-grid{display:flex;flex-direction:column;gap:10px;}
+.sop-card{background:var(--branco);border-radius:12px;padding:16px;box-shadow:var(--sombra);border-left:4px solid var(--cinza2);cursor:pointer;transition:box-shadow .2s;}
+.sop-card:hover{box-shadow:0 4px 24px rgba(26,39,68,.15);}
+.sop-card.st-Rascunho{border-left-color:#9aa5bf;}
+.sop-card.st-Aguardando{border-left-color:var(--laranja);}
+.sop-card.st-Aprovado{border-left-color:var(--verde);}
+.sop-card.st-Enviado{border-left-color:#6b35b8;}
+.sop-card.st-Reprovado{border-left-color:var(--vermelho);}
+.sop-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.sop-assunto{font-size:15px;font-weight:700;color:var(--azul);margin-bottom:4px;}
+.sop-meta{font-size:12px;color:var(--cinza3);}
+.sop-meta span{margin-right:10px;}
+.badge-sop-Rascunho{background:#f0f2f8;color:#6b7a99;}
+.badge-sop-Aguardando{background:#fff3e6;color:var(--laranja);}
+.badge-sop-Aprovado{background:#e6f4ed;color:var(--verde);}
+.badge-sop-Enviado{background:#f0e6ff;color:#6b35b8;}
+.badge-sop-Reprovado{background:#fdecea;color:var(--vermelho);}
+
+/* Modal SOP */
+.sop-secao{margin-bottom:14px;}
+.sop-secao label{font-size:11px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;}
+.sop-secao p{font-size:14px;line-height:1.6;white-space:pre-wrap;}
+.sop-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0;padding:12px 16px;background:var(--cinza1);border-radius:10px;}
+.sop-step{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.sop-step-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+.sop-step-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;}
+.sop-step.done .sop-step-num{background:var(--verde);color:#fff;}
+.sop-step.active .sop-step-num{background:var(--dourado);color:var(--azul);}
+.sop-step.pending .sop-step-num{background:var(--cinza2);color:var(--cinza3);}
+.sop-step.done .sop-step-label{color:var(--verde);}
+.sop-step.active .sop-step-label{color:var(--laranja);}
+.sop-step.pending .sop-step-label{color:var(--cinza3);}
+.sop-arrow{font-size:16px;color:var(--cinza3);margin-bottom:14px;}
+.sop-acoes-modal{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1.5px solid var(--cinza2);}
+.btn-aprovar{padding:10px 20px;background:#e6f4ed;color:var(--verde);border:1.5px solid #b2d8c0;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
+.btn-aprovar:hover{background:var(--verde);color:#fff;}
+.btn-reprovar{padding:10px 20px;background:#fdecea;color:var(--vermelho);border:1.5px solid #f5c6c6;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
+.btn-reprovar:hover{background:var(--vermelho);color:#fff;}
+.btn-marcar-enviado{padding:10px 20px;background:#f0e6ff;color:#6b35b8;border:1.5px solid #d4b3f5;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
+.btn-marcar-enviado:hover{background:#6b35b8;color:#fff;}
+.sop-obs-input{width:100%;padding:10px 13px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:14px;background:var(--cinza1);outline:none;font-family:inherit;margin-top:8px;resize:vertical;min-height:60px;}
+.sop-obs-input:focus{border-color:var(--azul);background:var(--branco);}
+.sop-canal-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.canal-chip{padding:5px 12px;border:1.5px solid var(--cinza2);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--cinza1);color:var(--cinza3);transition:all .15s;}
+.canal-chip.sel{background:var(--azul);color:#fff;border-color:var(--azul);}
+
+/* Toggle modo conteúdo */
+.modo-toggle{display:flex;gap:0;border:1.5px solid var(--cinza2);border-radius:10px;overflow:hidden;margin-top:6px;}
+.modo-btn{flex:1;padding:10px 14px;border:none;background:var(--cinza1);color:var(--cinza3);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.modo-btn.sel{background:var(--azul);color:#fff;}
+.modo-btn:first-child{border-right:1px solid var(--cinza2);}
+.bloco-texto{display:block;}
+.bloco-arquivo{display:none;}
+
+/* Área de upload */
+.upload-area{border:2px dashed var(--cinza2);border-radius:12px;padding:32px 16px;text-align:center;cursor:pointer;transition:all .2s;background:var(--cinza1);margin-top:6px;}
+.upload-area:hover,.upload-area.drag{border-color:var(--azul);background:#eef1f8;}
+.upload-area .upload-icone{font-size:36px;margin-bottom:8px;}
+.upload-area .upload-titulo{font-size:14px;font-weight:700;color:var(--azul);margin-bottom:4px;}
+.upload-area .upload-sub{font-size:12px;color:var(--cinza3);}
+.upload-area input[type=file]{display:none;}
+.arquivo-preview{display:none;margin-top:10px;background:var(--branco);border:1.5px solid var(--cinza2);border-radius:10px;padding:12px 14px;align-items:center;gap:12px;}
+.arquivo-preview.visivel{display:flex;}
+.arquivo-preview .arq-icone{font-size:28px;flex-shrink:0;}
+.arquivo-preview .arq-info{flex:1;}
+.arquivo-preview .arq-nome{font-size:13px;font-weight:700;color:var(--azul);}
+.arquivo-preview .arq-size{font-size:11px;color:var(--cinza3);}
+.arquivo-preview .arq-remover{background:none;border:none;color:var(--vermelho);font-size:18px;cursor:pointer;flex-shrink:0;}
+.upload-progress{height:4px;background:var(--cinza2);border-radius:4px;margin-top:8px;overflow:hidden;display:none;}
+.upload-progress.visivel{display:block;}
+.upload-progress-bar{height:100%;background:var(--azul);width:0%;transition:width .3s;border-radius:4px;}
+.badge-anexo{background:#f0e6ff;color:#6b35b8;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700;}
 </style>
 </head>
 <body>
@@ -199,10 +277,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
       <button class="btn-sair" onclick="sair()">Sair</button>
     </div>
   </div>
-  <div class="nav-tabs">
+  <div class="nav-tabs" id="nav-tabs">
     <button class="nav-tab ativo" onclick="irPara('painel')">📊 Painel</button>
     <button class="nav-tab" onclick="irPara('novo')">➕ Novo Ticket</button>
     <button class="nav-tab" onclick="irPara('tickets')">📋 Tickets</button>
+    <button class="nav-tab" onclick="irPara('sop')">📤 Comunicados</button>
+    <button class="nav-tab" onclick="irPara('notificacoes')">🔔 Notificações</button>
     <button class="nav-tab admin-tab" onclick="irPara('logs')" style="display:none">🔍 Logs</button>
     <button class="nav-tab admin-tab" onclick="irPara('usuarios')" style="display:none">👥 Usuários</button>
   </div>
@@ -258,13 +338,15 @@ async function verificarNotificacoes(){
 
 function irPara(aba){
   document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("ativo"));
-  ["painel","novo","tickets","logs","usuarios","notificacoes"].forEach((a,i)=>{if(a===aba)document.querySelectorAll(".nav-tab")[i]?.classList.add("ativo");});
+  const abas=["painel","novo","tickets","sop","notificacoes","logs","usuarios"];
+  abas.forEach((a,i)=>{if(a===aba)document.querySelectorAll(".nav-tab")[i]?.classList.add("ativo");});
   if(aba==="painel")renderPainel();
   if(aba==="novo")renderNovoTicket();
   if(aba==="tickets")renderTickets();
+  if(aba==="sop")renderSOP();
+  if(aba==="notificacoes")renderNotificacoes();
   if(aba==="logs")renderLogs();
   if(aba==="usuarios")renderUsuarios();
-  if(aba==="notificacoes")renderNotificacoes();
 }
 
 async function renderPainel(){
@@ -679,6 +761,408 @@ document.addEventListener("click",function(e){
   const dd=document.getElementById("busca-dropdown");
   if(dd&&!dd.contains(e.target)&&e.target.id!=="busca-familia")dd.classList.remove("aberto");
 });
+
+/* ============================================================
+   MÓDULO SOP — COMUNICADOS INTERNOS
+   Fluxo: Rascunho → Aguardando Aprovação → Aprovado → Enviado
+   Subtipo de ticket Interno com campos específicos
+   ============================================================ */
+
+const CANAIS_SOP=["WhatsApp (grupo oficial)","E-mail","App / Plataforma","Instagram","Impresso / Agenda","Todos os canais"];
+const APROVADORES_SOP=["Coordenação Pedagógica","Direção","Vice-Direção"];
+const PUBLICOS_SOP=["Todas as famílias","Famílias da EI","Famílias do EF1","Famílias do EF2","Equipe docente","Equipe de apoio","Todos"];
+
+let sopCanaisSel=[];
+
+function renderSOP(){
+  const c=document.getElementById("conteudo");
+  c.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  carregarSOP(c);
+}
+
+async function carregarSOP(c){
+  try{
+    const res=await api({acao:"listarTickets",status:"TODOS",emailUsuario:usuario.email,nomeUsuario:usuario.nome,perfilUsuario:usuario.perfil});
+    const tks=(res.tickets||[]).filter(t=>t.origem==="SOP_COMUNICADO");
+    const isAdmin=usuario.perfil==="ADMIN";
+
+    c.innerHTML=`
+      <div class="sop-header">
+        <h2>📤 Comunicados — SOP</h2>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select id="sop-filtro-status" onchange="filtrarSOP()" style="padding:7px 12px;border:1.5px solid var(--cinza2);border-radius:8px;font-size:13px;background:var(--cinza1);outline:none;">
+            <option value="TODOS">Todos os status</option>
+            <option value="Rascunho">Rascunho</option>
+            <option value="Aguardando Aprovação">Aguardando Aprovação</option>
+            <option value="Aprovado">Aprovado</option>
+            <option value="Enviado">Enviado</option>
+            <option value="Reprovado">Reprovado</option>
+          </select>
+          <button class="btn-primario" style="width:auto;padding:9px 20px" onclick="renderNovoSOP()">+ Novo comunicado</button>
+        </div>
+      </div>
+      <div style="background:var(--cinza1);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--cinza3);display:flex;gap:16px;flex-wrap:wrap">
+        <span>🖊️ <strong>Rascunho</strong> — em criação</span>
+        <span>⏳ <strong>Aguardando</strong> — enviado para aprovação</span>
+        <span>✅ <strong>Aprovado</strong> — pronto para enviar</span>
+        <span>📨 <strong>Enviado</strong> — publicado para as famílias</span>
+        <span>❌ <strong>Reprovado</strong> — precisa de revisão</span>
+      </div>
+      <div class="sop-grid" id="sop-lista">
+        ${tks.length?tks.map(t=>cardSOP(t)).join(""):'<div class="vazio"><div class="icone">📤</div><p>Nenhum comunicado ainda.<br><small>Clique em "+ Novo comunicado" para começar.</small></p></div>'}
+      </div>`;
+    window._sopTodos=tks;
+  }catch(e){c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar.</p></div>';}
+}
+
+function cardSOP(t){
+  const st=t.status||"Rascunho";
+  const stKey=st.split(" ")[0];
+  const canais=t.descricao?extrairMeta(t.descricao,"canais")||"—":"—";
+  const publico=t.descricao?extrairMeta(t.descricao,"publico")||"—":"—";
+  const prazo=t.descricao?extrairMeta(t.descricao,"prazo")||"—":"—";
+  const tipoConteudo=t.descricao?extrairMeta(t.descricao,"tipo_conteudo")||"texto":"texto";
+  return`<div class="sop-card st-${stKey}" onclick="abrirModalSOP('${t.id}')">
+    <div class="sop-top">
+      <span class="badge badge-sop-${st.split(" ")[0]}">${st}</span>
+      ${tipoConteudo==="arquivo"?'<span class="badge-anexo">📎 Arquivo</span>':''}
+      ${t.visibilidade==="Privado"?'<span class="badge badge-priv">🔒</span>':''}
+    </div>
+    <div class="sop-assunto">${t.assunto}</div>
+    <div class="sop-meta">
+      <span>👥 ${publico}</span>
+      <span>📡 ${canais}</span>
+      ${prazo!=="—"?`<span>⏰ Enviar até ${prazo}</span>`:""}
+      <span>✍️ ${t.abertoBy||"—"}</span>
+      <span>📅 ${t.data}</span>
+    </div>
+  </div>`;
+}
+
+function extrairMeta(desc,campo){
+  if(!desc)return null;
+  const m=desc.match(new RegExp("\\["+campo+":([^\\]]+)\\]"));
+  return m?m[1].trim():null;
+}
+
+function filtrarSOP(){
+  const st=document.getElementById("sop-filtro-status")?.value||"TODOS";
+  const lista=document.getElementById("sop-lista");
+  if(!lista||!window._sopTodos)return;
+  const filtrado=st==="TODOS"?window._sopTodos:window._sopTodos.filter(t=>t.status===st);
+  lista.innerHTML=filtrado.length?filtrado.map(t=>cardSOP(t)).join(""):'<div class="vazio"><div class="icone">📭</div><p>Nenhum comunicado nesse status.</p></div>';
+}
+
+function renderNovoSOP(){
+  sopCanaisSel=[];
+  window._sopVis="Público";
+  window._sopArquivo=null;
+  window._sopModo="texto";
+  document.getElementById("conteudo").innerHTML=`
+    <div class="form-card">
+      <h2>📝 Novo comunicado</h2>
+      <div style="background:#e6f4ed;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--verde);">
+        <strong>SOP de comunicados:</strong> Rascunhe aqui → Envie para aprovação → Aprovador libera → Marque como enviado após publicar.
+      </div>
+      <div class="form-grid">
+        <div class="form-campo full"><label>Assunto do comunicado</label>
+          <input id="sop-assunto" placeholder="Ex: Calendário do 2º semestre 2026"></div>
+
+        <div class="form-campo full"><label>Público-alvo</label>
+          <select id="sop-publico">${PUBLICOS_SOP.map(p=>`<option>${p}</option>`).join("")}</select></div>
+
+        <div class="form-campo full"><label>Canal(is) de envio</label>
+          <div class="sop-canal-chips" id="canal-chips">
+            ${CANAIS_SOP.map(c=>`<span class="canal-chip" onclick="toggleCanal(this,'${c}')">${c}</span>`).join("")}
+          </div>
+        </div>
+
+        <div class="form-campo"><label>Data/hora prevista de envio</label>
+          <input id="sop-prazo" type="datetime-local"></div>
+
+        <div class="form-campo"><label>Aprovador responsável</label>
+          <select id="sop-aprovador">${APROVADORES_SOP.map(a=>`<option>${a}</option>`).join("")}
+            ${todosUsuarios.map(u=>`<option>${u.nome}</option>`).join("")}
+          </select></div>
+
+        <div class="form-campo full">
+          <label>Conteúdo do comunicado</label>
+          <div class="modo-toggle">
+            <button class="modo-btn sel" id="modo-texto" onclick="setModoSOP('texto')">✏️ Escrever texto</button>
+            <button class="modo-btn" id="modo-arquivo" onclick="setModoSOP('arquivo')">📎 Anexar arquivo</button>
+          </div>
+          <div class="bloco-texto" id="bloco-texto">
+            <textarea id="sop-texto" placeholder="Cole ou escreva aqui o texto exato que será enviado para as famílias..." style="min-height:160px;margin-top:10px;width:100%;padding:10px 13px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:14px;background:var(--cinza1);outline:none;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+          </div>
+          <div class="bloco-arquivo" id="bloco-arquivo">
+            <div class="upload-area" id="upload-area"
+              onclick="document.getElementById('sop-file-input').click()"
+              ondragover="event.preventDefault();this.classList.add('drag')"
+              ondragleave="this.classList.remove('drag')"
+              ondrop="handleDrop(event)">
+              <div class="upload-icone">📁</div>
+              <div class="upload-titulo">Clique para selecionar ou arraste o arquivo</div>
+              <div class="upload-sub">PDF, Word, Imagem, PowerPoint — até 10 MB</div>
+              <input type="file" id="sop-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.webp" onchange="selecionarArquivo(this.files[0])">
+            </div>
+            <div class="arquivo-preview" id="arquivo-preview">
+              <div class="arq-icone" id="arq-icone">📄</div>
+              <div class="arq-info">
+                <div class="arq-nome" id="arq-nome"></div>
+                <div class="arq-size" id="arq-size"></div>
+              </div>
+              <button class="arq-remover" onclick="removerArquivo()" title="Remover">×</button>
+            </div>
+            <div class="upload-progress" id="upload-progress"><div class="upload-progress-bar" id="upload-bar"></div></div>
+            <textarea id="sop-legenda" placeholder="Legenda ou descrição do arquivo (opcional)..." style="width:100%;padding:10px 13px;border:1.5px solid var(--cinza2);border-radius:10px;font-size:14px;background:var(--cinza1);outline:none;font-family:inherit;resize:vertical;min-height:70px;margin-top:10px;box-sizing:border-box;"></textarea>
+          </div>
+        </div>
+
+        <div class="form-campo full"><label>Observações internas (não vai para as famílias)</label>
+          <textarea id="sop-obs" placeholder="Contexto, urgência, instruções especiais para o aprovador..." style="min-height:70px"></textarea></div>
+
+        <div class="form-campo full"><label>Visibilidade</label>
+          <div class="vis-toggle">
+            <button class="vis-btn pub sel" id="sop-vis-pub" onclick="setSopVis('Público')">🌐 Público — todos os usuários veem</button>
+            <button class="vis-btn priv" id="sop-vis-priv" onclick="setSopVis('Privado')">🔒 Privado — só envolvidos e admins</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-acoes">
+        <button class="btn-primario" style="width:auto;padding:11px 28px" id="btn-salvar-sop" onclick="salvarSOP('Rascunho')">💾 Salvar rascunho</button>
+        <button class="btn-secundario" style="background:#fff3e6;color:var(--laranja);border:1.5px solid #ffd199" id="btn-enviar-sop" onclick="salvarSOP('Aguardando Aprovação')">⏳ Enviar para aprovação</button>
+        <button class="btn-secundario" onclick="irPara('sop')">Cancelar</button>
+      </div>
+    </div>`;
+}
+
+function toggleCanal(el,nome){
+  if(sopCanaisSel.includes(nome)){sopCanaisSel=sopCanaisSel.filter(c=>c!==nome);el.classList.remove("sel");}
+  else{sopCanaisSel.push(nome);el.classList.add("sel");}
+}
+function setSopVis(v){
+  window._sopVis=v;
+  document.getElementById("sop-vis-pub").className="vis-btn pub"+(v==="Público"?" sel":"");
+  document.getElementById("sop-vis-priv").className="vis-btn priv"+(v==="Privado"?" sel":"");
+}
+
+function setModoSOP(modo){
+  window._sopModo=modo;
+  window._sopArquivo=null;
+  document.getElementById("modo-texto").className="modo-btn"+(modo==="texto"?" sel":"");
+  document.getElementById("modo-arquivo").className="modo-btn"+(modo==="arquivo"?" sel":"");
+  document.getElementById("bloco-texto").style.display=modo==="texto"?"block":"none";
+  document.getElementById("bloco-arquivo").style.display=modo==="arquivo"?"block":"none";
+  if(modo==="arquivo")removerArquivo();
+}
+
+function iconeArquivo(nome){
+  const ext=(nome.split(".").pop()||"").toLowerCase();
+  if(["pdf"].includes(ext))return"📕";
+  if(["doc","docx"].includes(ext))return"📘";
+  if(["ppt","pptx"].includes(ext))return"📙";
+  if(["xls","xlsx"].includes(ext))return"📗";
+  if(["png","jpg","jpeg","gif","webp"].includes(ext))return"🖼️";
+  return"📄";
+}
+
+function selecionarArquivo(file){
+  if(!file)return;
+  const maxMB=10;
+  if(file.size>maxMB*1024*1024){toast("Arquivo maior que "+maxMB+"MB. Reduza o tamanho.","vermelho");return;}
+  window._sopArquivo=file;
+  document.getElementById("arq-icone").textContent=iconeArquivo(file.name);
+  document.getElementById("arq-nome").textContent=file.name;
+  document.getElementById("arq-size").textContent=(file.size/1024).toFixed(0)+" KB";
+  document.getElementById("arquivo-preview").classList.add("visivel");
+  document.getElementById("upload-area").style.display="none";
+}
+
+function removerArquivo(){
+  window._sopArquivo=null;
+  const prev=document.getElementById("arquivo-preview");
+  const area=document.getElementById("upload-area");
+  const inp=document.getElementById("sop-file-input");
+  if(prev)prev.classList.remove("visivel");
+  if(area)area.style.display="";
+  if(inp)inp.value="";
+  const pb=document.getElementById("upload-progress");
+  if(pb)pb.classList.remove("visivel");
+}
+
+function handleDrop(e){
+  e.preventDefault();
+  const area=document.getElementById("upload-area");
+  if(area)area.classList.remove("drag");
+  const file=e.dataTransfer.files[0];
+  if(file)selecionarArquivo(file);
+}
+
+async function uploadArquivoGAS(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=async function(ev){
+      try{
+        const base64=ev.target.result.split(",")[1];
+        const progBar=document.getElementById("upload-bar");
+        const progWrap=document.getElementById("upload-progress");
+        if(progWrap)progWrap.classList.add("visivel");
+        // Animar progresso enquanto faz a requisição
+        let p=0;const iv=setInterval(()=>{p=Math.min(p+8,85);if(progBar)progBar.style.width=p+"%";},200);
+        const res=await api({acao:"uploadArquivo",nomeArquivo:file.name,mimeType:file.type,base64,usuarioNome:usuario.nome});
+        clearInterval(iv);
+        if(progBar)progBar.style.width="100%";
+        setTimeout(()=>{if(progWrap)progWrap.classList.remove("visivel");if(progBar)progBar.style.width="0%";},800);
+        if(res.ok)resolve({url:res.url,nome:file.name});
+        else reject(new Error(res.erro||"Erro no upload"));
+      }catch(err){reject(err);}
+    };
+    reader.onerror=()=>reject(new Error("Erro ao ler o arquivo"));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function salvarSOP(status){
+  const assunto=document.getElementById("sop-assunto").value.trim();
+  if(!assunto){toast("Preencha o assunto do comunicado.","vermelho");return;}
+  const modo=window._sopModo||"texto";
+  let textoFinal="";
+  if(modo==="texto"){
+    textoFinal=document.getElementById("sop-texto").value.trim();
+    if(!textoFinal){toast("Escreva o texto do comunicado.","vermelho");return;}
+  } else {
+    if(!window._sopArquivo){toast("Selecione um arquivo para anexar.","vermelho");return;}
+  }
+  const publico=document.getElementById("sop-publico").value;
+  const canais=sopCanaisSel.length?sopCanaisSel.join(", "):"Não definido";
+  const prazo=document.getElementById("sop-prazo").value||"";
+  const aprovador=document.getElementById("sop-aprovador").value;
+  const obs=document.getElementById("sop-obs").value.trim();
+  const btn1=document.getElementById("btn-salvar-sop");
+  const btn2=document.getElementById("btn-enviar-sop");
+  if(btn1){btn1.disabled=true;btn1.textContent="Salvando...";}
+  if(btn2)btn2.disabled=true;
+  try{
+    let metaConteudo="";
+    if(modo==="arquivo"){
+      toast("Enviando arquivo...","");
+      const uploaded=await uploadArquivoGAS(window._sopArquivo);
+      const legenda=(document.getElementById("sop-legenda")||{}).value||"";
+      metaConteudo=`[tipo_conteudo:arquivo][arquivo_url:${uploaded.url}][arquivo_nome:${uploaded.nome}]${legenda?"\n\n"+legenda:""}`;
+    } else {
+      metaConteudo=`[tipo_conteudo:texto]\n\n${textoFinal}`;
+    }
+    const descFull=`[publico:${publico}][canais:${canais}][prazo:${prazo}][aprovador:${aprovador}]\n${metaConteudo}${obs?"\n\n--- Obs. internas ---\n"+obs:""}`;
+    const aprovEmail=(todosUsuarios.find(u=>u.nome===aprovador)||{}).email||"";
+    const res=await api({acao:"criarTicket",tipo:"Interno",origem:"SOP_COMUNICADO",
+      solicitante:usuario.nome,setorDestino:"Aprovação",assunto,
+      descricao:descFull,status,abertoBy:usuario.nome,
+      responsavel:aprovador,responsavelEmail:aprovEmail,
+      visibilidade:window._sopVis||"Público"});
+    if(res.ok){toast(status==="Rascunho"?"Rascunho salvo!":"Enviado para aprovação! "+aprovador+" será notificado.","verde");irPara("sop");}
+    else toast(res.erro||"Erro.","vermelho");
+  }catch(e){toast("Erro: "+e.message,"vermelho");}
+  if(btn1){btn1.disabled=false;btn1.textContent="💾 Salvar rascunho";}
+  if(btn2){btn2.disabled=false;btn2.textContent="⏳ Enviar para aprovação";}
+}
+
+async function abrirModalSOP(id){
+  const overlay=document.getElementById("modal-overlay");
+  const modal=document.getElementById("modal-conteudo");
+  modal.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  overlay.classList.add("aberto");
+  try{
+    const res=await api({acao:"listarTickets",status:"TODOS",emailUsuario:usuario.email,nomeUsuario:usuario.nome,perfilUsuario:usuario.perfil});
+    const t=(res.tickets||[]).find(x=>x.id===id);
+    if(!t){modal.innerHTML="<p>Comunicado não encontrado.</p>";return;}
+    const st=t.status||"Rascunho";
+    const isAdmin=usuario.perfil==="ADMIN";
+    const isAprovador=isAdmin||t.responsavel===usuario.nome||APROVADORES_SOP.includes(usuario.nome);
+    const isAutor=t.abertoBy===usuario.nome;
+    // Extrair metadados
+    const publico=extrairMeta(t.descricao,"publico")||"—";
+    const canais=extrairMeta(t.descricao,"canais")||"—";
+    const prazo=extrairMeta(t.descricao,"prazo")||"—";
+    const aprovador=extrairMeta(t.descricao,"aprovador")||t.responsavel||"—";
+    const tipoConteudo=extrairMeta(t.descricao,"tipo_conteudo")||"texto";
+    const arquivoUrl=extrairMeta(t.descricao,"arquivo_url")||"";
+    const arquivoNome=extrairMeta(t.descricao,"arquivo_nome")||"Arquivo anexado";
+    // Texto limpo — remover todas as metatags
+    const textoLimpo=(t.descricao||"")
+      .replace(/\[publico:[^\]]+\]/g,"").replace(/\[canais:[^\]]+\]/g,"")
+      .replace(/\[prazo:[^\]]+\]/g,"").replace(/\[aprovador:[^\]]+\]/g,"")
+      .replace(/\[tipo_conteudo:[^\]]+\]/g,"").replace(/\[arquivo_url:[^\]]+\]/g,"")
+      .replace(/\[arquivo_nome:[^\]]+\]/g,"").trim();
+    // Bloco de conteúdo
+    const blocoConteudo=tipoConteudo==="arquivo"
+      ?`<div class="sop-secao"><label>Arquivo anexado <span class="badge-anexo">📎</span></label>
+          <a href="${arquivoUrl}" target="_blank" rel="noopener"
+            style="display:inline-flex;align-items:center;gap:8px;background:var(--cinza1);border:1.5px solid var(--cinza2);border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;color:var(--azul);text-decoration:none;margin-top:4px;">
+            📄 ${arquivoNome} <span style="font-size:11px;font-weight:400;color:var(--cinza3)">Abrir no Drive →</span>
+          </a>
+          ${textoLimpo?`<p style="margin-top:10px;font-size:13px;color:var(--cinza3)">${textoLimpo}</p>`:""}
+        </div>`
+      :`<div class="sop-secao"><label>Texto do comunicado</label><p style="background:var(--cinza1);border-radius:8px;padding:14px;border:1.5px solid var(--cinza2)">${textoLimpo}</p></div>`;
+    // Status visual
+    const steps=["Rascunho","Aguardando Aprovação","Aprovado","Enviado"];
+    const si=steps.indexOf(st);
+    const flowHTML=steps.map((s,i)=>{
+      const cls=i<si?"done":i===si?"active":"pending";
+      const icons=["🖊️","⏳","✅","📨"];
+      return`<div class="sop-step ${cls}"><div class="sop-step-num">${icons[i]}</div><div class="sop-step-label">${s.split(" ")[0]}</div></div>${i<steps.length-1?'<div class="sop-arrow">→</div>':""}`;
+    }).join("");
+    // Botões de ação conforme status e perfil
+    let botoesAcao="";
+    if(st==="Rascunho"&&isAutor)
+      botoesAcao+=`<button class="btn-secundario" style="background:#fff3e6;color:var(--laranja);border:1.5px solid #ffd199" onclick="atualizarStatusSOP('${id}','Aguardando Aprovação','')">⏳ Enviar para aprovação</button>`;
+    if(st==="Aguardando Aprovação"&&isAprovador){
+      botoesAcao+=`<textarea class="sop-obs-input" id="sop-modal-obs" placeholder="Observação (opcional)..."></textarea>`;
+      botoesAcao+=`<button class="btn-aprovar" onclick="atualizarStatusSOP('${id}','Aprovado',document.getElementById('sop-modal-obs').value)">✅ Aprovar</button>`;
+      botoesAcao+=`<button class="btn-reprovar" onclick="atualizarStatusSOP('${id}','Reprovado',document.getElementById('sop-modal-obs').value)">❌ Reprovar</button>`;
+    }
+    if(st==="Reprovado"&&isAutor)
+      botoesAcao+=`<button class="btn-secundario" onclick="editarSOP('${id}')">✏️ Revisar e reenviar</button>`;
+    if(st==="Aprovado"&&(isAdmin||isAutor))
+      botoesAcao+=`<button class="btn-marcar-enviado" onclick="atualizarStatusSOP('${id}','Enviado','Comunicado publicado e enviado para as famílias.')">📨 Marcar como enviado</button>`;
+    if(isAdmin&&st!=="Enviado")
+      botoesAcao+=`<button class="btn-secundario" style="background:var(--cinza2);color:var(--cinza3)" onclick="atualizarStatusSOP('${id}','Rascunho','Revertido para rascunho pelo admin.')">↩️ Reverter</button>`;
+    modal.innerHTML=`
+      <div class="modal-topo"><h2>${t.assunto}</h2><button class="btn-fechar" onclick="fecharModal()">×</button></div>
+      <div class="modal-acoes-topo">
+        <span class="badge badge-sop-${st.split(" ")[0]}">${st}</span>
+        ${t.visibilidade==="Privado"?'<span class="badge badge-priv">🔒 Privado</span>':''}
+      </div>
+      <div class="sop-flow">${flowHTML}</div>
+      <div class="modal-linha">
+        <div class="sop-secao"><label>Público-alvo</label><p>${publico}</p></div>
+        <div class="sop-secao"><label>Canal(is)</label><p>${canais}</p></div>
+        ${prazo!=="—"?`<div class="sop-secao"><label>Enviar até</label><p>${prazo}</p></div>`:""}
+        <div class="sop-secao"><label>Aprovador</label><p>${aprovador}</p></div>
+        <div class="sop-secao"><label>Criado por</label><p>${t.abertoBy}</p></div>
+        <div class="sop-secao"><label>Data</label><p>${t.data}</p></div>
+      </div>
+      ${blocoConteudo}
+      ${t.tratativa?`<div class="sop-secao"><label>Histórico de aprovação</label><p>${t.tratativa}</p></div>`:""}
+      <div class="sop-acoes-modal">${botoesAcao}</div>`;
+  }catch(e){modal.innerHTML="<p>Erro ao carregar.</p>";}
+}
+
+async function atualizarStatusSOP(id,novoStatus,obs){
+  try{
+    const obsVal=obs||(document.getElementById("sop-modal-obs")?document.getElementById("sop-modal-obs").value:"");
+    const tratativa=novoStatus+" por "+usuario.nome+(obsVal?": "+obsVal:"");
+    const res=await api({acao:"atualizarTicket",id,status:novoStatus,tratativa,usuarioNome:usuario.nome});
+    if(res.ok){
+      const msgs={"Aguardando Aprovação":"Enviado para aprovação!","Aprovado":"Aprovado! Já pode ser enviado.","Reprovado":"Reprovado. Autor será notificado.","Enviado":"Marcado como enviado! Processo concluído.","Rascunho":"Revertido para rascunho."};
+      toast(msgs[novoStatus]||"Atualizado!","verde");fecharModal();renderSOP();
+    }else toast(res.erro||"Erro.","vermelho");
+  }catch(e){toast("Erro de conexão.","vermelho");}
+}
+
+function editarSOP(id){
+  fecharModal();
+  toast("Abra como novo comunicado, revise e reenvie para aprovação.","");
+}
 </script>
 </body>
 </html>
