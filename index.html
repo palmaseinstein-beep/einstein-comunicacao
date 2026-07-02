@@ -253,6 +253,34 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:
 .upload-progress.visivel{display:block;}
 .upload-progress-bar{height:100%;background:var(--azul);width:0%;transition:width .3s;border-radius:4px;}
 .badge-anexo{background:#f0e6ff;color:#6b35b8;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700;}
+/* SLA badges */
+.badge-vencido{background:#fdecea;color:var(--vermelho);font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;border:1px solid #f5c6c2;}
+.badge-hoje{background:#fff3e6;color:var(--laranja);font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;}
+.badge-prazo{background:#f0f8f4;color:#2e7d5e;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;}
+.card-ticket-vencido{border-left:3px solid var(--vermelho)!important;}
+/* Status aprovação */
+.badge-Aguardando{background:#fff3e6;color:var(--laranja);}
+/* Painel gerencial */
+.painel-secao{background:var(--branco);border-radius:12px;padding:16px;box-shadow:var(--sombra);margin-bottom:16px;}
+.painel-secao h3{font-size:13px;font-weight:700;color:var(--azul);margin:0 0 12px;text-transform:uppercase;letter-spacing:.04em;}
+.setor-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:.5px solid var(--cinza2);font-size:13px;}
+.setor-row:last-child{border-bottom:none;}
+.setor-nome{flex:1;color:var(--preto);font-weight:500;}
+.setor-num{font-size:12px;color:var(--cinza3);min-width:28px;text-align:right;}
+.setor-bar-wrap{flex:2;height:6px;background:var(--cinza2);border-radius:4px;overflow:hidden;}
+.setor-bar{height:100%;border-radius:4px;background:var(--azul);}
+.setor-bar.vermelho{background:var(--vermelho);}
+.stat-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px;}
+.stat-mini{background:var(--cinza1);border-radius:8px;padding:12px;text-align:center;}
+.stat-mini .n{font-size:24px;font-weight:800;}
+.stat-mini .l{font-size:11px;color:var(--cinza3);font-weight:600;}
+.stat-mini.alerta .n{color:var(--vermelho);}
+.stat-mini.ok .n{color:var(--verde);}
+.stat-mini.warn .n{color:var(--laranja);}
+.stat-mini.azul .n{color:var(--azul);}
+/* Botão aprovação */
+.btn-aprovar{background:#e6f4ed;color:var(--verde);border:1px solid var(--verde);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-reprovar{background:#fdecea;color:var(--vermelho);border:1px solid var(--vermelho);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -349,22 +377,95 @@ function irPara(aba){
   if(aba==="usuarios")renderUsuarios();
 }
 
+async function aprovarTicket(id){
+  if(!confirm("Aprovar este ticket?"))return;
+  const res=await api({acao:"atualizarTicket",id,status:"Em andamento",usuarioNome:usuario.nome,notificar:false});
+  if(res.ok){toast("Ticket aprovado!","verde");renderPainel();}else toast("Erro ao aprovar.","vermelho");
+}
+async function reprovarTicket(id){
+  const motivo=prompt("Motivo da reprovação (obrigatório):");
+  if(!motivo)return;
+  const res=await api({acao:"atualizarTicket",id,status:"Aberto",tratativa:"❌ REPROVADO: "+motivo,usuarioNome:usuario.nome,notificar:false});
+  if(res.ok){toast("Ticket reprovado.","laranja");renderPainel();}else toast("Erro.","vermelho");
+}
+
 async function renderPainel(){
   const c=document.getElementById("conteudo");
   c.innerHTML='<div class="loading"><div class="spinner"></div>Carregando...</div>';
   try{
-    const res=await api({acao:"listarTickets",status:"TODOS",emailUsuario:usuario.email,nomeUsuario:usuario.nome,perfilUsuario:usuario.perfil});
-    const tks=res.tickets||[];
-    const ab=tks.filter(t=>t.status==="Aberto").length,an=tks.filter(t=>t.status==="Em andamento").length,rv=tks.filter(t=>t.status==="Resolvido").length;
-    c.innerHTML=`<div class="resumo-grid">
-      <div class="resumo-card"><div class="num">${tks.length}</div><div class="label">Total</div></div>
-      <div class="resumo-card aberto"><div class="num">${ab}</div><div class="label">Abertos</div></div>
-      <div class="resumo-card andamento"><div class="num">${an}</div><div class="label">Em andamento</div></div>
-      <div class="resumo-card resolvido"><div class="num">${rv}</div><div class="label">Resolvidos</div></div>
-    </div>
-    <div style="font-size:13px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Últimos registros</div>
-    <div class="ticket-lista">${tks.slice(0,5).map(cardTicket).join("")||'<div class="vazio"><div class="icone">📭</div><p>Nenhum ticket ainda.</p></div>'}</div>`;
-  }catch(e){c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar.</p></div>';}
+    const [resT,resE]=await Promise.all([
+      api({acao:"listarTickets",status:"TODOS",emailUsuario:usuario.email,nomeUsuario:usuario.nome,perfilUsuario:usuario.perfil}),
+      api({acao:"getEstatisticas"})
+    ]);
+    const tks=(resT.tickets||[]).filter(t=>t.origem!=="SOP_COMUNICADO");
+    const st=resE.stats||{};
+    const hoje=new Date();hoje.setHours(0,0,0,0);
+
+    const aguardando=tks.filter(t=>t.status==="Aguardando Aprovação");
+    const vencidos=tks.filter(t=>{
+      if(t.status==="Resolvido"||!t.prazo)return false;
+      const p=new Date(t.prazo);p.setHours(0,0,0,0);return p<hoje;
+    });
+
+    let alertaHtml="";
+    if(vencidos.length>0)alertaHtml+=`<div style="background:#fdecea;border:1px solid #f5c6c2;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--vermelho);font-weight:600;">⚠️ ${vencidos.length} ticket${vencidos.length>1?"s":""} com prazo vencido — ação necessária.</div>`;
+    if(aguardando.length>0&&usuario.perfil==="ADMIN")alertaHtml+=`<div style="background:#fff3e6;border:1px solid #fce5c0;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--laranja);font-weight:600;">📋 ${aguardando.length} ticket${aguardando.length>1?"s":""} aguardando sua aprovação.</div>`;
+
+    const setores=st.porSetor||{};
+    const setorRows=Object.entries(setores).sort((a,b)=>b[1].total-a[1].total).map(([nome,s])=>{
+      const pct=s.total>0?Math.round((s.resolvido/s.total)*100):0;
+      const venc=s.vencidos||0;
+      return `<div class="setor-row">
+        <span class="setor-nome">${nome}</span>
+        <div class="setor-bar-wrap"><div class="setor-bar" style="width:${pct}%"></div></div>
+        <span class="setor-num" style="color:var(--verde);min-width:34px">${pct}%</span>
+        <span class="setor-num">${s.total}</span>
+        ${venc>0?`<span class="badge-vencido">⚠️${venc}</span>`:""}
+      </div>`;
+    }).join("");
+
+    const aprovBloco=aguardando.length>0&&usuario.perfil==="ADMIN"?`
+      <div class="painel-secao">
+        <h3>📋 Aguardando aprovação</h3>
+        ${aguardando.slice(0,5).map(t=>`
+          <div style="padding:10px 0;border-bottom:.5px solid var(--cinza2);">
+            <div style="font-size:13px;font-weight:600;color:var(--preto)">${t.assunto}</div>
+            <div style="font-size:12px;color:var(--cinza3);margin:2px 0">${t.setorDestino} · ${t.abertoBy} · ${t.data}</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn-aprovar" onclick="aprovarTicket('${t.id}')">✅ Aprovar</button>
+              <button class="btn-reprovar" onclick="reprovarTicket('${t.id}')">❌ Reprovar</button>
+            </div>
+          </div>`).join("")}
+      </div>`:"";
+
+    c.innerHTML=`
+      ${alertaHtml}
+      <div class="resumo-grid">
+        <div class="resumo-card"><div class="num">${tks.length}</div><div class="label">Total</div></div>
+        <div class="resumo-card aberto"><div class="num">${st.aberto||0}</div><div class="label">Abertos</div></div>
+        <div class="resumo-card andamento"><div class="num">${st.emAndamento||0}</div><div class="label">Em andamento</div></div>
+        <div class="resumo-card resolvido"><div class="num">${st.resolvido||0}</div><div class="label">Resolvidos</div></div>
+      </div>
+
+      <div class="painel-secao">
+        <h3>📊 Indicadores SLA</h3>
+        <div class="stat-mini-grid">
+          <div class="stat-mini ${(st.vencidos||0)>0?"alerta":"ok"}"><div class="n">${st.vencidos||0}</div><div class="l">Vencidos</div></div>
+          <div class="stat-mini warn"><div class="n">${st.venceHoje||0}</div><div class="l">Vencem hoje</div></div>
+          <div class="stat-mini ok"><div class="n">${st.taxaResolucao||0}%</div><div class="l">Taxa resolução</div></div>
+          <div class="stat-mini azul"><div class="n">${st.tempoMedioHoras||0}h</div><div class="l">Tempo médio</div></div>
+          ${usuario.perfil==="ADMIN"?`<div class="stat-mini warn"><div class="n">${st.aguardando||0}</div><div class="l">Ag. aprovação</div></div>`:""}
+        </div>
+      </div>
+
+      ${setorRows?`<div class="painel-secao"><h3>📁 Por setor — resolução</h3>${setorRows}</div>`:""}
+
+      ${aprovBloco}
+
+      <div style="font-size:13px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Últimos registros</div>
+      <div class="ticket-lista">${tks.slice(0,5).map(cardTicket).join("")||'<div class="vazio"><div class="icone">📭</div><p>Nenhum ticket ainda.</p></div>'}</div>
+    `;
+  }catch(e){c.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro ao carregar.</p></div>';console.error(e);}
 }
 
 function optsOrigem(sel=""){return ORIGENS.map(o=>`<option${o===sel?" selected":""}>${o}</option>`).join("");}
@@ -419,6 +520,7 @@ function renderNovoTicket(){
         </div>
 
         <div class="form-campo full"><label>Assunto (resumo)</label><input id="f-assunto" placeholder="Ex: Solicitação de declaração"></div>
+        <div class="form-campo"><label>Prazo para resolução</label><input type="date" id="f-prazo"></div>
         <div class="form-campo full"><label>Descrição completa</label><textarea id="f-descricao" placeholder="Descreva a solicitação com detalhes..."></textarea></div>
 
         <div class="form-campo full"><label>Visibilidade</label>
@@ -508,7 +610,8 @@ async function salvarTicket(){
       setorDestino:document.getElementById("f-setor").value,assunto,
       descricao:document.getElementById("f-descricao").value,
       responsavel:responsavelTicket.nome,responsavelEmail:responsavelTicket.email,
-      abertoBy,usuarioNome:abertoBy,visibilidade});
+      abertoBy,usuarioNome:abertoBy,visibilidade,
+      prazo:document.getElementById("f-prazo")?.value||""});
     if(res.ok){toast("Ticket registrado"+(responsavelTicket.email?" — "+responsavelTicket.nome+" notificado!":"!")+(visibilidade==="Privado"?" 🔒":""),"verde");irPara("tickets");}
     else{toast(res.erro||"Erro ao salvar.","vermelho");}
   }catch(e){toast("Erro de conexão.","vermelho");}
@@ -518,7 +621,7 @@ async function salvarTicket(){
 async function renderTickets(){
   const c=document.getElementById("conteudo");
   c.innerHTML=`<div class="filtros">
-    <select id="fil-status"><option value="TODOS">Todos os status</option><option>Aberto</option><option>Em andamento</option><option>Resolvido</option></select>
+    <select id="fil-status"><option value="TODOS">Todos os status</option><option>Aberto</option><option>Em andamento</option><option>Aguardando Aprovação</option><option>Resolvido</option></select>
     <select id="fil-tipo"><option value="TODOS">Todos os tipos</option><option>Externo</option><option>Interno</option></select>
     <select id="fil-setor"><option value="TODOS">Todos os setores</option><option>Secretaria</option><option>Pedagógico</option><option>Financeiro</option><option>Direção</option><option>Coordenação</option><option>Administrativo</option></select>
     <input id="fil-busca" placeholder="Buscar por nome ou assunto..." style="flex:1;min-width:180px">
@@ -543,15 +646,28 @@ async function buscarTickets(){
   }catch(e){lista.innerHTML='<div class="vazio"><div class="icone">⚠️</div><p>Erro ao buscar.</p></div>';}
 }
 
+function slaInfo(t){
+  if(!t.prazo||t.status==="Resolvido")return{badge:"",vencido:false};
+  const hoje=new Date();hoje.setHours(0,0,0,0);
+  const p=new Date(t.prazo);p.setHours(0,0,0,0);
+  const diff=Math.round((p-hoje)/(1000*3600*24));
+  if(diff<0)return{badge:`<span class="badge-vencido">⚠️ Vencido há ${Math.abs(diff)}d</span>`,vencido:true};
+  if(diff===0)return{badge:`<span class="badge-hoje">🔥 Vence hoje</span>`,vencido:false};
+  if(diff<=2)return{badge:`<span class="badge-hoje">⏳ ${diff}d</span>`,vencido:false};
+  return{badge:`<span class="badge-prazo">📅 ${diff}d</span>`,vencido:false};
+}
+
 function cardTicket(t){
   const st=t.status||"Aberto";const stC=st.split(" ")[0];
   const priv=t.visibilidade==="Privado";
-  return `<div class="ticket-card ${stC}" onclick="abrirModal('${t.id}')">
+  const sla=slaInfo(t);
+  return `<div class="ticket-card ${stC}${sla.vencido?" card-ticket-vencido":""}" onclick="abrirModal('${t.id}')">
     <div class="ticket-top">
       <span class="ticket-id">${t.id}</span>
       <span class="badge badge-${stC}">${st}</span>
       <span class="badge badge-${t.tipo}">${t.tipo||""}</span>
       ${priv?'<span class="badge badge-priv">🔒 Privado</span>':'<span class="badge badge-pub">🌐 Público</span>'}
+      ${sla.badge}
     </div>
     <div class="ticket-assunto">${t.assunto}</div>
     <div class="ticket-info">
@@ -597,7 +713,8 @@ async function abrirModal(id){
         <div class="modal-secao"><label>Setor destino</label><p>${t.setorDestino}</p></div>
         <div class="modal-secao"><label>Origem</label><p>${t.origem}</p></div>
         <div class="modal-secao"><label>Responsável</label><p>${t.responsavel||"—"}</p></div>
-        <div class="modal-secao"><label>Data</label><p>${t.data}</p></div>
+        <div class="modal-secao"><label>Data abertura</label><p>${t.data}</p></div>
+        <div class="modal-secao"><label>Prazo</label><p>${t.prazo?`${t.prazo} ${slaInfo(t).badge}`:"—"}</p></div>
         <div class="modal-secao"><label>Visibilidade</label><p>${t.visibilidade||"Público"}</p></div>
       </div>
       <div class="modal-secao"><label>Descrição</label><p>${t.descricao||"—"}</p></div>
@@ -627,7 +744,8 @@ async function abrirModal(id){
       <div class="modal-atualizar">
         <h3>Atualizar ticket</h3>
         <div class="modal-grid">
-          <div class="form-campo"><label>Novo status</label><select id="upd-status"><option value="">— Manter atual —</option><option>Aberto</option><option>Em andamento</option><option>Resolvido</option></select></div>
+          <div class="form-campo"><label>Novo status</label><select id="upd-status"><option value="">— Manter atual —</option><option>Aberto</option><option>Aguardando Aprovação</option><option>Em andamento</option><option>Resolvido</option></select></div>
+          <div class="form-campo"><label>Prazo (alterar)</label><input type="date" id="upd-prazo"></div>
           <div class="form-campo full"><label>Reatribuir responsável</label>
             <div class="resp-lista" id="resp-lista-modal" style="margin-bottom:8px">${respOpts}</div>
             <input class="resp-outro-input" id="upd-resp-outro" placeholder="Ou digite um nome..." oninput="digitarRespModal(this.value)">
@@ -674,11 +792,14 @@ function digitarRespModal(v){document.querySelectorAll("#resp-lista-modal .resp-
 async function atualizarTicket(id){
   const status=document.getElementById("upd-status").value;
   const tratativa=document.getElementById("upd-tratativa").value.trim();
-  if(!status&&!respModal.nome&&!tratativa){toast("Preencha ao menos um campo.","vermelho");return;}
+  const prazo=document.getElementById("upd-prazo")?.value||undefined;
+  if(!status&&!respModal.nome&&!tratativa&&!prazo){toast("Preencha ao menos um campo.","vermelho");return;}
   const btn=document.querySelector(".modal-atualizar .btn-primario");btn.disabled=true;btn.textContent="Salvando...";
   try{
-    const res=await api({acao:"atualizarTicket",id,status,responsavel:respModal.nome,responsavelEmail:respModal.email,notificar:!!respModal.email,tratativa,usuarioNome:usuario.nome});
-    if(res.ok){toast("Atualizado"+(respModal.email?" — "+respModal.nome+" notificado!":"!"),"verde");fecharModal();buscarTickets();verificarNotificacoes();}
+    const payload={acao:"atualizarTicket",id,status,responsavel:respModal.nome,responsavelEmail:respModal.email,notificar:!!respModal.email,tratativa,usuarioNome:usuario.nome};
+    if(prazo!==undefined)payload.prazo=prazo;
+    const res=await api(payload);
+    if(res.ok){toast("Atualizado"+(respModal.email?" — "+respModal.nome+" notificado!":"!"),"verde");fecharModal();buscarTickets();verificarNotificacoes();renderPainel&&irPara("painel");}
     else{toast(res.erro||"Erro.","vermelho");}
   }catch(e){toast("Erro de conexão.","vermelho");}
   btn.disabled=false;btn.textContent="Salvar atualização";
