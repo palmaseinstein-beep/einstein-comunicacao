@@ -1198,8 +1198,8 @@ async function abrirModalSOP(id){
     if(!t){modal.innerHTML="<p>Comunicado não encontrado.</p>";return;}
     const st=t.status||"Rascunho";
     const isAdmin=usuario.perfil==="ADMIN";
+    const isAutor=t.abertoBy===usuario.nome;  // declarar ANTES de usar
     const isAprovador=(isAdmin&&!isAutor)||t.responsavel===usuario.nome||APROVADORES_SOP.includes(usuario.nome);
-    const isAutor=t.abertoBy===usuario.nome;
     // Extrair metadados
     const publico=extrairMeta(t.descricao,"publico")||"—";
     const canais=extrairMeta(t.descricao,"canais")||"—";
@@ -1242,13 +1242,25 @@ async function abrirModalSOP(id){
       botoesAcao+=`<button class="btn-reprovar" onclick="atualizarStatusSOP('${id}','Reprovado',document.getElementById('sop-modal-obs').value)">❌ Reprovar</button>`;
     }
     if(st==="Reprovado"&&isAutor)
-      botoesAcao+=`<button class="btn-secundario" onclick="editarSOP('${id}')">✏️ Revisar e reenviar</button>`;
+      botoesAcao+=`<button class="btn-secundario" onclick="abrirEdicaoSOP('${id}')">✏️ Revisar e reenviar</button>`;
     if(st==="Aprovado"&&(isAdmin||isAutor))
       botoesAcao+=`<button class="btn-marcar-enviado" onclick="atualizarStatusSOP('${id}','Enviado','Comunicado publicado e enviado para as famílias.')">📨 Marcar como enviado</button>`;
     if(isAdmin&&st!=="Enviado")
       botoesAcao+=`<button class="btn-secundario" style="background:var(--cinza2);color:var(--cinza3)" onclick="atualizarStatusSOP('${id}','Rascunho','Revertido para rascunho pelo admin.')">↩️ Reverter</button>`;
+
+    // Editar — só em Rascunho ou Reprovado, pelo autor ou ADMIN
+    const podeEditar=(isAutor||isAdmin)&&(st==="Rascunho"||st==="Reprovado");
+    // Excluir — só em Rascunho, pelo autor ou ADMIN
+    const podeExcluir=(isAutor||isAdmin)&&st==="Rascunho";
+
     modal.innerHTML=`
-      <div class="modal-topo"><h2>${t.assunto}</h2><button class="btn-fechar" onclick="fecharModal()">×</button></div>
+      <div class="modal-topo"><h2>${t.assunto}</h2>
+        <div style="display:flex;gap:8px;align-items:center;">
+          ${podeEditar?`<button class="btn-secundario" style="font-size:12px;padding:4px 10px" onclick="abrirEdicaoSOP('${id}')">✏️ Editar</button>`:""}
+          ${podeExcluir?`<button class="btn-secundario" style="font-size:12px;padding:4px 10px;background:#fdecea;color:var(--vermelho);border-color:var(--vermelho)" onclick="excluirSOPConfirm('${id}','${t.assunto.replace(/'/g,"\\'")}')">🗑️ Excluir</button>`:""}
+          <button class="btn-fechar" onclick="fecharModal()">×</button>
+        </div>
+      </div>
       <div class="modal-acoes-topo">
         <span class="badge badge-sop-${st.split(" ")[0]}">${st}</span>
         ${t.visibilidade==="Privado"?'<span class="badge badge-priv">🔒 Privado</span>':''}
@@ -1264,8 +1276,66 @@ async function abrirModalSOP(id){
       </div>
       ${blocoConteudo}
       ${t.tratativa?`<div class="sop-secao"><label>Histórico de aprovação</label><p>${t.tratativa}</p></div>`:""}
-      <div class="sop-acoes-modal">${botoesAcao}</div>`;
-  }catch(e){modal.innerHTML="<p>Erro ao carregar.</p>";}
+      <div class="sop-acoes-modal">${botoesAcao}</div>
+      <div id="sop-edicao-inline" style="display:none;border-top:1.5px solid var(--cinza2);margin-top:16px;padding-top:16px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--laranja);margin:0 0 12px">✏️ Editar comunicado</h3>
+        <div class="form-campo full" style="margin-bottom:10px"><label>Assunto</label><input id="sop-ed-assunto" value="${t.assunto}"></div>
+        <div class="form-campo full" style="margin-bottom:10px"><label>Texto do comunicado</label><textarea id="sop-ed-texto" style="height:120px">${textoLimpo}</textarea></div>
+        <div class="form-grid" style="margin-bottom:10px">
+          <div class="form-campo"><label>Público-alvo</label><input id="sop-ed-publico" value="${publico==="—"?"":publico}"></div>
+          <div class="form-campo"><label>Canal(is)</label><input id="sop-ed-canais" value="${canais==="—"?"":canais}"></div>
+          <div class="form-campo"><label>Enviar até</label><input type="date" id="sop-ed-prazo" value="${prazo==="—"?"":prazo}"></div>
+          <div class="form-campo"><label>Aprovador</label><input id="sop-ed-aprovador" value="${aprovador==="—"?"":aprovador}"></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-primario" onclick="salvarEdicaoSOP('${id}','${tipoConteudo}','${arquivoUrl}','${arquivoNome}')">💾 Salvar alterações</button>
+          <button class="btn-secundario" onclick="document.getElementById('sop-edicao-inline').style.display='none'">Cancelar</button>
+        </div>
+      </div>`;
+  }catch(e){modal.innerHTML="<p style='color:var(--vermelho);padding:16px'>Erro ao carregar. Tente novamente.</p>";console.error(e);}
+}
+
+function abrirEdicaoSOP(id){
+  const bloco=document.getElementById("sop-edicao-inline");
+  if(bloco){bloco.style.display="block";bloco.scrollIntoView({behavior:"smooth",block:"start"});}
+}
+
+async function salvarEdicaoSOP(id,tipoConteudo,arquivoUrl,arquivoNome){
+  const assunto=document.getElementById("sop-ed-assunto")?.value.trim();
+  const texto=document.getElementById("sop-ed-texto")?.value.trim();
+  const pub=document.getElementById("sop-ed-publico")?.value.trim();
+  const can=document.getElementById("sop-ed-canais")?.value.trim();
+  const prz=document.getElementById("sop-ed-prazo")?.value.trim();
+  const apr=document.getElementById("sop-ed-aprovador")?.value.trim();
+  if(!assunto){toast("Assunto obrigatório.","vermelho");return;}
+  // Remontar descricao com metadados
+  let descricao=texto||"";
+  if(pub) descricao+=`\n[publico:${pub}]`;
+  if(can) descricao+=`\n[canais:${can}]`;
+  if(prz) descricao+=`\n[prazo:${prz}]`;
+  if(apr) descricao+=`\n[aprovador:${apr}]`;
+  descricao+=`\n[tipo_conteudo:${tipoConteudo}]`;
+  if(arquivoUrl) descricao+=`\n[arquivo_url:${arquivoUrl}]`;
+  if(arquivoNome&&tipoConteudo==="arquivo") descricao+=`\n[arquivo_nome:${arquivoNome}]`;
+  const btn=document.querySelector("#sop-edicao-inline .btn-primario");
+  if(btn){btn.disabled=true;btn.textContent="Salvando...";}
+  try{
+    const res=await api({acao:"editarTicket",id,assunto,descricao,usuarioNome:usuario.nome});
+    if(res.ok){
+      toast("Comunicado atualizado!","verde");
+      fecharModal();renderSOP();
+    }else toast(res.erro||"Erro ao salvar.","vermelho");
+  }catch(e){toast("Erro de conexão.","vermelho");}
+  if(btn){btn.disabled=false;btn.textContent="💾 Salvar alterações";}
+}
+
+async function excluirSOPConfirm(id,assunto){
+  if(!confirm(`Excluir o comunicado "${assunto}"?\n\nEsta ação não pode ser desfeita.`))return;
+  try{
+    const res=await api({acao:"excluirTicket",id,usuarioNome:usuario.nome});
+    if(res.ok){toast("Comunicado excluído.","verde");fecharModal();renderSOP();}
+    else toast(res.erro||"Erro ao excluir.","vermelho");
+  }catch(e){toast("Erro de conexão.","vermelho");}
 }
 
 async function atualizarStatusSOP(id,novoStatus,obs){
@@ -1280,10 +1350,8 @@ async function atualizarStatusSOP(id,novoStatus,obs){
   }catch(e){toast("Erro de conexão.","vermelho");}
 }
 
-function editarSOP(id){
-  fecharModal();
-  toast("Abra como novo comunicado, revise e reenvie para aprovação.","");
-}
+
+
 </script>
 </body>
 </html>
